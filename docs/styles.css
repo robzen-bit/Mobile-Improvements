@@ -407,6 +407,102 @@ body.view-mobile .mobile-download-bar {
   margin-top: 10px;
 }
 
+/* =============================================================
+   LIGHTBOX
+   ============================================================= */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 600;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Use display:none when hidden, display:flex when visible */
+.lightbox-overlay[hidden] { display: none; }
+.lightbox-overlay:not([hidden]) { display: flex; }
+
+.lightbox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: calc(100% - 140px); /* room for nav buttons */
+  max-height: 90vh;
+}
+
+#lightbox-img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 4px;
+  transition: opacity 0.15s ease;
+  display: block;
+}
+
+.lightbox-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 14px;
+  gap: 16px;
+}
+
+.lightbox-counter {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.lightbox-dl-btn {
+  font-size: 0.85rem;
+  padding: 8px 18px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.lightbox-close:hover { background: rgba(255, 255, 255, 0.28); }
+
+.lightbox-nav {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #fff;
+  font-size: 2.2rem;
+  line-height: 1;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  margin: 0 8px;
+}
+
+.lightbox-nav:hover { background: rgba(255, 255, 255, 0.28); }
+
 /* ── Email sent panel ── */
 #email-sent-panel {
   text-align: center;

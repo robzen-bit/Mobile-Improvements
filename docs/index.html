@@ -17,7 +17,6 @@
 
       <header class="page-header">
         <h1>Photo Gallery</h1>
-        <!-- Desktop: Download All button in header -->
         <button class="btn btn-primary" id="download-all-btn">&#8595; Download All</button>
       </header>
 
@@ -30,6 +29,20 @@
         <button class="btn btn-primary" id="download-all-mobile-btn">&#8595; Download Photos</button>
       </div>
 
+    </div>
+
+    <!-- Lightbox — desktop only, inside frame -->
+    <div id="lightbox" class="lightbox-overlay" hidden aria-modal="true" role="dialog">
+      <button class="lightbox-close" id="lightbox-close" title="Close">&times;</button>
+      <button class="lightbox-nav lightbox-prev" id="lightbox-prev" title="Previous">&#8249;</button>
+      <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="">
+        <div class="lightbox-footer">
+          <span class="lightbox-counter" id="lightbox-counter"></span>
+          <button class="btn btn-primary lightbox-dl-btn" id="lightbox-download">&#8595; Download</button>
+        </div>
+      </div>
+      <button class="lightbox-nav lightbox-next" id="lightbox-next" title="Next">&#8250;</button>
     </div>
 
     <!-- Email capture modal — inside frame so it clips to phone bounds in mobile view -->
@@ -73,16 +86,36 @@
   <script src="app.js"></script>
   <script>
     (function () {
-      const PHOTO_COUNT = 12;
+      const PHOTO_COUNT = 50;
       const RETURN_KEY = 'zf_return_status_url';
       let redirectTimer = null;
-
+      let lightboxIndex = 1;
 
       // ── Init ──────────────────────────────────────────────────────────────
       ZF.ViewToggle.init();
       ZF.ScrollMemory.restore();
       buildGrid();
+      wireLightbox();
       wireModal();
+
+      // ── Immediate photo download (desktop) ────────────────────────────────
+      async function downloadPhoto(index) {
+        const url = ZF.Unsplash.url(index);
+        try {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = `photo-${index}.jpg`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        } catch (e) {
+          window.open(url, '_blank');
+        }
+      }
 
       // ── Build photo grid ──────────────────────────────────────────────────
       function buildGrid() {
@@ -90,6 +123,7 @@
         for (let i = 1; i <= PHOTO_COUNT; i++) {
           const card = document.createElement('article');
           card.className = 'photo-card';
+          card.dataset.photo = i;
           card.innerHTML = `
             <img src="${ZF.Unsplash.url(i)}" alt="Photo ${i}" loading="lazy">
             <div class="photo-overlay">
@@ -103,11 +137,77 @@
         }
 
         grid.addEventListener('click', (e) => {
-          const btn = e.target.closest('.photo-action-btn[data-photo]');
-          if (!btn) return;
-          ZF.ScrollMemory.save();
-          window.location.href = `individual-download.html?photo=${btn.dataset.photo}`;
+          const btn  = e.target.closest('.photo-action-btn[data-photo]');
+          const card = e.target.closest('.photo-card[data-photo]');
+          const isMobile = ZF.ViewToggle.getMode() === 'mobile';
+
+          if (btn) {
+            e.stopPropagation();
+            if (isMobile) {
+              ZF.ScrollMemory.save();
+              window.location.href = `individual-download.html?photo=${btn.dataset.photo}`;
+            } else {
+              downloadPhoto(parseInt(btn.dataset.photo));
+            }
+            return;
+          }
+
+          if (card) {
+            if (isMobile) {
+              ZF.ScrollMemory.save();
+              window.location.href = `individual-download.html?photo=${card.dataset.photo}`;
+            } else {
+              openLightbox(parseInt(card.dataset.photo));
+            }
+          }
         });
+      }
+
+      // ── Lightbox ──────────────────────────────────────────────────────────
+      function wireLightbox() {
+        const lightbox = document.getElementById('lightbox');
+
+        document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+        document.getElementById('lightbox-prev').addEventListener('click', () => navigateLightbox(-1));
+        document.getElementById('lightbox-next').addEventListener('click', () => navigateLightbox(1));
+        document.getElementById('lightbox-download').addEventListener('click', () => downloadPhoto(lightboxIndex));
+
+        // Close on backdrop click
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+      }
+
+      function openLightbox(index) {
+        lightboxIndex = index;
+        updateLightbox();
+        const lightbox = document.getElementById('lightbox');
+        lightbox.removeAttribute('hidden');
+        document.addEventListener('keydown', lightboxKeyHandler);
+      }
+
+      function closeLightbox() {
+        document.getElementById('lightbox').setAttribute('hidden', '');
+        document.removeEventListener('keydown', lightboxKeyHandler);
+      }
+
+      function navigateLightbox(dir) {
+        lightboxIndex = ((lightboxIndex - 1 + dir + PHOTO_COUNT) % PHOTO_COUNT) + 1;
+        updateLightbox();
+      }
+
+      function updateLightbox() {
+        const img = document.getElementById('lightbox-img');
+        img.style.opacity = '0';
+        img.src = ZF.Unsplash.url(lightboxIndex);
+        img.onload = () => { img.style.opacity = '1'; };
+        document.getElementById('lightbox-counter').textContent = `${lightboxIndex} / ${PHOTO_COUNT}`;
+      }
+
+      function lightboxKeyHandler(e) {
+        if (e.key === 'Escape')     closeLightbox();
+        if (e.key === 'ArrowLeft')  navigateLightbox(-1);
+        if (e.key === 'ArrowRight') navigateLightbox(1);
       }
 
       // ── Modal wiring ──────────────────────────────────────────────────────
@@ -115,18 +215,15 @@
         const modal     = document.getElementById('email-modal');
         const input     = document.getElementById('email-input');
         const errorEl   = document.getElementById('email-error');
-        const confirmEl = document.getElementById('email-confirmation');
         const submitBtn = document.getElementById('email-submit-btn');
         const cancelBtn = document.getElementById('email-cancel-btn');
 
         function openModal() {
-          // If there's an active download in progress, go straight back to it
           const existingUrl = sessionStorage.getItem(RETURN_KEY);
           if (existingUrl) {
             window.location.href = existingUrl;
             return;
           }
-          // Reset to entry panel
           document.getElementById('email-entry-panel').removeAttribute('hidden');
           document.getElementById('email-sent-panel').setAttribute('hidden', '');
           input.value = '';
@@ -159,15 +256,11 @@
           return;
         }
 
-        // Switch to sent panel
         document.getElementById('email-entry-panel').setAttribute('hidden', '');
         document.getElementById('email-sent-panel').removeAttribute('hidden');
         document.getElementById('email-sent-address').textContent = email;
-
-        // Clear any previous return URL — this is a new request
         sessionStorage.removeItem('zf_return_status_url');
 
-        // 5-second countdown then redirect
         let count = 5;
         document.getElementById('countdown-display').textContent = count;
         redirectTimer = setInterval(() => {
