@@ -60,8 +60,9 @@
           <a href="index.html" class="btn btn-secondary btn-lg">Return to Gallery</a>
         </section>
 
-        <!-- Preview email bar — visible in all non-invalid states -->
+        <!-- Nav bar — Back to Gallery + Preview email -->
         <div class="email-preview-bar" id="email-preview-bar">
+          <button class="btn btn-secondary" id="back-to-gallery-btn">&#8592; Back to Gallery</button>
           <button class="btn" id="preview-email-btn">Preview Confirmation Email</button>
         </div>
 
@@ -202,6 +203,12 @@
         // Retry
         document.getElementById('retry-btn').addEventListener('click', () => {
           showState('processing');
+        });
+
+        // Back to Gallery — save current URL so gallery can offer "Return to download"
+        document.getElementById('back-to-gallery-btn').addEventListener('click', () => {
+          sessionStorage.setItem('zf_return_status_url', window.location.href);
+          window.location.href = 'index.html';
         });
       }
 
