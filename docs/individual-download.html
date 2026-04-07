@@ -15,9 +15,10 @@
     <div id="mobile-banner" class="instruction-banner" hidden>
       <p class="banner-text">To download, long press on the image below and click Save.</p>
       <div class="banner-actions">
-        <button class="btn btn-secondary" id="back-btn-mobile">&#8592; Back to Gallery</button>
+        <button class="btn btn-secondary" id="back-btn-mobile">&#8592; Gallery</button>
         <div class="nav-right">
-          <button class="btn btn-primary" id="next-btn-mobile" hidden>Next &#8594;</button>
+          <button class="btn btn-secondary" id="prev-btn-mobile" hidden>&#8249; Prev</button>
+          <button class="btn btn-primary" id="next-btn-mobile" hidden>Next &#8250;</button>
         </div>
       </div>
     </div>
@@ -27,8 +28,9 @@
       <div class="banner-actions" style="width:100%">
         <button class="btn btn-secondary" id="back-btn-desktop">&#8592; Back to Gallery</button>
         <div class="nav-right">
+          <button class="btn btn-secondary" id="prev-btn-desktop" hidden>&#8249; Prev</button>
           <button class="btn btn-primary btn-lg" id="download-photo-btn">&#8595; Download Photo</button>
-          <button class="btn btn-secondary" id="next-btn-desktop" hidden>Next &#8594;</button>
+          <button class="btn btn-secondary" id="next-btn-desktop" hidden>Next &#8250;</button>
         </div>
       </div>
     </div>
@@ -66,7 +68,7 @@
   <script src="app.js"></script>
   <script>
     (function () {
-      const PHOTO_COUNT = 12;
+      const PHOTO_COUNT = 50;
 
       const rawParam = ZF.URLParams.get('photo');
       const rawIndex = parseInt(rawParam, 10);
@@ -113,6 +115,19 @@
           ZF.ScrollMemory.restore();
           window.location.href = 'index.html';
         }
+
+        // Prev buttons
+        ['prev-btn-mobile', 'prev-btn-desktop'].forEach(id => {
+          const btn = document.getElementById(id);
+          if (photoIndex <= 1) {
+            btn.setAttribute('hidden', '');
+          } else {
+            btn.removeAttribute('hidden');
+            btn.addEventListener('click', () => {
+              window.location.href = `individual-download.html?photo=${photoIndex - 1}`;
+            });
+          }
+        });
 
         // Next buttons
         ['next-btn-mobile', 'next-btn-desktop'].forEach(id => {
