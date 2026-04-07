@@ -815,27 +815,20 @@ body.view-mobile .status-container {
   line-height: 1;
 }
 
-/* Email preview bar */
-.email-preview-bar {
+/* Back to gallery bar */
+.back-to-gallery-bar {
   margin-top: 32px;
   padding-top: 20px;
   border-top: 1px solid #e0e0e0;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
-.email-preview-bar .btn {
-  background: none;
-  color: #0066cc;
-  border: 1px solid #0066cc;
-  font-size: 0.85rem;
-  padding: 8px 16px;
-}
-
-.email-preview-bar .btn:hover {
-  background: #e8f0fb;
+/* Extra buttons row inside dev controls */
+.dev-extra-btns {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e8c84a;
 }
 
 /* 404 state */
