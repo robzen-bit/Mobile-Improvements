@@ -63,6 +63,25 @@
       </label>
     </aside>
 
+    <!-- iOS-style long-press context menu (mobile only) -->
+    <div id="ios-context-menu" class="ios-context-overlay" hidden>
+      <div class="ios-context-sheet">
+        <div class="ios-preview-row">
+          <img id="ios-preview-img" class="ios-preview-thumb" alt="">
+          <div class="ios-preview-meta">
+            <span class="ios-preview-name">photo_<span id="ios-photo-num"></span>.jpg</span>
+            <span class="ios-preview-size">800 × 600</span>
+          </div>
+        </div>
+        <div class="ios-action-divider"></div>
+        <button class="ios-action-item" id="ios-save-btn">
+          <span>Save to Photos</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+      <button class="ios-cancel-btn" id="ios-cancel-btn">Cancel</button>
+    </div>
+
   </div>
 
   <script src="app.js"></script>
@@ -83,6 +102,7 @@
       ZF.ViewToggle.init();
       ZF.ViewToggle.onChange(applyViewMode);
       setupNavigation();
+      setupLongPress();
       setupSimulateCheckbox();
       loadPhoto();
       applyViewMode(ZF.ViewToggle.getMode());
@@ -163,6 +183,49 @@
         } catch (e) {
           window.open(url, '_blank');
         }
+      }
+
+      // ── iOS long-press context menu ───────────────────────────────────────
+      function setupLongPress() {
+        const img    = document.getElementById('main-photo');
+        const menu   = document.getElementById('ios-context-menu');
+        let pressTimer = null;
+
+        function startPress() {
+          if (ZF.ViewToggle.getMode() !== 'mobile') return;
+          pressTimer = setTimeout(showContextMenu, 500);
+        }
+        function cancelPress() {
+          clearTimeout(pressTimer);
+          pressTimer = null;
+        }
+
+        img.addEventListener('touchstart',  startPress,  { passive: true });
+        img.addEventListener('touchend',    cancelPress);
+        img.addEventListener('touchmove',   cancelPress);
+        img.addEventListener('mousedown',   startPress);
+        img.addEventListener('mouseup',     cancelPress);
+        img.addEventListener('mouseleave',  cancelPress);
+        img.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        document.getElementById('ios-save-btn').addEventListener('click', () => {
+          hideContextMenu();
+          downloadPhoto();
+        });
+        document.getElementById('ios-cancel-btn').addEventListener('click', hideContextMenu);
+        menu.addEventListener('click', (e) => { if (e.target === menu) hideContextMenu(); });
+      }
+
+      function showContextMenu() {
+        const menu = document.getElementById('ios-context-menu');
+        // Sync preview thumbnail and photo number
+        document.getElementById('ios-preview-img').src = ZF.Unsplash.url(photoIndex);
+        document.getElementById('ios-photo-num').textContent = photoIndex;
+        menu.removeAttribute('hidden');
+      }
+
+      function hideContextMenu() {
+        document.getElementById('ios-context-menu').setAttribute('hidden', '');
       }
 
       // ── Simulate fail checkbox ────────────────────────────────────────────
