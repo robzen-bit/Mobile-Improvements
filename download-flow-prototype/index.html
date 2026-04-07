@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Gallery — Zenfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Page-specific overrides */
+    body.view-desktop #mobile-frame {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Toggle button injected by ZF.ViewToggle.init() -->
+
+  <div id="mobile-frame">
+    <div class="page-container">
+
+      <header class="page-header">
+        <h1>Photo Gallery</h1>
+        <button class="btn btn-primary btn-lg" id="download-all-btn">Download All</button>
+      </header>
+
+      <section id="photo-grid" class="photo-grid" aria-label="Photo gallery">
+        <!-- Cards injected by JS -->
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Email capture modal -->
+  <div id="email-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="email-modal-title">
+    <div class="modal-card">
+      <h2 id="email-modal-title">Download All Photos</h2>
+      <p style="font-size:0.9rem;color:#555;margin-bottom:16px;">
+        Enter your email address and we'll send a confirmation with a link to download your ZIP.
+      </p>
+
+      <div class="form-group">
+        <label for="email-input">Email address</label>
+        <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email">
+        <span class="form-error" id="email-error" hidden></span>
+      </div>
+
+      <div id="email-confirmation" class="form-confirmation" hidden></div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="email-cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="email-submit-btn">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      const PHOTO_COUNT = 12;
+      let redirectTimer = null;
+
+      // ── Init ──────────────────────────────────────────────────────────────
+      ZF.ViewToggle.init();
+      ZF.ScrollMemory.restore(); // restore if returning from individual download page
+
+      buildGrid();
+      wireModal();
+
+      // ── Build photo grid ──────────────────────────────────────────────────
+      function buildGrid() {
+        const grid = document.getElementById('photo-grid');
+        for (let i = 1; i <= PHOTO_COUNT; i++) {
+          const card = document.createElement('article');
+          card.className = 'photo-card';
+          card.innerHTML = `
+            <img
+              src="${ZF.Unsplash.url(i)}"
+              alt="Photo ${i}"
+              loading="lazy"
+            >
+            <div class="photo-card-footer">
+              <button class="btn btn-secondary" data-photo="${i}">Download</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        }
+
+        // Wire individual download buttons
+        grid.addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-photo]');
+          if (!btn) return;
+          const idx = btn.dataset.photo;
+          ZF.ScrollMemory.save();
+          window.location.href = `individual-download.html?photo=${idx}`;
+        });
+      }
+
+      // ── Modal wiring ──────────────────────────────────────────────────────
+      function wireModal() {
+        const modal       = document.getElementById('email-modal');
+        const input       = document.getElementById('email-input');
+        const errorEl     = document.getElementById('email-error');
+        const confirmEl   = document.getElementById('email-confirmation');
+        const submitBtn   = document.getElementById('email-submit-btn');
+        const cancelBtn   = document.getElementById('email-cancel-btn');
+        const openBtn     = document.getElementById('download-all-btn');
+
+        openBtn.addEventListener('click', () => {
+          // Reset modal state
+          input.value = '';
+          errorEl.setAttribute('hidden', '');
+          confirmEl.setAttribute('hidden', '');
+          submitBtn.removeAttribute('disabled');
+          if (redirectTimer) { clearTimeout(redirectTimer); redirectTimer = null; }
+          ZF.Modal.open(modal);
+        });
+
+        cancelBtn.addEventListener('click', () => {
+          if (redirectTimer) { clearTimeout(redirectTimer); redirectTimer = null; }
+          ZF.Modal.close(modal);
+        });
+
+        submitBtn.addEventListener('click', handleSubmit);
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleSubmit();
+        });
+      }
+
+      function handleSubmit() {
+        const input     = document.getElementById('email-input');
+        const errorEl   = document.getElementById('email-error');
+        const confirmEl = document.getElementById('email-confirmation');
+        const submitBtn = document.getElementById('email-submit-btn');
+        const cancelBtn = document.getElementById('email-cancel-btn');
+
+        const email = input.value.trim();
+
+        // Basic validation
+        if (!/.+@.+\..+/.test(email)) {
+          errorEl.textContent = 'Please enter a valid email address.';
+          errorEl.removeAttribute('hidden');
+          input.focus();
+          return;
+        }
+
+        // Clear error, show confirmation
+        errorEl.setAttribute('hidden', '');
+        confirmEl.textContent = `A confirmation email has been sent to ${email}.`;
+        confirmEl.removeAttribute('hidden');
+
+        // Disable inputs while waiting to redirect
+        submitBtn.setAttribute('disabled', '');
+        cancelBtn.setAttribute('disabled', '');
+        input.setAttribute('disabled', '');
+
+        // Redirect after 2 seconds; cancelBtn clears this timer if clicked
+        redirectTimer = setTimeout(() => {
+          window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
+        }, 2000);
+      }
+
+    })();
+  </script>
+</body>
+</html>

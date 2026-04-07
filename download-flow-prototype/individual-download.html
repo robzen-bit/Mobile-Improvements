@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Photo — Zenfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Override body layout for this page so mobile frame scrolls naturally */
+    body.view-mobile {
+      padding-top: 24px;
+    }
+    body.view-mobile #mobile-frame {
+      min-height: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Toggle button injected by ZF.ViewToggle.init() -->
+
+  <div id="mobile-frame">
+
+    <!-- Desktop-only message -->
+    <div id="desktop-unavailable" class="desktop-unavailable" hidden>
+      <p>
+        <strong>Individual photo download page is not available on desktop.</strong><br>
+        Switch to Mobile View to preview this experience.
+      </p>
+    </div>
+
+    <!-- Mobile content -->
+    <div id="mobile-content" hidden>
+
+      <!-- Fixed instructional banner -->
+      <div id="instruction-banner" class="instruction-banner">
+        <p class="banner-text">To download, long press on the image below and click Save.</p>
+        <div class="banner-actions">
+          <button class="btn btn-secondary" id="back-btn">&#8592; Back to Gallery</button>
+          <button class="btn btn-primary" id="next-btn" hidden>Next &#8594;</button>
+        </div>
+      </div>
+
+      <!-- Photo display -->
+      <section class="photo-section" id="photo-section">
+        <img id="main-photo" alt="Photo" class="main-photo">
+        <p class="photo-save-label">Long press image to save</p>
+
+        <!-- Error state: first failure -->
+        <div id="error-first" class="image-error-box" hidden>
+          <p>Image failed to load.</p>
+          <button class="btn btn-secondary" id="refresh-btn">Refresh</button>
+        </div>
+
+        <!-- Error state: second+ failure -->
+        <div id="error-persistent" class="image-error-box" hidden>
+          <p>Image failed to load. If this persists, <a href="#">please contact support</a>.</p>
+        </div>
+      </section>
+
+      <!-- Dev Controls -->
+      <aside class="dev-controls" aria-label="Developer testing controls">
+        <span class="dev-controls-label">&#9881; Dev Controls</span>
+        <label>
+          <input type="checkbox" id="simulate-fail">
+          Simulate image load failure
+        </label>
+      </aside>
+
+    </div>
+    <!-- /mobile-content -->
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      const PHOTO_COUNT = 12;
+
+      // Parse and clamp photo index
+      const rawParam = ZF.URLParams.get('photo');
+      const rawIndex = parseInt(rawParam, 10);
+      const photoIndex = isNaN(rawIndex)
+        ? 1
+        : Math.max(1, Math.min(PHOTO_COUNT, rawIndex));
+
+      let failCount = 0;
+      let simulateFail = false;
+      let mobileInitialized = false;
+
+      // ── Init ──────────────────────────────────────────────────────────────
+      ZF.ViewToggle.init();
+      ZF.ViewToggle.onChange(applyViewMode);
+      applyViewMode(ZF.ViewToggle.getMode());
+
+      // ── View mode ─────────────────────────────────────────────────────────
+      function applyViewMode(mode) {
+        mode = mode || ZF.ViewToggle.getMode();
+        const desktopMsg  = document.getElementById('desktop-unavailable');
+        const mobileContent = document.getElementById('mobile-content');
+
+        if (mode === 'desktop') {
+          desktopMsg.removeAttribute('hidden');
+          mobileContent.setAttribute('hidden', '');
+        } else {
+          desktopMsg.setAttribute('hidden', '');
+          mobileContent.removeAttribute('hidden');
+          initMobileContent(); // idempotent after first call
+        }
+      }
+
+      // ── Mobile content setup (called once on first mobile render) ─────────
+      function initMobileContent() {
+        if (mobileInitialized) return;
+        mobileInitialized = true;
+
+        setupNavigation();
+        setupSimulateCheckbox();
+        loadPhoto();
+      }
+
+      // ── Navigation ────────────────────────────────────────────────────────
+      function setupNavigation() {
+        // Back to gallery — restore scroll position
+        const backBtn = document.getElementById('back-btn');
+        backBtn.addEventListener('click', () => {
+          ZF.ScrollMemory.restore();
+          window.location.href = 'index.html';
+        });
+
+        // Next photo
+        const nextBtn = document.getElementById('next-btn');
+        if (photoIndex >= PHOTO_COUNT) {
+          nextBtn.setAttribute('hidden', '');
+        } else {
+          nextBtn.removeAttribute('hidden');
+          nextBtn.addEventListener('click', () => {
+            window.location.href = `individual-download.html?photo=${photoIndex + 1}`;
+          });
+        }
+      }
+
+      // ── Simulate fail checkbox ────────────────────────────────────────────
+      function setupSimulateCheckbox() {
+        const checkbox = document.getElementById('simulate-fail');
+        checkbox.addEventListener('change', () => {
+          simulateFail = checkbox.checked;
+          if (simulateFail) {
+            // Trigger failure immediately
+            handleImageError();
+          } else {
+            // Reset and reload
+            failCount = 0;
+            document.getElementById('error-first').setAttribute('hidden', '');
+            document.getElementById('error-persistent').setAttribute('hidden', '');
+            loadPhoto();
+          }
+        });
+      }
+
+      // ── Photo loading ─────────────────────────────────────────────────────
+      function loadPhoto() {
+        const img = document.getElementById('main-photo');
+
+        // Hide error states, show image
+        img.removeAttribute('hidden');
+        document.getElementById('error-first').setAttribute('hidden', '');
+        document.getElementById('error-persistent').setAttribute('hidden', '');
+
+        // Set error handler BEFORE assigning src
+        img.onerror = handleImageError;
+
+        if (simulateFail) {
+          // Force failure with a broken data URI
+          img.src = 'data:image/png,broken';
+        } else {
+          img.src = ZF.Unsplash.url(photoIndex);
+        }
+      }
+
+      function handleImageError() {
+        failCount++;
+        const img         = document.getElementById('main-photo');
+        const errorFirst  = document.getElementById('error-first');
+        const errorPersist = document.getElementById('error-persistent');
+
+        img.onerror = null; // prevent re-firing when src is cleared
+        img.setAttribute('hidden', '');
+        img.removeAttribute('src'); // clear src without triggering another onerror
+
+        if (failCount === 1) {
+          errorFirst.removeAttribute('hidden');
+          errorPersist.setAttribute('hidden', '');
+        } else {
+          errorFirst.setAttribute('hidden', '');
+          errorPersist.removeAttribute('hidden');
+        }
+      }
+
+      // ── Refresh button ────────────────────────────────────────────────────
+      document.getElementById('refresh-btn').addEventListener('click', () => {
+        // failCount intentionally NOT reset — next failure becomes persistent
+        loadPhoto();
+      });
+
+    })();
+  </script>
+</body>
+</html>
