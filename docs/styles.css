@@ -113,13 +113,16 @@ body.view-mobile #mobile-frame::before {
   background: #fff3cd;
   color: #856404;
   border: 1px solid #ffc107;
-  border-radius: 20px;
-  padding: 5px 12px;
-  font-size: 0.72rem;
-  font-weight: 600;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 1rem;
+  line-height: 1;
   cursor: pointer;
-  white-space: nowrap;
   box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .view-toggle-reset:hover {

@@ -123,12 +123,10 @@ const ZF = (() => {
       const resetBtn = document.createElement('button');
       resetBtn.id = 'reset-zip-btn';
       resetBtn.className = 'view-toggle-reset';
-      resetBtn.textContent = 'Reset ZIP';
-      resetBtn.title = 'Clear the in-progress ZIP download';
+      resetBtn.textContent = '\u21BA';
+      resetBtn.title = 'Reset ZIP — clear the in-progress download';
       resetBtn.addEventListener('click', () => {
         sessionStorage.removeItem('zf_return_status_url');
-        resetBtn.textContent = 'Cleared!';
-        setTimeout(() => { resetBtn.textContent = 'Reset ZIP'; }, 1200);
       });
 
       wrap.appendChild(btn);
