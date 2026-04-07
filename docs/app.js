@@ -15,18 +15,33 @@ const ZF = (() => {
   // ─── ScrollMemory ─────────────────────────────────────────────────────────────
   const ScrollMemory = {
     KEY: 'zf_gallery_scroll',
+    _isMobile() {
+      return document.body.classList.contains('view-mobile');
+    },
+    _frame() {
+      return document.getElementById('mobile-frame');
+    },
     save() {
-      sessionStorage.setItem(this.KEY, String(Math.round(window.scrollY)));
+      const pos = this._isMobile()
+        ? (this._frame() ? this._frame().scrollTop : 0)
+        : Math.round(window.scrollY);
+      sessionStorage.setItem(this.KEY, String(pos));
     },
     restore() {
       const y = parseInt(sessionStorage.getItem(this.KEY), 10);
-      if (!isNaN(y)) {
-        // Wait for layout so the page has height before scrolling
-        requestAnimationFrame(() => {
-          window.scrollTo(0, y);
-        });
-      }
       this.clear();
+      if (isNaN(y)) return;
+      // Disable browser scroll restoration so it doesn't override ours
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      // setTimeout runs after the browser's own scroll restoration attempt
+      setTimeout(() => {
+        if (this._isMobile()) {
+          const frame = this._frame();
+          if (frame) frame.scrollTop = y;
+        } else {
+          window.scrollTo(0, y);
+        }
+      }, 0);
     },
     clear() {
       sessionStorage.removeItem(this.KEY);
