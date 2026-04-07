@@ -31,10 +31,9 @@
       </div>
 
     </div>
-  </div>
 
-  <!-- Email capture modal -->
-  <div id="email-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="email-modal-title">
+    <!-- Email capture modal — inside frame so it clips to phone bounds in mobile view -->
+    <div id="email-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="email-modal-title">
     <div class="modal-card">
 
       <!-- Panel 1: email entry -->
@@ -66,8 +65,10 @@
         </p>
       </div>
 
-    </div>
-  </div>
+    </div><!-- /.modal-card -->
+    </div><!-- /#email-modal -->
+
+  </div><!-- /#mobile-frame -->
 
   <script src="app.js"></script>
   <script>

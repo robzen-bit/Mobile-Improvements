@@ -78,11 +78,9 @@
         </aside>
 
       </div>
-    </div>
-  </div>
 
-  <!-- Email preview modal -->
-  <div id="email-preview-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="email-preview-title">
+      <!-- Email preview modal — inside frame so it clips to phone bounds in mobile view -->
+      <div id="email-preview-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="email-preview-title">
     <div class="modal-card email-preview-card">
       <div class="email-preview-header">
         <p><strong>To:</strong> <span id="preview-to"></span></p>
@@ -106,8 +104,11 @@
       <div style="margin-top:20px;text-align:right;">
         <button class="btn btn-secondary" id="preview-close-btn">Close</button>
       </div>
-    </div>
-  </div>
+    </div><!-- /.modal-card -->
+      </div><!-- /#email-preview-modal -->
+
+    </div><!-- /#mobile-frame -->
+  </div><!-- /#main-content -->
 
   <script src="app.js"></script>
   <script>
