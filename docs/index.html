@@ -21,13 +21,6 @@
         <button class="btn btn-primary" id="download-all-btn">&#8595; Download All</button>
       </header>
 
-      <!-- Return-to-download banner (shown when returning from status page) -->
-      <div id="return-banner" class="return-banner" hidden>
-        <span>Your ZIP download is being prepared.</span>
-        <a href="#" id="return-link">&#8592; Return to download page</a>
-        <button class="return-banner-dismiss" id="return-dismiss" title="Dismiss">&times;</button>
-      </div>
-
       <section id="photo-grid" class="photo-grid" aria-label="Photo gallery">
         <!-- Cards injected by JS -->
       </section>
@@ -67,12 +60,12 @@
       const RETURN_KEY = 'zf_return_status_url';
       let redirectTimer = null;
 
+
       // ── Init ──────────────────────────────────────────────────────────────
       ZF.ViewToggle.init();
       ZF.ScrollMemory.restore();
       buildGrid();
       wireModal();
-      checkReturnBanner();
 
       // ── Build photo grid ──────────────────────────────────────────────────
       function buildGrid() {
@@ -100,24 +93,6 @@
         });
       }
 
-      // ── Return banner ─────────────────────────────────────────────────────
-      function checkReturnBanner() {
-        const savedUrl = sessionStorage.getItem(RETURN_KEY);
-        if (!savedUrl) return;
-
-        const banner   = document.getElementById('return-banner');
-        const link     = document.getElementById('return-link');
-        const dismiss  = document.getElementById('return-dismiss');
-
-        link.href = savedUrl;
-        link.addEventListener('click', () => sessionStorage.removeItem(RETURN_KEY));
-        dismiss.addEventListener('click', () => {
-          sessionStorage.removeItem(RETURN_KEY);
-          banner.setAttribute('hidden', '');
-        });
-        banner.removeAttribute('hidden');
-      }
-
       // ── Modal wiring ──────────────────────────────────────────────────────
       function wireModal() {
         const modal     = document.getElementById('email-modal');
@@ -128,6 +103,12 @@
         const cancelBtn = document.getElementById('email-cancel-btn');
 
         function openModal() {
+          // If there's an active download in progress, go straight back to it
+          const existingUrl = sessionStorage.getItem(RETURN_KEY);
+          if (existingUrl) {
+            window.location.href = existingUrl;
+            return;
+          }
           input.value = '';
           errorEl.setAttribute('hidden', '');
           confirmEl.setAttribute('hidden', '');
