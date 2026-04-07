@@ -15,9 +15,27 @@
   <div id="mobile-frame">
     <div class="page-container">
 
+      <!-- Zenfolio-style header -->
       <header class="page-header">
-        <h1>Photo Gallery</h1>
-        <button class="btn btn-primary" id="download-all-btn">&#8595; Download All</button>
+        <div class="gallery-identity">
+          <h1>Photo Gallery</h1>
+          <p class="gallery-byline">By Zenfolio Prototype</p>
+        </div>
+        <div class="gallery-header-actions">
+          <!-- Favorite icon -->
+          <button class="icon-btn" title="Favorite">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <!-- Download All icon -->
+          <button class="icon-btn" id="download-all-btn" title="Download All">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <div class="header-divider"></div>
+          <!-- Account icon -->
+          <button class="icon-btn" title="Account">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+        </div>
       </header>
 
       <section id="photo-grid" class="photo-grid" aria-label="Photo gallery">
@@ -26,7 +44,7 @@
 
       <!-- Mobile: sticky Download Photos bar at bottom -->
       <div class="mobile-download-bar">
-        <button class="btn btn-primary" id="download-all-mobile-btn">&#8595; Download Photos</button>
+        <button class="btn btn-primary" id="download-all-mobile-btn">Download Photos</button>
       </div>
 
     </div>
@@ -39,7 +57,7 @@
         <img id="lightbox-img" src="" alt="">
         <div class="lightbox-footer">
           <span class="lightbox-counter" id="lightbox-counter"></span>
-          <button class="btn btn-primary lightbox-dl-btn" id="lightbox-download">&#8595; Download</button>
+          <button class="btn lightbox-dl-btn" id="lightbox-download">Download</button>
         </div>
       </div>
       <button class="lightbox-nav lightbox-next" id="lightbox-next" title="Next">&#8250;</button>
@@ -52,17 +70,19 @@
       <!-- Panel 1: email entry -->
       <div id="email-entry-panel">
         <h2 id="email-modal-title">Download All Photos</h2>
-        <p style="font-size:0.9rem;color:#555;margin-bottom:16px;">
+        <p class="modal-subtitle">
           Enter your email address and we'll send a confirmation with a link to download your ZIP.
         </p>
         <div class="form-group">
-          <label for="email-input">Email address</label>
-          <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email">
+          <input type="email" id="email-input" placeholder="Email" autocomplete="email">
           <span class="form-error" id="email-error" hidden></span>
         </div>
-        <div class="modal-actions">
-          <button class="btn btn-secondary" id="email-cancel-btn">Cancel</button>
-          <button class="btn btn-primary" id="email-submit-btn">Submit</button>
+        <button class="btn-modal-submit" id="email-submit-btn">Continue</button>
+        <div class="modal-links">
+          <a href="#">Terms of Service</a> &middot; <a href="#">Privacy Policy</a>
+        </div>
+        <div style="margin-top:16px;text-align:right;">
+          <button class="btn btn-secondary" id="email-cancel-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
         </div>
       </div>
 
@@ -70,10 +90,10 @@
       <div id="email-sent-panel" hidden>
         <div class="email-sent-icon">&#10003;</div>
         <h2>Email Sent!</h2>
-        <p style="font-size:0.9rem;color:#555;margin:12px 0 8px;">
+        <p class="modal-subtitle" style="margin-top:12px;">
           A confirmation has been sent to <strong id="email-sent-address"></strong>.
         </p>
-        <p style="font-size:0.9rem;color:#888;">
+        <p style="font-size:0.82rem;color:#999;text-align:center;letter-spacing:0.02em;">
           Redirecting to your download page in <strong id="countdown-display">5</strong>…
         </p>
       </div>
@@ -127,29 +147,40 @@
           card.innerHTML = `
             <img src="${ZF.Unsplash.url(i)}" alt="Photo ${i}" loading="lazy">
             <div class="photo-overlay">
-              <span class="photo-name">photo_${i}.jpg</span>
-              <div class="photo-overlay-actions">
-                <button class="photo-action-btn" data-photo="${i}" title="Download photo">&#8595;</button>
+              <div class="photo-overlay-icons">
+                <button class="photo-overlay-icon photo-fav-btn" data-photo="${i}" title="Favorite">
+                  <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+                <button class="photo-overlay-icon photo-action-btn" data-photo="${i}" title="Download photo">
+                  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
               </div>
+              <span class="photo-name">photo_${i}.jpg</span>
             </div>
           `;
           grid.appendChild(card);
         }
 
         grid.addEventListener('click', (e) => {
-          const btn  = e.target.closest('.photo-action-btn[data-photo]');
-          const card = e.target.closest('.photo-card[data-photo]');
+          const dlBtn  = e.target.closest('.photo-action-btn[data-photo]');
+          const favBtn = e.target.closest('.photo-fav-btn');
+          const card   = e.target.closest('.photo-card[data-photo]');
           const isMobile = ZF.ViewToggle.getMode() === 'mobile';
 
-          if (btn) {
+          if (dlBtn) {
             e.stopPropagation();
             if (isMobile) {
               ZF.ScrollMemory.save();
-              window.location.href = `individual-download.html?photo=${btn.dataset.photo}`;
+              window.location.href = `individual-download.html?photo=${dlBtn.dataset.photo}`;
             } else {
-              downloadPhoto(parseInt(btn.dataset.photo));
+              downloadPhoto(parseInt(dlBtn.dataset.photo));
             }
             return;
+          }
+
+          if (favBtn) {
+            e.stopPropagation();
+            return; // placeholder
           }
 
           if (card) {
@@ -172,7 +203,6 @@
         document.getElementById('lightbox-next').addEventListener('click', () => navigateLightbox(1));
         document.getElementById('lightbox-download').addEventListener('click', () => downloadPhoto(lightboxIndex));
 
-        // Close on backdrop click
         lightbox.addEventListener('click', (e) => {
           if (e.target === lightbox) closeLightbox();
         });
@@ -181,8 +211,7 @@
       function openLightbox(index) {
         lightboxIndex = index;
         updateLightbox();
-        const lightbox = document.getElementById('lightbox');
-        lightbox.removeAttribute('hidden');
+        document.getElementById('lightbox').removeAttribute('hidden');
         document.addEventListener('keydown', lightboxKeyHandler);
       }
 
@@ -215,7 +244,6 @@
         const modal     = document.getElementById('email-modal');
         const input     = document.getElementById('email-input');
         const errorEl   = document.getElementById('email-error');
-        const submitBtn = document.getElementById('email-submit-btn');
         const cancelBtn = document.getElementById('email-cancel-btn');
 
         function openModal() {
@@ -240,7 +268,7 @@
           ZF.Modal.close(modal);
         });
 
-        submitBtn.addEventListener('click', handleSubmit);
+        document.getElementById('email-submit-btn').addEventListener('click', handleSubmit);
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSubmit(); });
       }
 

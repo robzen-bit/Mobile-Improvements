@@ -23,15 +23,26 @@
       </div>
     </div>
 
-    <!-- ── Desktop mode: nav + download action bar ── -->
-    <div id="desktop-header" class="desktop-download-header" hidden>
-      <div class="banner-actions" style="width:100%">
-        <button class="btn btn-secondary" id="back-btn-desktop">&#8592; Back to Gallery</button>
-        <div class="nav-right">
-          <button class="btn btn-secondary" id="prev-btn-desktop" hidden>&#8249; Prev</button>
-          <button class="btn btn-primary btn-lg" id="download-photo-btn">&#8595; Download Photo</button>
-          <button class="btn btn-secondary" id="next-btn-desktop" hidden>Next &#8250;</button>
-        </div>
+    <!-- ── Desktop mode: Zenfolio-style header ── -->
+    <div id="desktop-header" class="page-header" hidden style="margin-bottom:0;">
+      <div class="gallery-identity">
+        <h1>Photo Download</h1>
+        <p class="gallery-byline">Photo Gallery</p>
+      </div>
+      <div class="gallery-header-actions">
+        <button class="icon-btn" id="prev-btn-desktop" title="Previous photo" hidden>
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="icon-btn" id="download-photo-btn" title="Download photo">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="icon-btn" id="next-btn-desktop" title="Next photo" hidden>
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="header-divider"></div>
+        <button class="icon-btn" id="back-btn-desktop" title="Back to Gallery">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
       </div>
     </div>
 
