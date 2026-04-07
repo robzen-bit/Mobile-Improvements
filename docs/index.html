@@ -36,20 +36,36 @@
   <!-- Email capture modal -->
   <div id="email-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="email-modal-title">
     <div class="modal-card">
-      <h2 id="email-modal-title">Download All Photos</h2>
-      <p style="font-size:0.9rem;color:#555;margin-bottom:16px;">
-        Enter your email address and we'll send a confirmation with a link to download your ZIP.
-      </p>
-      <div class="form-group">
-        <label for="email-input">Email address</label>
-        <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email">
-        <span class="form-error" id="email-error" hidden></span>
+
+      <!-- Panel 1: email entry -->
+      <div id="email-entry-panel">
+        <h2 id="email-modal-title">Download All Photos</h2>
+        <p style="font-size:0.9rem;color:#555;margin-bottom:16px;">
+          Enter your email address and we'll send a confirmation with a link to download your ZIP.
+        </p>
+        <div class="form-group">
+          <label for="email-input">Email address</label>
+          <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email">
+          <span class="form-error" id="email-error" hidden></span>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="email-cancel-btn">Cancel</button>
+          <button class="btn btn-primary" id="email-submit-btn">Submit</button>
+        </div>
       </div>
-      <div id="email-confirmation" class="form-confirmation" hidden></div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" id="email-cancel-btn">Cancel</button>
-        <button class="btn btn-primary" id="email-submit-btn">Submit</button>
+
+      <!-- Panel 2: email sent + countdown -->
+      <div id="email-sent-panel" hidden>
+        <div class="email-sent-icon">&#10003;</div>
+        <h2>Email Sent!</h2>
+        <p style="font-size:0.9rem;color:#555;margin:12px 0 8px;">
+          A confirmation has been sent to <strong id="email-sent-address"></strong>.
+        </p>
+        <p style="font-size:0.9rem;color:#888;">
+          Redirecting to your download page in <strong id="countdown-display">5</strong>…
+        </p>
       </div>
+
     </div>
   </div>
 
@@ -109,13 +125,12 @@
             window.location.href = existingUrl;
             return;
           }
+          // Reset to entry panel
+          document.getElementById('email-entry-panel').removeAttribute('hidden');
+          document.getElementById('email-sent-panel').setAttribute('hidden', '');
           input.value = '';
           errorEl.setAttribute('hidden', '');
-          confirmEl.setAttribute('hidden', '');
-          submitBtn.removeAttribute('disabled');
-          cancelBtn.removeAttribute('disabled');
-          input.removeAttribute('disabled');
-          if (redirectTimer) { clearTimeout(redirectTimer); redirectTimer = null; }
+          if (redirectTimer) { clearInterval(redirectTimer); redirectTimer = null; }
           ZF.Modal.open(modal);
         }
 
@@ -123,7 +138,7 @@
         document.getElementById('download-all-mobile-btn').addEventListener('click', openModal);
 
         cancelBtn.addEventListener('click', () => {
-          if (redirectTimer) { clearTimeout(redirectTimer); redirectTimer = null; }
+          if (redirectTimer) { clearInterval(redirectTimer); redirectTimer = null; }
           ZF.Modal.close(modal);
         });
 
@@ -132,12 +147,9 @@
       }
 
       function handleSubmit() {
-        const input     = document.getElementById('email-input');
-        const errorEl   = document.getElementById('email-error');
-        const confirmEl = document.getElementById('email-confirmation');
-        const submitBtn = document.getElementById('email-submit-btn');
-        const cancelBtn = document.getElementById('email-cancel-btn');
-        const email     = input.value.trim();
+        const input   = document.getElementById('email-input');
+        const errorEl = document.getElementById('email-error');
+        const email   = input.value.trim();
 
         if (!/.+@.+\..+/.test(email)) {
           errorEl.textContent = 'Please enter a valid email address.';
@@ -146,19 +158,26 @@
           return;
         }
 
-        errorEl.setAttribute('hidden', '');
-        confirmEl.textContent = `A confirmation email has been sent to ${email}.`;
-        confirmEl.removeAttribute('hidden');
-        submitBtn.setAttribute('disabled', '');
-        cancelBtn.setAttribute('disabled', '');
-        input.setAttribute('disabled', '');
+        // Switch to sent panel
+        document.getElementById('email-entry-panel').setAttribute('hidden', '');
+        document.getElementById('email-sent-panel').removeAttribute('hidden');
+        document.getElementById('email-sent-address').textContent = email;
 
         // Clear any previous return URL — this is a new request
         sessionStorage.removeItem('zf_return_status_url');
 
-        redirectTimer = setTimeout(() => {
-          window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
-        }, 2000);
+        // 5-second countdown then redirect
+        let count = 5;
+        document.getElementById('countdown-display').textContent = count;
+        redirectTimer = setInterval(() => {
+          count--;
+          document.getElementById('countdown-display').textContent = count;
+          if (count <= 0) {
+            clearInterval(redirectTimer);
+            redirectTimer = null;
+            window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
+          }
+        }, 1000);
       }
 
     })();

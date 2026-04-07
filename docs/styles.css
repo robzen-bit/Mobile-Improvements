@@ -406,6 +406,23 @@ body.view-mobile .mobile-download-bar {
   margin-top: 10px;
 }
 
+/* ── Email sent panel ── */
+#email-sent-panel {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.email-sent-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #198754;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 52px;
+  margin: 0 auto 16px;
+}
+
 /* ── Email Preview Modal ── */
 .email-preview-card {
   max-width: 560px;
