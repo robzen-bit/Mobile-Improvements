@@ -127,6 +127,7 @@ const ZF = (() => {
       resetBtn.title = 'Reset ZIP — clear the in-progress download';
       resetBtn.addEventListener('click', () => {
         sessionStorage.removeItem('zf_return_status_url');
+        window.location.href = 'index.html';
       });
 
       wrap.appendChild(btn);
