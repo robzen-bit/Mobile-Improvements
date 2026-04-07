@@ -80,11 +80,18 @@ body.view-mobile #mobile-frame::before {
 /* =============================================================
    3. FIXED VIEW TOGGLE BUTTON
    ============================================================= */
-.view-toggle-fixed {
+.view-toggle-wrap {
   position: fixed;
   top: 16px;
   right: 16px;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.view-toggle-fixed {
   background: #333;
   color: #fff;
   border: none;
@@ -100,6 +107,23 @@ body.view-mobile #mobile-frame::before {
 
 .view-toggle-fixed:hover {
   background: #555;
+}
+
+.view-toggle-reset {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.view-toggle-reset:hover {
+  background: #ffe69c;
 }
 
 /* =============================================================

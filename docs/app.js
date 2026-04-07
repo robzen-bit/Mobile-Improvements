@@ -107,14 +107,33 @@ const ZF = (() => {
       // Read persisted preference; default desktop
       const saved = localStorage.getItem(KEY) || 'desktop';
 
-      // Create fixed toggle button
+      // Wrapper holds both buttons
+      const wrap = document.createElement('div');
+      wrap.className = 'view-toggle-wrap';
+
+      // View toggle button
       const btn = document.createElement('button');
       btn.id = 'view-toggle-btn';
       btn.className = 'view-toggle-fixed';
       btn.addEventListener('click', () => {
         setMode(currentMode === 'desktop' ? 'mobile' : 'desktop');
       });
-      document.body.appendChild(btn);
+
+      // Reset ZIP button — clears the in-progress download state
+      const resetBtn = document.createElement('button');
+      resetBtn.id = 'reset-zip-btn';
+      resetBtn.className = 'view-toggle-reset';
+      resetBtn.textContent = 'Reset ZIP';
+      resetBtn.title = 'Clear the in-progress ZIP download';
+      resetBtn.addEventListener('click', () => {
+        sessionStorage.removeItem('zf_return_status_url');
+        resetBtn.textContent = 'Cleared!';
+        setTimeout(() => { resetBtn.textContent = 'Reset ZIP'; }, 1200);
+      });
+
+      wrap.appendChild(btn);
+      wrap.appendChild(resetBtn);
+      document.body.appendChild(wrap);
 
       applyMode(saved);
     }
