@@ -78,57 +78,79 @@ body.view-mobile #mobile-frame::before {
 }
 
 /* =============================================================
-   3. FIXED VIEW TOGGLE BUTTON
+   3. DEV TOOLBAR
    ============================================================= */
-.view-toggle-wrap {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-.view-toggle-fixed {
-  background: #333;
-  color: #fff;
-  border: none;
-  border-radius: 0;
-  padding: 8px 16px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-family: 'Raleway', sans-serif;
-}
-
-.view-toggle-fixed:hover {
-  background: #555;
-}
-
-.view-toggle-reset {
-  background: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffc107;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+.dev-toolbar {
+  width: 100%;
+  background: #1a1a1a;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 36px;
+  flex-shrink: 0;
+  z-index: 1000;
+  position: relative;
 }
 
-.view-toggle-reset:hover {
-  background: #ffe69c;
+body.view-mobile .dev-toolbar {
+  /* In mobile view toolbar sits above the phone frame — still full width */
+  position: sticky;
+  top: 0;
+}
+
+.dev-toolbar-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffc107;
+  font-family: 'Courier New', monospace;
+}
+
+.dev-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dev-toolbar-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.85);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'Raleway', sans-serif;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.12s;
+}
+
+.dev-toolbar-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.dev-toolbar-reset {
+  color: #ffc107;
+  border-color: rgba(255,193,7,0.35);
+}
+
+.dev-toolbar-reset:hover {
+  background: rgba(255,193,7,0.12);
+}
+
+.dev-toolbar-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.15);
+  margin: 0 4px;
 }
 
 /* =============================================================
@@ -152,7 +174,6 @@ body.view-mobile .page-container {
   justify-content: space-between;
   padding: 20px 28px;
   border-bottom: 1px solid #e8e8e8;
-  padding-right: 200px; /* clear toggle button on desktop */
 }
 
 body.view-mobile .page-header {
@@ -1044,9 +1065,6 @@ body.view-mobile .status-container {
   gap: 10px;
 }
 
-body.view-desktop .desktop-download-header {
-  padding-right: 200px;
-}
 
 .photo-section {
   padding: 0;

@@ -104,11 +104,10 @@ const ZF = (() => {
       currentMode = mode;
       document.body.classList.remove('view-desktop', 'view-mobile');
       document.body.classList.add(`view-${mode}`);
-      // Update button label
       const btn = document.getElementById('view-toggle-btn');
       if (btn) {
-        btn.textContent = mode === 'desktop' ? 'Switch to Mobile View' : 'Switch to Desktop View';
-        btn.setAttribute('aria-label', btn.textContent);
+        btn.textContent = mode === 'desktop' ? '&#9741; Mobile View' : '&#9741; Desktop View';
+        btn.innerHTML  = mode === 'desktop' ? '&#128247; Mobile View' : '&#128444;&#xFE0E; Desktop View';
       }
       callbacks.forEach(cb => cb(mode));
     }
@@ -122,32 +121,27 @@ const ZF = (() => {
       // Read persisted preference; default desktop
       const saved = localStorage.getItem(KEY) || 'desktop';
 
-      // Wrapper holds both buttons
-      const wrap = document.createElement('div');
-      wrap.className = 'view-toggle-wrap';
+      // Dev toolbar — injected as first child of body, above all page content
+      const bar = document.createElement('div');
+      bar.id = 'dev-toolbar';
+      bar.className = 'dev-toolbar';
+      bar.innerHTML = `
+        <span class="dev-toolbar-label">&#9881; DEV</span>
+        <div class="dev-toolbar-actions">
+          <button id="view-toggle-btn" class="dev-toolbar-btn"></button>
+          <span class="dev-toolbar-divider"></span>
+          <button id="reset-zip-btn" class="dev-toolbar-btn dev-toolbar-reset" title="Reset ZIP — clear the in-progress download">&#8635; Reset ZIP</button>
+        </div>
+      `;
+      document.body.insertBefore(bar, document.body.firstChild);
 
-      // View toggle button
-      const btn = document.createElement('button');
-      btn.id = 'view-toggle-btn';
-      btn.className = 'view-toggle-fixed';
-      btn.addEventListener('click', () => {
+      document.getElementById('view-toggle-btn').addEventListener('click', () => {
         setMode(currentMode === 'desktop' ? 'mobile' : 'desktop');
       });
-
-      // Reset ZIP button — clears the in-progress download state
-      const resetBtn = document.createElement('button');
-      resetBtn.id = 'reset-zip-btn';
-      resetBtn.className = 'view-toggle-reset';
-      resetBtn.textContent = '\u21BA';
-      resetBtn.title = 'Reset ZIP — clear the in-progress download';
-      resetBtn.addEventListener('click', () => {
+      document.getElementById('reset-zip-btn').addEventListener('click', () => {
         sessionStorage.removeItem('zf_return_status_url');
         window.location.href = 'index.html';
       });
-
-      wrap.appendChild(btn);
-      wrap.appendChild(resetBtn);
-      document.body.appendChild(wrap);
 
       applyMode(saved);
     }
