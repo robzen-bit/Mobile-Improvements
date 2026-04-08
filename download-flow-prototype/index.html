@@ -246,6 +246,9 @@
         const errorEl   = document.getElementById('email-error');
         const cancelBtn = document.getElementById('email-cancel-btn');
 
+        const LOTR_NAMES = ['frodo','gandalf','aragorn','legolas','gimli','samwise',
+          'meriadoc','peregrin','boromir','arwen','galadriel','bilbo','eowyn','faramir','treebeard'];
+
         function openModal() {
           const existingUrl = sessionStorage.getItem(RETURN_KEY);
           if (existingUrl) {
@@ -254,7 +257,8 @@
           }
           document.getElementById('email-entry-panel').removeAttribute('hidden');
           document.getElementById('email-sent-panel').setAttribute('hidden', '');
-          input.value = '';
+          const name = LOTR_NAMES[Math.floor(Math.random() * LOTR_NAMES.length)];
+          input.value = `${name}@MiddleEarth.com`;
           errorEl.setAttribute('hidden', '');
           if (redirectTimer) { clearInterval(redirectTimer); redirectTimer = null; }
           ZF.Modal.open(modal);

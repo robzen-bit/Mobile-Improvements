@@ -985,10 +985,31 @@ body.view-mobile .status-container {
 /* Back to gallery bar */
 .back-to-gallery-bar {
   margin-top: 40px;
-  padding-top: 20px;
+  padding-top: 24px;
   border-top: 1px solid #e8e8e8;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+}
+
+.btn-back-gallery {
+  background: #fff;
+  color: #222;
+  border: 2px solid #222;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 12px 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
+}
+
+.btn-back-gallery:hover {
+  background: #222;
+  color: #fff;
 }
 
 /* Extra buttons row inside dev controls */
