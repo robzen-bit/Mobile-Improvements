@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Status — Zenfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Toggle button injected by ZF.ViewToggle.init() -->
+
+  <!-- ── Invalid / 404 state (shown when no email param) ── -->
+  <div id="state-invalid" hidden>
+    <div class="not-found-container">
+      <h1>404</h1>
+      <p>Page not found.</p>
+      <p style="font-size:0.85rem;color:#999;margin-bottom:20px;">
+        This link is missing required information.
+      </p>
+      <a href="index.html" class="btn btn-secondary">Return to Gallery</a>
+    </div>
+  </div>
+
+  <!-- ── Main content (hidden when invalid) ── -->
+  <div id="main-content" hidden>
+    <div id="mobile-frame">
+
+      <!-- Zenfolio-style page header -->
+      <header class="page-header" style="margin-bottom:0;">
+        <div class="gallery-identity">
+          <h1>Download</h1>
+          <p class="gallery-byline">Photo Gallery</p>
+        </div>
+        <div class="gallery-header-actions">
+          <a href="index.html" class="icon-btn" title="Back to Gallery">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </a>
+        </div>
+      </header>
+
+      <div class="status-container" id="status-main">
+
+        <!-- Processing -->
+        <section id="state-processing" class="status-section" hidden aria-live="polite">
+          <div class="spinner"></div>
+          <h2>Preparing your download&hellip;</h2>
+          <p class="processing-text">We're packaging your photos into a ZIP file. This usually takes a minute.</p>
+        </section>
+
+        <!-- Ready -->
+        <section id="state-ready" class="status-section" hidden aria-live="polite">
+          <div class="ready-icon"></div>
+          <h2>Your download is ready!</h2>
+          <button class="btn btn-primary btn-lg" id="download-zip-btn">Download ZIP</button>
+          <div class="platform-links" id="platform-help"></div>
+        </section>
+
+        <!-- Failed -->
+        <section id="state-failed" class="status-section" hidden aria-live="polite">
+          <div class="failed-icon"></div>
+          <h2>ZIP failed to process.</h2>
+          <p style="color:#555;">Click retry to try again.</p>
+          <button class="btn btn-danger" id="retry-btn">Retry</button>
+          <p style="font-size:0.875rem;color:#666;margin-top:4px;">
+            If this problem persists, <a href="#">please contact support</a>.
+          </p>
+        </section>
+
+        <!-- Expired -->
+        <section id="state-expired" class="status-section" hidden aria-live="polite">
+          <div class="expired-icon">⏰</div>
+          <h2>This download link has expired.</h2>
+          <p style="color:#555;font-size:0.9rem;">Download links are valid for 2 weeks from when your request was submitted.</p>
+          <a href="index.html" class="btn btn-secondary btn-lg">Return to Gallery</a>
+        </section>
+
+        <!-- Back to Gallery — bottom right -->
+        <div class="back-to-gallery-bar">
+          <button class="btn btn-secondary" id="back-to-gallery-btn">&#8592; Back to Gallery</button>
+        </div>
+
+        <!-- Dev Controls -->
+        <aside class="dev-controls" aria-label="Developer testing controls">
+          <span class="dev-controls-label">&#9881; Dev Controls — Simulate State</span>
+          <div class="dev-state-btns">
+            <button class="btn" data-state="processing">Processing</button>
+            <button class="btn" data-state="ready">Ready</button>
+            <button class="btn" data-state="failed">Failed</button>
+            <button class="btn" data-state="expired">Expired</button>
+          </div>
+          <div class="dev-extra-btns">
+            <button class="btn" id="preview-email-btn">Preview Confirmation Email</button>
+          </div>
+        </aside>
+
+      </div>
+
+      <!-- Email preview modal — inside frame so it clips to phone bounds in mobile view -->
+      <div id="email-preview-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="email-preview-title">
+    <div class="modal-card email-preview-card">
+      <div class="email-preview-header">
+        <p><strong>To:</strong> <span id="preview-to"></span></p>
+        <p class="email-preview-subject">Your download is being prepared</p>
+      </div>
+      <div class="email-preview-body" id="preview-body">
+        <p>
+          Hi there,<br>
+          Your photos are being packaged into a ZIP file for you to download.
+          Once it's ready, you can access it using the link below.
+        </p>
+        <p>
+          <a href="#" id="preview-return-link">Return to your download page</a>
+        </p>
+        <p>Need help unzipping your photos?</p>
+        <ul id="preview-help-links"></ul>
+        <div class="email-preview-validity">
+          &#128274; This download link is valid for <strong>2 weeks</strong> from the date of this email.
+        </div>
+      </div>
+      <div style="margin-top:20px;text-align:right;">
+        <button class="btn btn-secondary" id="preview-close-btn">Close</button>
+      </div>
+    </div><!-- /.modal-card -->
+      </div><!-- /#email-preview-modal -->
+
+    </div><!-- /#mobile-frame -->
+  </div><!-- /#main-content -->
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      const email = ZF.URLParams.get('email');
+      let autoTimer = null;
+
+      // ── Init ──────────────────────────────────────────────────────────────
+      ZF.ViewToggle.init();
+
+      if (!email) {
+        document.getElementById('state-invalid').removeAttribute('hidden');
+      } else {
+        document.getElementById('main-content').removeAttribute('hidden');
+        showState('processing');
+        wireButtons();
+        wireEmailPreview();
+        ZF.ViewToggle.onChange(() => {
+          // If currently in ready state, re-render platform help links
+          if (document.getElementById('state-ready') &&
+              !document.getElementById('state-ready').hasAttribute('hidden')) {
+            renderPlatformHelp();
+          }
+          // Re-render email preview help if modal is open
+          renderPreviewHelpLinks();
+        });
+      }
+
+      // ── State machine ─────────────────────────────────────────────────────
+      function showState(name) {
+        // Cancel any pending auto-transition
+        if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+
+        const stateIds = ['processing', 'ready', 'failed', 'expired'];
+        stateIds.forEach(id => {
+          const el = document.getElementById(`state-${id}`);
+          if (el) el.setAttribute('hidden', '');
+        });
+
+        const target = document.getElementById(`state-${name}`);
+        if (target) target.removeAttribute('hidden');
+
+        // Update active button in dev controls
+        document.querySelectorAll('.dev-state-btns .btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.state === name);
+        });
+
+        // State-specific setup
+        if (name === 'processing') {
+          autoTimer = setTimeout(() => showState('ready'), 5000);
+        }
+        if (name === 'ready') {
+          renderPlatformHelp();
+        }
+      }
+
+      // ── Platform help links (responds to view toggle) ─────────────────────
+      function renderPlatformHelp() {
+        const container = document.getElementById('platform-help');
+        if (!container) return;
+        const mode = ZF.ViewToggle.getMode();
+        if (mode === 'desktop') {
+          container.innerHTML = `
+            <h3>Need help unzipping?</h3>
+            <ul>
+              <li><a href="#">Mac unzip guide</a></li>
+              <li><a href="#">Windows unzip guide</a></li>
+            </ul>
+          `;
+        } else {
+          container.innerHTML = `
+            <h3>Need help saving your photos?</h3>
+            <ul>
+              <li><a href="#">iOS guide — save to camera roll</a></li>
+              <li><a href="#">Android guide — save to camera roll</a></li>
+            </ul>
+          `;
+        }
+      }
+
+      // ── Button wiring ─────────────────────────────────────────────────────
+      function wireButtons() {
+        // Dev state buttons
+        document.querySelectorAll('.dev-state-btns .btn').forEach(btn => {
+          btn.addEventListener('click', () => showState(btn.dataset.state));
+        });
+
+        // Download ZIP
+        document.getElementById('download-zip-btn').addEventListener('click', () => {
+          alert('Download started.');
+        });
+
+        // Retry
+        document.getElementById('retry-btn').addEventListener('click', () => {
+          showState('processing');
+        });
+
+        // Back to Gallery — save current URL so gallery can offer "Return to download"
+        document.getElementById('back-to-gallery-btn').addEventListener('click', () => {
+          sessionStorage.setItem('zf_return_status_url', window.location.href);
+          window.location.href = 'index.html';
+        });
+      }
+
+      // ── Email preview modal ───────────────────────────────────────────────
+      function wireEmailPreview() {
+        const modal     = document.getElementById('email-preview-modal');
+        const openBtn   = document.getElementById('preview-email-btn');
+        const closeBtn  = document.getElementById('preview-close-btn');
+        const toEl      = document.getElementById('preview-to');
+        const returnLink = document.getElementById('preview-return-link');
+
+        openBtn.addEventListener('click', () => {
+          toEl.textContent = email;
+          returnLink.href = window.location.href; // current page URL
+          renderPreviewHelpLinks();
+          ZF.Modal.open(modal);
+        });
+
+        closeBtn.addEventListener('click', () => ZF.Modal.close(modal));
+      }
+
+      function renderPreviewHelpLinks() {
+        const list = document.getElementById('preview-help-links');
+        if (!list) return;
+        const mode = ZF.ViewToggle.getMode();
+        if (mode === 'desktop') {
+          list.innerHTML = `
+            <li><a href="#">Mac unzip guide</a></li>
+            <li><a href="#">Windows unzip guide</a></li>
+          `;
+        } else {
+          list.innerHTML = `
+            <li><a href="#">iOS guide — save to camera roll</a></li>
+            <li><a href="#">Android guide — save to camera roll</a></li>
+          `;
+        }
+      }
+
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Gallery — Zenfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body.view-desktop #mobile-frame { max-width: 100%; }
+  </style>
+</head>
+<body>
+  <!-- Toggle button injected by ZF.ViewToggle.init() -->
+
+  <div id="mobile-frame">
+    <div class="page-container">
+
+      <!-- Zenfolio-style header -->
+      <header class="page-header">
+        <div class="gallery-identity">
+          <h1>Photo Gallery</h1>
+          <p class="gallery-byline">By Zenfolio Prototype</p>
+        </div>
+        <div class="gallery-header-actions">
+          <!-- Favorite icon -->
+          <button class="icon-btn" title="Favorite">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <!-- Download All icon -->
+          <button class="icon-btn" id="download-all-btn" title="Download All">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <div class="header-divider"></div>
+          <!-- Account icon -->
+          <button class="icon-btn" title="Account">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <section id="photo-grid" class="photo-grid" aria-label="Photo gallery">
+        <!-- Cards injected by JS -->
+      </section>
+
+      <!-- Mobile: sticky Download Photos bar at bottom -->
+      <div class="mobile-download-bar">
+        <button class="btn btn-primary" id="download-all-mobile-btn">Download Photos</button>
+      </div>
+
+    </div>
+
+    <!-- Lightbox — desktop only, inside frame -->
+    <div id="lightbox" class="lightbox-overlay" hidden aria-modal="true" role="dialog">
+      <button class="lightbox-close" id="lightbox-close" title="Close">&times;</button>
+      <button class="lightbox-nav lightbox-prev" id="lightbox-prev" title="Previous">&#8249;</button>
+      <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="">
+        <div class="lightbox-footer">
+          <span class="lightbox-counter" id="lightbox-counter"></span>
+          <button class="btn lightbox-dl-btn" id="lightbox-download">Download</button>
+        </div>
+      </div>
+      <button class="lightbox-nav lightbox-next" id="lightbox-next" title="Next">&#8250;</button>
+    </div>
+
+    <!-- Email capture modal — inside frame so it clips to phone bounds in mobile view -->
+    <div id="email-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="email-modal-title">
+    <div class="modal-card">
+
+      <!-- Panel 1: email entry -->
+      <div id="email-entry-panel">
+        <h2 id="email-modal-title">Download All Photos</h2>
+        <p class="modal-subtitle">
+          Enter your email address and we'll send a confirmation with a link to download your ZIP.
+        </p>
+        <div class="form-group">
+          <input type="email" id="email-input" placeholder="Email" autocomplete="email">
+          <span class="form-error" id="email-error" hidden></span>
+        </div>
+        <button class="btn-modal-submit" id="email-submit-btn">Continue</button>
+        <div class="modal-links">
+          <a href="#">Terms of Service</a> &middot; <a href="#">Privacy Policy</a>
+        </div>
+        <div style="margin-top:16px;text-align:right;">
+          <button class="btn btn-secondary" id="email-cancel-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Panel 2: email sent + countdown -->
+      <div id="email-sent-panel" hidden>
+        <div class="email-sent-icon">&#10003;</div>
+        <h2>Email Sent!</h2>
+        <p class="modal-subtitle" style="margin-top:12px;">
+          A confirmation has been sent to <strong id="email-sent-address"></strong>.
+        </p>
+        <p style="font-size:0.82rem;color:#999;text-align:center;letter-spacing:0.02em;">
+          Redirecting to your download page in <strong id="countdown-display">5</strong>…
+        </p>
+      </div>
+
+    </div><!-- /.modal-card -->
+    </div><!-- /#email-modal -->
+
+  </div><!-- /#mobile-frame -->
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      const PHOTO_COUNT = 50;
+      const RETURN_KEY = 'zf_return_status_url';
+      let redirectTimer = null;
+      let lightboxIndex = 1;
+
+      // ── Init ──────────────────────────────────────────────────────────────
+      ZF.ViewToggle.init();
+      ZF.ScrollMemory.restore();
+      buildGrid();
+      wireLightbox();
+      wireModal();
+
+      // ── Immediate photo download (desktop) ────────────────────────────────
+      async function downloadPhoto(index) {
+        const url = ZF.Unsplash.url(index);
+        try {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = `photo-${index}.jpg`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        } catch (e) {
+          window.open(url, '_blank');
+        }
+      }
+
+      // ── Build photo grid ──────────────────────────────────────────────────
+      function buildGrid() {
+        const grid = document.getElementById('photo-grid');
+        for (let i = 1; i <= PHOTO_COUNT; i++) {
+          const card = document.createElement('article');
+          card.className = 'photo-card';
+          card.dataset.photo = i;
+          card.innerHTML = `
+            <img src="${ZF.Unsplash.url(i)}" alt="Photo ${i}" loading="lazy">
+            <div class="photo-overlay">
+              <div class="photo-overlay-icons">
+                <button class="photo-overlay-icon photo-fav-btn" data-photo="${i}" title="Favorite">
+                  <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+                <button class="photo-overlay-icon photo-action-btn" data-photo="${i}" title="Download photo">
+                  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+              </div>
+              <span class="photo-name">photo_${i}.jpg</span>
+            </div>
+          `;
+          grid.appendChild(card);
+        }
+
+        grid.addEventListener('click', (e) => {
+          const dlBtn  = e.target.closest('.photo-action-btn[data-photo]');
+          const favBtn = e.target.closest('.photo-fav-btn');
+          const card   = e.target.closest('.photo-card[data-photo]');
+          const isMobile = ZF.ViewToggle.getMode() === 'mobile';
+
+          if (dlBtn) {
+            e.stopPropagation();
+            if (isMobile) {
+              ZF.ScrollMemory.save();
+              window.location.href = `individual-download.html?photo=${dlBtn.dataset.photo}`;
+            } else {
+              downloadPhoto(parseInt(dlBtn.dataset.photo));
+            }
+            return;
+          }
+
+          if (favBtn) {
+            e.stopPropagation();
+            return; // placeholder
+          }
+
+          if (card) {
+            if (isMobile) {
+              ZF.ScrollMemory.save();
+              window.location.href = `individual-download.html?photo=${card.dataset.photo}`;
+            } else {
+              openLightbox(parseInt(card.dataset.photo));
+            }
+          }
+        });
+      }
+
+      // ── Lightbox ──────────────────────────────────────────────────────────
+      function wireLightbox() {
+        const lightbox = document.getElementById('lightbox');
+
+        document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+        document.getElementById('lightbox-prev').addEventListener('click', () => navigateLightbox(-1));
+        document.getElementById('lightbox-next').addEventListener('click', () => navigateLightbox(1));
+        document.getElementById('lightbox-download').addEventListener('click', () => downloadPhoto(lightboxIndex));
+
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+      }
+
+      function openLightbox(index) {
+        lightboxIndex = index;
+        updateLightbox();
+        document.getElementById('lightbox').removeAttribute('hidden');
+        document.addEventListener('keydown', lightboxKeyHandler);
+      }
+
+      function closeLightbox() {
+        document.getElementById('lightbox').setAttribute('hidden', '');
+        document.removeEventListener('keydown', lightboxKeyHandler);
+      }
+
+      function navigateLightbox(dir) {
+        lightboxIndex = ((lightboxIndex - 1 + dir + PHOTO_COUNT) % PHOTO_COUNT) + 1;
+        updateLightbox();
+      }
+
+      function updateLightbox() {
+        const img = document.getElementById('lightbox-img');
+        img.style.opacity = '0';
+        img.src = ZF.Unsplash.url(lightboxIndex);
+        img.onload = () => { img.style.opacity = '1'; };
+        document.getElementById('lightbox-counter').textContent = `${lightboxIndex} / ${PHOTO_COUNT}`;
+      }
+
+      function lightboxKeyHandler(e) {
+        if (e.key === 'Escape')     closeLightbox();
+        if (e.key === 'ArrowLeft')  navigateLightbox(-1);
+        if (e.key === 'ArrowRight') navigateLightbox(1);
+      }
+
+      // ── Modal wiring ──────────────────────────────────────────────────────
+      function wireModal() {
+        const modal     = document.getElementById('email-modal');
+        const input     = document.getElementById('email-input');
+        const errorEl   = document.getElementById('email-error');
+        const cancelBtn = document.getElementById('email-cancel-btn');
+
+        function openModal() {
+          const existingUrl = sessionStorage.getItem(RETURN_KEY);
+          if (existingUrl) {
+            window.location.href = existingUrl;
+            return;
+          }
+          document.getElementById('email-entry-panel').removeAttribute('hidden');
+          document.getElementById('email-sent-panel').setAttribute('hidden', '');
+          input.value = '';
+          errorEl.setAttribute('hidden', '');
+          if (redirectTimer) { clearInterval(redirectTimer); redirectTimer = null; }
+          ZF.Modal.open(modal);
+        }
+
+        document.getElementById('download-all-btn').addEventListener('click', openModal);
+        document.getElementById('download-all-mobile-btn').addEventListener('click', openModal);
+
+        cancelBtn.addEventListener('click', () => {
+          if (redirectTimer) { clearInterval(redirectTimer); redirectTimer = null; }
+          ZF.Modal.close(modal);
+        });
+
+        document.getElementById('email-submit-btn').addEventListener('click', handleSubmit);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSubmit(); });
+      }
+
+      function handleSubmit() {
+        const input   = document.getElementById('email-input');
+        const errorEl = document.getElementById('email-error');
+        const email   = input.value.trim();
+
+        if (!/.+@.+\..+/.test(email)) {
+          errorEl.textContent = 'Please enter a valid email address.';
+          errorEl.removeAttribute('hidden');
+          input.focus();
+          return;
+        }
+
+        document.getElementById('email-entry-panel').setAttribute('hidden', '');
+        document.getElementById('email-sent-panel').removeAttribute('hidden');
+        document.getElementById('email-sent-address').textContent = email;
+        sessionStorage.removeItem('zf_return_status_url');
+
+        let count = 5;
+        document.getElementById('countdown-display').textContent = count;
+        redirectTimer = setInterval(() => {
+          count--;
+          document.getElementById('countdown-display').textContent = count;
+          if (count <= 0) {
+            clearInterval(redirectTimer);
+            redirectTimer = null;
+            window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
+          }
+        }, 1000);
+      }
+
+    })();
+  </script>
+</body>
+</html>

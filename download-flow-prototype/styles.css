@@ -1,0 +1,1163 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap');
+
+/* =============================================================
+   1. RESET & BASE
+   ============================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1a1a1a;
+}
+
+body {
+  background: #e8e8e8;
+  min-height: 100vh;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+a {
+  color: #1a1a1a;
+  text-decoration: underline;
+}
+
+h1 { font-size: 1rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+h2 { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* =============================================================
+   2. VIEW MODE SYSTEM
+   ============================================================= */
+body.view-desktop {
+  background: #fff;
+}
+
+body.view-desktop #mobile-frame {
+  width: 100%;
+  background: #fff;
+}
+
+body.view-mobile {
+  background: #c8c8c8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0 60px;
+}
+
+body.view-mobile #mobile-frame {
+  width: 390px;
+  height: 844px;
+  background: #fff;
+  border: 3px solid #444;
+  border-radius: 40px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  transform: translateZ(0);
+}
+
+/* Mobile notch simulation */
+body.view-mobile #mobile-frame::before {
+  content: '';
+  display: block;
+  width: 120px;
+  height: 28px;
+  background: #444;
+  border-radius: 0 0 16px 16px;
+  margin: 0 auto;
+}
+
+/* =============================================================
+   3. DEV TOOLBAR
+   ============================================================= */
+.dev-toolbar {
+  width: 100%;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 36px;
+  flex-shrink: 0;
+  z-index: 1000;
+  position: relative;
+}
+
+body.view-mobile .dev-toolbar {
+  /* In mobile view toolbar sits above the phone frame — still full width */
+  position: sticky;
+  top: 0;
+}
+
+.dev-toolbar-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffc107;
+  font-family: 'Courier New', monospace;
+}
+
+.dev-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dev-toolbar-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.85);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'Raleway', sans-serif;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.12s;
+}
+
+.dev-toolbar-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.dev-toolbar-reset {
+  color: #ffc107;
+  border-color: rgba(255,193,7,0.35);
+}
+
+.dev-toolbar-reset:hover {
+  background: rgba(255,193,7,0.12);
+}
+
+.dev-toolbar-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.15);
+  margin: 0 4px;
+}
+
+/* =============================================================
+   4. SHARED PAGE LAYOUT
+   ============================================================= */
+.page-container {
+  padding: 0;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+body.view-mobile .page-container {
+  max-width: 100%;
+  padding: 0;
+}
+
+/* Zenfolio-style gallery header */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+body.view-mobile .page-header {
+  padding: 14px 16px;
+  padding-right: 16px;
+}
+
+.gallery-identity h1 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+
+.gallery-byline {
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  margin-top: 2px;
+}
+
+.gallery-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-divider {
+  width: 1px;
+  height: 20px;
+  background: #d0d0d0;
+  margin: 0 8px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.15s;
+}
+
+.icon-btn:hover {
+  color: #1a1a1a;
+}
+
+.icon-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body.view-mobile .icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Photo count badge */
+.photo-count {
+  font-size: 0.7rem;
+  color: #888;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 8px 28px 0;
+}
+
+body.view-mobile .photo-count {
+  padding: 6px 16px 0;
+}
+
+/* =============================================================
+   5. BUTTONS
+   ============================================================= */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 0;
+  border: 1px solid transparent;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Raleway', sans-serif;
+}
+
+/* Primary: Zenfolio muted gray */
+.btn-primary {
+  background: #9a9a9a;
+  color: #fff;
+  border-color: #9a9a9a;
+}
+
+.btn-primary:hover {
+  background: #777;
+  border-color: #777;
+}
+
+/* Secondary: outline */
+.btn-secondary {
+  background: #fff;
+  color: #444;
+  border-color: #c0c0c0;
+}
+
+.btn-secondary:hover {
+  background: #f5f5f5;
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: #fff;
+  border-color: #c0392b;
+}
+
+.btn-danger:hover {
+  background: #a93226;
+}
+
+.btn-lg {
+  padding: 14px 32px;
+  font-size: 0.8rem;
+}
+
+/* =============================================================
+   6. PHOTO GRID (index.html)
+   ============================================================= */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+}
+
+body.view-mobile .photo-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding: 2px;
+}
+
+.photo-card {
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background: #f0f0f0;
+}
+
+.photo-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.2s;
+}
+
+.photo-card:hover img {
+  opacity: 0.92;
+}
+
+/* Hover overlay — Zenfolio style: dark gradient bottom, icons + filename */
+.photo-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.55));
+  padding: 32px 10px 10px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.photo-card:hover .photo-overlay {
+  opacity: 1;
+}
+
+body.view-mobile .photo-overlay {
+  opacity: 0; /* hidden on mobile — tap goes to individual page */
+}
+
+.photo-overlay-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.photo-overlay-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.9);
+  transition: color 0.15s;
+}
+
+.photo-overlay-icon:hover {
+  color: #fff;
+}
+
+.photo-overlay-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: block;
+}
+
+.photo-name {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55%;
+  margin-left: auto;
+}
+
+body.view-mobile .photo-name {
+  display: none;
+}
+
+/* Mobile sticky download bar */
+.mobile-download-bar {
+  display: none;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  padding: 12px 16px;
+  z-index: 50;
+}
+
+body.view-mobile .mobile-download-bar {
+  display: block;
+}
+
+.mobile-download-bar .btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* =============================================================
+   7. MODALS
+   ============================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 500;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 16px 40px;
+  overflow-y: auto;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 0;
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.12);
+}
+
+.modal-card h2 {
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+/* Email input — Zenfolio thin black border, square */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.form-group input[type="email"] {
+  padding: 14px 14px;
+  border: 1px solid #1a1a1a;
+  border-radius: 0;
+  font-size: 1rem;
+  width: 100%;
+  font-family: 'Raleway', sans-serif;
+  outline: none;
+  color: #1a1a1a;
+}
+
+.form-group input[type="email"]::placeholder {
+  color: #aaa;
+  font-weight: 400;
+}
+
+.form-group input[type="email"]:focus {
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
+}
+
+.form-error {
+  color: #c0392b;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  letter-spacing: 0.03em;
+}
+
+.form-confirmation {
+  color: #2d6a4f;
+  font-size: 0.85rem;
+  padding: 12px;
+  background: #d8f3dc;
+  margin-top: 10px;
+}
+
+/* Email modal subtitle */
+.modal-subtitle {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+
+/* Submit button — full width Zenfolio gray */
+.btn-modal-submit {
+  width: 100%;
+  padding: 16px;
+  background: #9a9a9a;
+  color: #fff;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  transition: background 0.15s;
+  margin-top: 8px;
+}
+
+.btn-modal-submit:hover {
+  background: #777;
+}
+
+.modal-links {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.modal-links a {
+  color: #555;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* ── Email sent panel ── */
+#email-sent-panel {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.email-sent-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #2d6a4f;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 52px;
+  margin: 0 auto 20px;
+}
+
+/* ── Email Preview Modal ── */
+.email-preview-card {
+  max-width: 560px;
+  font-family: 'Raleway', sans-serif;
+}
+
+.email-preview-header {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.email-preview-header p {
+  font-size: 0.9rem;
+  color: #333;
+  padding: 4px 0;
+}
+
+.email-preview-header p strong {
+  display: inline-block;
+  width: 60px;
+  color: #666;
+}
+
+.email-preview-subject {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.email-preview-body {
+  font-size: 0.9rem;
+  color: #222;
+  line-height: 1.7;
+}
+
+.email-preview-body p {
+  margin-bottom: 12px;
+}
+
+.email-preview-body ul {
+  margin: 8px 0 12px 20px;
+}
+
+.email-preview-body li {
+  margin-bottom: 4px;
+}
+
+.email-preview-validity {
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 12px;
+}
+
+/* =============================================================
+   iOS LONG-PRESS CONTEXT MENU
+   ============================================================= */
+.ios-context-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 700;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 8px 32px;
+}
+
+.ios-context-overlay[hidden] { display: none; }
+
+@keyframes ios-slide-up {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.ios-context-sheet {
+  background: rgba(242, 242, 247, 0.97);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  animation: ios-slide-up 0.22s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+}
+
+.ios-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.ios-preview-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #ddd;
+}
+
+.ios-preview-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ios-preview-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #000;
+}
+
+.ios-preview-size {
+  font-size: 13px;
+  color: #888;
+}
+
+.ios-action-divider {
+  height: 0.5px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.ios-action-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 16px;
+  height: 57px;
+  background: none;
+  border: none;
+  font-size: 17px;
+  color: #000;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.ios-action-item:active { background: rgba(0, 0, 0, 0.07); }
+.ios-action-item svg { color: #555; flex-shrink: 0; }
+
+.ios-cancel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 57px;
+  background: rgba(242, 242, 247, 0.97);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 14px;
+  border: none;
+  font-size: 17px;
+  font-weight: 600;
+  color: #007aff;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+  animation: ios-slide-up 0.22s ease-out;
+}
+
+.ios-cancel-btn:active { background: rgba(220, 220, 230, 0.97); }
+
+/* =============================================================
+   LIGHTBOX
+   ============================================================= */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 600;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-overlay[hidden] { display: none; }
+.lightbox-overlay:not([hidden]) { display: flex; }
+
+.lightbox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: calc(100% - 140px);
+  max-height: 90vh;
+}
+
+#lightbox-img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  transition: opacity 0.15s ease;
+  display: block;
+}
+
+.lightbox-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
+  gap: 16px;
+}
+
+.lightbox-counter {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lightbox-dl-btn {
+  font-size: 0.72rem;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.3);
+  color: #fff;
+}
+
+.lightbox-dl-btn:hover {
+  background: rgba(255,255,255,0.22);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 1.6rem;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.lightbox-close:hover { color: #fff; }
+
+.lightbox-nav {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 2.5rem;
+  line-height: 1;
+  width: 52px;
+  height: 52px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.15s;
+  margin: 0 4px;
+}
+
+.lightbox-nav:hover { color: #fff; }
+
+/* =============================================================
+   8. STATUS PAGE
+   ============================================================= */
+.status-container {
+  padding: 48px 32px;
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+body.view-mobile .status-container {
+  padding: 32px 20px;
+}
+
+.status-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-section h2 {
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+}
+
+/* Spinner */
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 2px solid #e0e0e0;
+  border-top-color: #1a1a1a;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin: 8px auto;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.processing-text {
+  color: #888;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+/* Ready state */
+.ready-icon {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.ready-icon::after {
+  content: '✓';
+  color: #1a1a1a;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.platform-links {
+  margin-top: 8px;
+  padding: 16px 20px;
+  background: #f8f8f8;
+  border: 1px solid #e8e8e8;
+  text-align: left;
+  width: 100%;
+  max-width: 360px;
+}
+
+.platform-links h3 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.platform-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.platform-links li { padding: 3px 0; }
+
+.platform-links a {
+  font-size: 0.85rem;
+  color: #444;
+}
+
+/* Failed state */
+.failed-icon {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid #c0392b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.failed-icon::after {
+  content: '✕';
+  color: #c0392b;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Expired state */
+.expired-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+/* Back to gallery bar */
+.back-to-gallery-bar {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Extra buttons row inside dev controls */
+.dev-extra-btns {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e8c84a;
+}
+
+/* 404 state */
+.not-found-container {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.not-found-container h1 {
+  font-size: 5rem;
+  color: #ddd;
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: 0;
+}
+
+.not-found-container p {
+  color: #888;
+  margin-bottom: 20px;
+}
+
+/* =============================================================
+   9. INDIVIDUAL DOWNLOAD PAGE
+   ============================================================= */
+.instruction-banner {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 12px 16px;
+}
+
+.banner-text {
+  font-size: 0.78rem;
+  color: #555;
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.banner-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.banner-actions .btn {
+  padding: 7px 14px;
+  font-size: 0.72rem;
+}
+
+.nav-right {
+  display: flex;
+  gap: 8px;
+}
+
+.desktop-download-header {
+  padding: 16px 28px;
+  border-bottom: 1px solid #e8e8e8;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+
+.photo-section {
+  padding: 0;
+}
+
+.main-photo {
+  width: 100%;
+  display: block;
+  background: #f0f0f0;
+}
+
+.photo-save-label {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #999;
+  padding: 10px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+  letter-spacing: 0.03em;
+}
+
+.image-error-box {
+  padding: 32px 20px;
+  text-align: center;
+  background: #fff5f5;
+  border: 1px solid #f5c6cb;
+  margin: 16px;
+}
+
+.image-error-box p {
+  color: #721c24;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+}
+
+/* =============================================================
+   10. DEV CONTROLS
+   ============================================================= */
+.dev-controls {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  padding: 12px 16px;
+  margin: 24px 20px;
+}
+
+body.view-mobile .dev-controls {
+  margin: 16px 0;
+}
+
+.dev-controls-label {
+  display: block;
+  font-weight: 800;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #856404;
+  margin-bottom: 10px;
+}
+
+.dev-state-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dev-state-btns .btn {
+  padding: 6px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #fff;
+  color: #856404;
+  border-color: #ffc107;
+  border-radius: 0;
+}
+
+.dev-state-btns .btn:hover { background: #ffe69c; }
+
+.dev-state-btns .btn.active {
+  background: #ffc107;
+  color: #333;
+}
+
+.dev-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #856404;
+  cursor: pointer;
+}
+
+.dev-controls input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}

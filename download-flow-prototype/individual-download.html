@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Photo — Zenfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Toggle button injected by ZF.ViewToggle.init() -->
+
+  <div id="mobile-frame">
+
+    <!-- ── Mobile mode: sticky instruction banner with nav ── -->
+    <div id="mobile-banner" class="instruction-banner" hidden>
+      <p class="banner-text">To download, long press on the image below and click Save.</p>
+      <div class="banner-actions">
+        <button class="btn btn-secondary" id="back-btn-mobile">&#8592; Gallery</button>
+        <div class="nav-right">
+          <button class="btn btn-secondary" id="prev-btn-mobile" hidden>&#8249; Prev</button>
+          <button class="btn btn-primary" id="next-btn-mobile" hidden>Next &#8250;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Desktop mode: Zenfolio-style header ── -->
+    <div id="desktop-header" class="page-header" hidden style="margin-bottom:0;">
+      <div class="gallery-identity">
+        <h1>Photo Download</h1>
+        <p class="gallery-byline">Photo Gallery</p>
+      </div>
+      <div class="gallery-header-actions">
+        <button class="icon-btn" id="prev-btn-desktop" title="Previous photo" hidden>
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="icon-btn" id="download-photo-btn" title="Download photo">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="icon-btn" id="next-btn-desktop" title="Next photo" hidden>
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="header-divider"></div>
+        <button class="icon-btn" id="back-btn-desktop" title="Back to Gallery">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Photo section (always visible) ── -->
+    <section class="photo-section" id="photo-section">
+      <img id="main-photo" alt="Photo" class="main-photo">
+
+      <!-- Mobile-only label -->
+      <p class="photo-save-label" id="longpress-label" hidden>Long press image to save</p>
+
+      <!-- Error state: first failure -->
+      <div id="error-first" class="image-error-box" hidden>
+        <p>Image failed to load.</p>
+        <button class="btn btn-secondary" id="refresh-btn">Refresh</button>
+      </div>
+
+      <!-- Error state: second+ failure -->
+      <div id="error-persistent" class="image-error-box" hidden>
+        <p>Image failed to load. If this persists, <a href="#">please contact support</a>.</p>
+      </div>
+    </section>
+
+    <!-- Dev Controls -->
+    <aside class="dev-controls" aria-label="Developer testing controls">
+      <span class="dev-controls-label">&#9881; Dev Controls</span>
+      <label>
+        <input type="checkbox" id="simulate-fail">
+        Simulate image load failure
+      </label>
+    </aside>
+
+    <!-- iOS-style long-press context menu (mobile only) -->
+    <div id="ios-context-menu" class="ios-context-overlay" hidden>
+      <div class="ios-context-sheet">
+        <div class="ios-preview-row">
+          <img id="ios-preview-img" class="ios-preview-thumb" alt="">
+          <div class="ios-preview-meta">
+            <span class="ios-preview-name">photo_<span id="ios-photo-num"></span>.jpg</span>
+            <span class="ios-preview-size">800 × 600</span>
+          </div>
+        </div>
+        <div class="ios-action-divider"></div>
+        <button class="ios-action-item" id="ios-save-btn">
+          <span>Save to Photos</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+      <button class="ios-cancel-btn" id="ios-cancel-btn">Cancel</button>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      const PHOTO_COUNT = 50;
+
+      const rawParam = ZF.URLParams.get('photo');
+      const rawIndex = parseInt(rawParam, 10);
+      const photoIndex = isNaN(rawIndex)
+        ? 1
+        : Math.max(1, Math.min(PHOTO_COUNT, rawIndex));
+
+      let failCount = 0;
+      let simulateFail = false;
+
+      // ── Init ──────────────────────────────────────────────────────────────
+      ZF.ViewToggle.init();
+      ZF.ViewToggle.onChange(applyViewMode);
+      setupNavigation();
+      setupLongPress();
+      setupSimulateCheckbox();
+      loadPhoto();
+      applyViewMode(ZF.ViewToggle.getMode());
+
+      // ── View mode ─────────────────────────────────────────────────────────
+      function applyViewMode(mode) {
+        mode = mode || ZF.ViewToggle.getMode();
+        const mobileBanner   = document.getElementById('mobile-banner');
+        const desktopHeader  = document.getElementById('desktop-header');
+        const longpressLabel = document.getElementById('longpress-label');
+
+        if (mode === 'mobile') {
+          mobileBanner.removeAttribute('hidden');
+          desktopHeader.setAttribute('hidden', '');
+          longpressLabel.removeAttribute('hidden');
+        } else {
+          mobileBanner.setAttribute('hidden', '');
+          desktopHeader.removeAttribute('hidden');
+          longpressLabel.setAttribute('hidden', '');
+        }
+      }
+
+      // ── Navigation ────────────────────────────────────────────────────────
+      function setupNavigation() {
+        // Back buttons (mobile + desktop)
+        document.getElementById('back-btn-mobile').addEventListener('click', goBack);
+        document.getElementById('back-btn-desktop').addEventListener('click', goBack);
+
+        function goBack() {
+          window.location.href = 'index.html';
+        }
+
+        // Prev buttons
+        ['prev-btn-mobile', 'prev-btn-desktop'].forEach(id => {
+          const btn = document.getElementById(id);
+          if (photoIndex <= 1) {
+            btn.setAttribute('hidden', '');
+          } else {
+            btn.removeAttribute('hidden');
+            btn.addEventListener('click', () => {
+              window.location.href = `individual-download.html?photo=${photoIndex - 1}`;
+            });
+          }
+        });
+
+        // Next buttons
+        ['next-btn-mobile', 'next-btn-desktop'].forEach(id => {
+          const btn = document.getElementById(id);
+          if (photoIndex >= PHOTO_COUNT) {
+            btn.setAttribute('hidden', '');
+          } else {
+            btn.removeAttribute('hidden');
+            btn.addEventListener('click', () => {
+              window.location.href = `individual-download.html?photo=${photoIndex + 1}`;
+            });
+          }
+        });
+
+        // Desktop download button
+        document.getElementById('download-photo-btn').addEventListener('click', downloadPhoto);
+      }
+
+      // ── Desktop download ──────────────────────────────────────────────────
+      async function downloadPhoto() {
+        const url = ZF.Unsplash.url(photoIndex);
+        try {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = `photo-${photoIndex}.jpg`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        } catch (e) {
+          window.open(url, '_blank');
+        }
+      }
+
+      // ── iOS long-press context menu ───────────────────────────────────────
+      function setupLongPress() {
+        const img    = document.getElementById('main-photo');
+        const menu   = document.getElementById('ios-context-menu');
+        let pressTimer = null;
+
+        function startPress() {
+          if (ZF.ViewToggle.getMode() !== 'mobile') return;
+          pressTimer = setTimeout(showContextMenu, 500);
+        }
+        function cancelPress() {
+          clearTimeout(pressTimer);
+          pressTimer = null;
+        }
+
+        img.addEventListener('touchstart',  startPress,  { passive: true });
+        img.addEventListener('touchend',    cancelPress);
+        img.addEventListener('touchmove',   cancelPress);
+        img.addEventListener('mousedown',   startPress);
+        img.addEventListener('mouseup',     cancelPress);
+        img.addEventListener('mouseleave',  cancelPress);
+        img.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        document.getElementById('ios-save-btn').addEventListener('click', () => {
+          hideContextMenu();
+          downloadPhoto();
+        });
+        document.getElementById('ios-cancel-btn').addEventListener('click', hideContextMenu);
+        menu.addEventListener('click', (e) => { if (e.target === menu) hideContextMenu(); });
+      }
+
+      function showContextMenu() {
+        const menu = document.getElementById('ios-context-menu');
+        // Sync preview thumbnail and photo number
+        document.getElementById('ios-preview-img').src = ZF.Unsplash.url(photoIndex);
+        document.getElementById('ios-photo-num').textContent = photoIndex;
+        menu.removeAttribute('hidden');
+      }
+
+      function hideContextMenu() {
+        document.getElementById('ios-context-menu').setAttribute('hidden', '');
+      }
+
+      // ── Simulate fail checkbox ────────────────────────────────────────────
+      function setupSimulateCheckbox() {
+        const checkbox = document.getElementById('simulate-fail');
+        checkbox.addEventListener('change', () => {
+          simulateFail = checkbox.checked;
+          if (simulateFail) {
+            handleImageError();
+          } else {
+            failCount = 0;
+            document.getElementById('error-first').setAttribute('hidden', '');
+            document.getElementById('error-persistent').setAttribute('hidden', '');
+            loadPhoto();
+          }
+        });
+      }
+
+      // ── Photo loading ─────────────────────────────────────────────────────
+      function loadPhoto() {
+        const img = document.getElementById('main-photo');
+        img.removeAttribute('hidden');
+        document.getElementById('error-first').setAttribute('hidden', '');
+        document.getElementById('error-persistent').setAttribute('hidden', '');
+        img.onerror = handleImageError;
+        if (simulateFail) {
+          img.src = 'data:image/png,broken';
+        } else {
+          img.src = ZF.Unsplash.url(photoIndex);
+        }
+      }
+
+      function handleImageError() {
+        failCount++;
+        const img          = document.getElementById('main-photo');
+        const errorFirst   = document.getElementById('error-first');
+        const errorPersist = document.getElementById('error-persistent');
+        img.onerror = null;
+        img.setAttribute('hidden', '');
+        img.removeAttribute('src');
+        if (failCount === 1) {
+          errorFirst.removeAttribute('hidden');
+          errorPersist.setAttribute('hidden', '');
+        } else {
+          errorFirst.setAttribute('hidden', '');
+          errorPersist.removeAttribute('hidden');
+        }
+      }
+
+      // ── Refresh button ────────────────────────────────────────────────────
+      document.getElementById('refresh-btn').addEventListener('click', () => {
+        loadPhoto();
+      });
+
+    })();
+  </script>
+</body>
+</html>
