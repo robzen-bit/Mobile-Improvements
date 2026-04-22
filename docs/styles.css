@@ -1854,6 +1854,275 @@ body.view-mobile .dev-controls {
 }
 
 /* =============================================================
+   DOWNLOADS ACCOUNT PAGE
+   ============================================================= */
+.dl-back-bar {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dl-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: #888;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color 0.12s;
+}
+
+.dl-back-btn:hover { color: #1a1a1a; }
+
+.dl-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 18px 16px 14px;
+}
+
+.dl-header-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.dl-header-account {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dl-tabs {
+  display: flex;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 0 16px;
+}
+
+.dl-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 0;
+  margin-right: 24px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #999;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  transition: color 0.12s, border-color 0.12s;
+}
+
+.dl-tab--active {
+  color: #1a1a1a;
+  border-bottom-color: #1a1a1a;
+}
+
+.dl-content {
+  padding: 20px 16px 32px;
+}
+
+.dl-section {
+  margin-bottom: 24px;
+}
+
+.dl-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0 0 10px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.dl-section-icon {
+  display: flex;
+  align-items: center;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.dl-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+.dl-section-count {
+  font-size: 0.7rem;
+  color: #aaa;
+  letter-spacing: 0.02em;
+}
+
+.dl-section-chevron {
+  display: flex;
+  align-items: center;
+  color: #aaa;
+  margin-left: 6px;
+  transition: transform 0.2s;
+}
+
+.dl-section--collapsed .dl-section-chevron {
+  transform: rotate(180deg);
+}
+
+.dl-group-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.dl-group-name {
+  padding: 10px 14px 9px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #555;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+
+.dl-item {
+  display: flex;
+  align-items: center;
+  padding: 11px 14px;
+  gap: 10px;
+}
+
+.dl-item + .dl-item {
+  border-top: 1px solid #f0f0f0;
+}
+
+.dl-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.dl-item-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  letter-spacing: 0.02em;
+}
+
+.dl-item-meta {
+  font-size: 0.68rem;
+  color: #aaa;
+  margin-top: 2px;
+  letter-spacing: 0.01em;
+}
+
+.dl-item-meta--expired {
+  color: #c44;
+}
+
+.dl-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.dl-item-download-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #444;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.12s, color 0.12s;
+}
+
+.dl-item-download-btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+.dl-item-download-btn:hover { background: #f4f4f4; }
+
+.dl-item-download-btn--ready {
+  animation: dl-pop 0.3s ease-out;
+}
+
+@keyframes dl-pop {
+  0%   { transform: scale(0.7); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.dl-item-more-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.5rem;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  transition: background 0.12s;
+  writing-mode: vertical-rl;
+}
+
+.dl-item-more-btn:hover { background: #f4f4f4; color: #888; }
+
+.dl-item-processing {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dl-spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #e0e0e0;
+  border-top-color: #888;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  flex-shrink: 0;
+}
+
+.dl-processing-label {
+  font-size: 0.7rem;
+  color: #aaa;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.dl-item-expired-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c44;
+  padding: 3px 7px;
+  border: 1px solid #e8b0b0;
+  border-radius: 3px;
+}
+
+/* =============================================================
    MY GALLERIES PAGE
    ============================================================= */
 .my-galleries-grid {
