@@ -1182,3 +1182,106 @@ body.view-mobile .dev-controls {
   height: 16px;
   cursor: pointer;
 }
+
+/* =============================================================
+   SYSTEM / DEMO MODAL
+   ============================================================= */
+.system-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.system-modal-overlay[hidden] { display: none; }
+
+.system-modal-card {
+  background: #131313;
+  border: 1.5px dashed #f59e0b;
+  border-radius: 3px;
+  padding: 28px 32px 32px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(245, 158, 11, 0.12);
+}
+
+.system-badge {
+  display: inline-block;
+  background: #f59e0b;
+  color: #111;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 3px 10px 2px;
+  margin-bottom: 18px;
+}
+
+.system-modal-title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #d4d4d4;
+  margin-bottom: 12px;
+  letter-spacing: 0.03em;
+  text-transform: none;
+}
+
+.system-modal-body {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.76rem;
+  color: #707070;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  padding-left: 12px;
+  border-left: 2px solid #2a2a2a;
+}
+
+.system-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.system-btn {
+  width: 100%;
+  padding: 13px 16px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: none;
+  text-align: left;
+  transition: filter 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.system-btn:hover {
+  filter: brightness(1.12);
+}
+
+.system-btn:active {
+  filter: brightness(0.92);
+}
+
+.system-btn-found {
+  background: #064e35;
+  color: #6ee7b7;
+  border: 1px solid #065f46;
+}
+
+.system-btn-not-found {
+  background: #252525;
+  color: #909090;
+  border: 1px solid #383838;
+}
