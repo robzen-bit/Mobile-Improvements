@@ -127,7 +127,7 @@ const ZF = (() => {
       bar.className = 'dev-toolbar';
       bar.innerHTML = `
         <span class="dev-toolbar-label">&#9881; DEV</span>
-        <span class="dev-toolbar-version">Vers. 2.2</span>
+        <span class="dev-toolbar-version">Vers. 2.3</span>
         <div class="dev-toolbar-actions">
           <button id="view-toggle-btn" class="dev-toolbar-btn"></button>
           <span class="dev-toolbar-divider"></span>
