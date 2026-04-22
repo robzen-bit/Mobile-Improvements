@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inbox — Zenfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body.view-desktop #mobile-frame { max-width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="mobile-frame">
+
+    <!-- Inbox nav bar -->
+    <div class="inbox-nav-bar">
+      <a href="index.html" class="inbox-back-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Gallery
+      </a>
+      <span class="inbox-nav-title">Inbox</span>
+      <span class="inbox-nav-spacer"></span>
+    </div>
+
+    <!-- Inbox list — one item -->
+    <div class="inbox-list">
+      <div class="inbox-list-item inbox-list-item--selected">
+        <div class="inbox-unread-dot"></div>
+        <div class="inbox-sender-avatar">Z</div>
+        <div class="inbox-list-content">
+          <div class="inbox-list-row">
+            <span class="inbox-list-sender">Zenfolio</span>
+            <span class="inbox-list-date">Just now</span>
+          </div>
+          <div class="inbox-list-subject">Access your Zenfolio download</div>
+          <div class="inbox-list-preview">Your files may still be processing — click to check the status…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inbox-divider"></div>
+
+    <!-- Email reading pane -->
+    <div class="inbox-email-pane">
+
+      <div class="inbox-email-header">
+        <div class="inbox-email-subject">Access your Zenfolio download</div>
+        <div class="inbox-email-meta">
+          <div class="inbox-email-from-row">
+            <span class="inbox-sender-avatar inbox-sender-avatar--sm">Z</span>
+            <div>
+              <div class="inbox-email-from">Zenfolio <span class="inbox-email-addr">&lt;noreply@zenfolio.com&gt;</span></div>
+              <div class="inbox-email-to">To: <span id="inbox-email-to">you</span></div>
+            </div>
+          </div>
+          <span class="inbox-email-date">Just now</span>
+        </div>
+      </div>
+
+      <!-- Email body rendered as if in a browser -->
+      <div class="inbox-email-body">
+
+        <div class="email-card">
+          <div class="email-card-brand">ZENFOLIO</div>
+          <div class="email-card-content">
+            <p class="email-card-p">Hi there,</p>
+            <p class="email-card-p">Click the button below to access your download. We'll create your free Zenfolio account using this email address and take you directly to your downloads page.</p>
+            <div class="email-card-cta-wrap">
+              <a href="download-account.html" class="email-card-cta">Go to My Download</a>
+            </div>
+            <p class="email-card-p">Your zip file may still be processing when you arrive — if so, it'll be ready shortly and you'll be able to save it from the same page.</p>
+            <p class="email-card-p">Your account is also where you'll find any galleries you've visited, favorites you've saved, and orders you've placed — all in one place, whenever you need them.</p>
+            <hr class="email-card-rule">
+            <p class="email-card-p email-card-expiry">This link expires in 24 hours.</p>
+            <p class="email-card-p email-card-sig">— The Zenfolio Team</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /#mobile-frame -->
+
+  <script src="app.js"></script>
+  <script>
+    ZF.ViewToggle.init();
+    const email = ZF.URLParams.get('email');
+    if (email) document.getElementById('inbox-email-to').textContent = email;
+  </script>
+</body>
+</html>

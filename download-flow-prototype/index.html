@@ -677,6 +677,234 @@
         document.getElementById('account-btn').classList.add('icon-btn--active');
       }
 
+      // ── Account modal wiring ──────────────────────────────────────────────
+      function wireAccountModal() {
+        const modal   = document.getElementById('account-modal');
+        const input   = document.getElementById('account-email-input');
+        const errorEl = document.getElementById('account-email-error');
+
+        document.getElementById('account-btn').addEventListener('click', (e) => {
+          if (isLoggedIn) {
+            e.stopPropagation();
+            toggleAccountDropdown();
+            return;
+          }
+          showAccountPanel('entry');
+          input.value = randomLotrEmail();
+          errorEl.setAttribute('hidden', '');
+          ZF.Modal.open(modal);
+        });
+
+        document.getElementById('account-cancel-btn').addEventListener('click', () => {
+          ZF.Modal.close(modal);
+        });
+
+        document.getElementById('account-submit-btn').addEventListener('click', handleAccountSubmit);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAccountSubmit(); });
+      }
+
+      function showAccountPanel(name) {
+        document.getElementById('account-entry-panel').setAttribute('hidden', '');
+        document.getElementById(`account-${name}-panel`).removeAttribute('hidden');
+      }
+
+      function handleAccountSubmit() {
+        const input   = document.getElementById('account-email-input');
+        const errorEl = document.getElementById('account-email-error');
+        const email   = input.value.trim();
+
+        if (!/.+@.+\..+/.test(email)) {
+          errorEl.textContent = 'Please enter a valid email address.';
+          errorEl.removeAttribute('hidden');
+          input.focus();
+          return;
+        }
+
+        pendingAccountEmail = email;
+        openSystemModal('account');
+      }
+
+      // ── System / demo modal ───────────────────────────────────────────────
+      function wireSystemModal() {
+        document.getElementById('system-has-account-btn').addEventListener('click', () => {
+          closeSystemModal();
+          const triggerModal = document.getElementById(systemModalContext === 'download' ? 'email-modal' : 'account-modal');
+          ZF.Modal.close(triggerModal);
+          openWelcomeModal(pendingAccountEmail);
+        });
+
+        document.getElementById('system-no-account-btn').addEventListener('click', () => {
+          closeSystemModal();
+          if (systemModalContext === 'download') {
+            ZF.Modal.close(document.getElementById('email-modal'));
+            openDownloadNoAccountModal(pendingAccountEmail);
+          } else {
+            ZF.Modal.close(document.getElementById('account-modal'));
+            openAccountNoAccountModal(pendingAccountEmail);
+          }
+        });
+      }
+
+      function openSystemModal(context) {
+        systemModalContext = context;
+        document.getElementById('system-modal').removeAttribute('hidden');
+        setTimeout(() => {
+          document.getElementById('system-has-account-btn').focus();
+        }, 50);
+      }
+
+      function closeSystemModal() {
+        document.getElementById('system-modal').setAttribute('hidden', '');
+      }
+
+      // ── Welcome back modal ────────────────────────────────────────────────
+      function wireWelcomeModal() {
+        const modal = document.getElementById('welcome-modal');
+
+        document.getElementById('welcome-cancel-btn').addEventListener('click', () => {
+          ZF.Modal.close(modal);
+        });
+
+        document.getElementById('welcome-password-btn').addEventListener('click', () => {
+          document.getElementById('welcome-password-email').textContent =
+            document.getElementById('welcome-email').textContent;
+          document.getElementById('welcome-password-input').value = '';
+          showWelcomePanel('password');
+          setTimeout(() => document.getElementById('welcome-password-input').focus(), 50);
+        });
+
+        document.getElementById('welcome-code-btn').addEventListener('click', () => {
+          document.getElementById('welcome-code-email').textContent =
+            document.getElementById('welcome-email').textContent;
+          resetOtpInputs();
+          showWelcomePanel('code');
+          setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 50);
+        });
+
+        document.getElementById('welcome-password-back-btn').addEventListener('click', () => {
+          showWelcomePanel('choose');
+        });
+
+        document.getElementById('welcome-code-back-btn').addEventListener('click', () => {
+          showWelcomePanel('choose');
+        });
+
+        document.getElementById('welcome-login-btn').addEventListener('click', () => {
+          if (!document.getElementById('welcome-password-input').value.trim()) {
+            document.getElementById('welcome-password-input').focus();
+            return;
+          }
+          ZF.Modal.close(modal);
+          handleLoginSuccess();
+        });
+
+        document.getElementById('welcome-verify-btn').addEventListener('click', () => {
+          const inputs = [...document.querySelectorAll('.otp-input')];
+          if (!inputs.every(i => /\d/.test(i.value))) {
+            inputs.find(i => !i.value)?.focus();
+            return;
+          }
+          ZF.Modal.close(modal);
+          handleLoginSuccess();
+        });
+
+        document.querySelectorAll('.otp-input').forEach((input, idx, all) => {
+          input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/g, '').slice(-1);
+            if (input.value && idx < all.length - 1) all[idx + 1].focus();
+          });
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && idx > 0) all[idx - 1].focus();
+          });
+        });
+      }
+
+      function openWelcomeModal(email) {
+        document.getElementById('welcome-email').textContent = email;
+        showWelcomePanel('choose');
+        ZF.Modal.open(document.getElementById('welcome-modal'));
+      }
+
+      function showWelcomePanel(name) {
+        ['choose', 'password', 'code'].forEach(p =>
+          document.getElementById(`welcome-${p}-panel`).setAttribute('hidden', '')
+        );
+        document.getElementById(`welcome-${name}-panel`).removeAttribute('hidden');
+      }
+
+      function resetOtpInputs() {
+        document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+      }
+
+      // ── Download no-account modal ─────────────────────────────────────────
+      function openDownloadNoAccountModal(email) {
+        document.getElementById('dna-email').textContent = email;
+        ZF.Modal.open(document.getElementById('download-no-account-modal'));
+      }
+
+      function wireDownloadNoAccountModal() {
+        document.getElementById('dna-got-it-btn').addEventListener('click', () => {
+          ZF.Modal.close(document.getElementById('download-no-account-modal'));
+          window.location.href = `inbox.html?email=${encodeURIComponent(pendingAccountEmail)}`;
+        });
+
+        document.getElementById('dna-different-email-btn').addEventListener('click', () => {
+          ZF.Modal.close(document.getElementById('download-no-account-modal'));
+          const emailModal = document.getElementById('email-modal');
+          document.getElementById('email-entry-panel').removeAttribute('hidden');
+          document.getElementById('email-sent-panel').setAttribute('hidden', '');
+          document.getElementById('email-input').value = '';
+          document.getElementById('email-error').setAttribute('hidden', '');
+          ZF.Modal.open(emailModal);
+        });
+      }
+
+      // ── Account no-account modal ──────────────────────────────────────────
+      function openAccountNoAccountModal() {
+        ZF.Modal.open(document.getElementById('account-no-account-modal'));
+      }
+
+      function wireAccountNoAccountModal() {
+        const modal = document.getElementById('account-no-account-modal');
+        document.getElementById('ana-close-x-btn').addEventListener('click', () => ZF.Modal.close(modal));
+        document.getElementById('ana-cancel-btn').addEventListener('click', () => ZF.Modal.close(modal));
+        // ana-create-btn is a no-op for now
+      }
+
+      // ── Login state + account dropdown ────────────────────────────────────
+      function handleLoginSuccess() {
+        isLoggedIn = true;
+        document.getElementById('account-btn').classList.add('icon-btn--active');
+      }
+
+      function toggleAccountDropdown() {
+        const dropdown = document.getElementById('account-dropdown');
+        if (dropdown.hasAttribute('hidden')) {
+          dropdown.removeAttribute('hidden');
+          setTimeout(() => document.addEventListener('click', closeDropdownOnOutsideClick), 0);
+        } else {
+          closeAccountDropdown();
+        }
+      }
+
+      function closeAccountDropdown() {
+        document.getElementById('account-dropdown').setAttribute('hidden', '');
+        document.removeEventListener('click', closeDropdownOnOutsideClick);
+      }
+
+      function closeDropdownOnOutsideClick(e) {
+        if (!document.getElementById('account-dropdown').contains(e.target) &&
+            e.target !== document.getElementById('account-btn')) {
+          closeAccountDropdown();
+        }
+      }
+
+      document.getElementById('account-signout-btn').addEventListener('click', () => {
+        isLoggedIn = false;
+        document.getElementById('account-btn').classList.remove('icon-btn--active');
+        closeAccountDropdown();
+      });
+
     })();
   </script>
 </body>
