@@ -46,6 +46,15 @@ body.view-desktop #mobile-frame {
   background: #fff;
 }
 
+body.view-desktop .dl-back-bar,
+body.view-desktop .dl-header,
+body.view-desktop .dl-tabs,
+body.view-desktop .dl-content {
+  max-width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 body.view-mobile {
   background: #c8c8c8;
   display: flex;
@@ -1868,7 +1877,7 @@ body.view-mobile .dev-controls {
   align-items: center;
   gap: 4px;
   font-size: 0.78rem;
-  color: #888;
+  color: #555;
   text-decoration: none;
   letter-spacing: 0.03em;
   transition: color 0.12s;
@@ -1905,6 +1914,16 @@ body.view-mobile .dev-controls {
   padding: 0 16px;
 }
 
+.dl-tabs--fill {
+  justify-content: stretch;
+}
+
+.dl-tabs--fill .dl-tab {
+  flex: 1;
+  text-align: center;
+  margin-right: 0;
+}
+
 .dl-tab {
   background: none;
   border: none;
@@ -1912,8 +1931,8 @@ body.view-mobile .dev-controls {
   padding: 10px 0;
   margin-right: 24px;
   font-size: 0.78rem;
-  font-weight: 500;
-  color: #999;
+  font-weight: 600;
+  color: #757575;
   cursor: pointer;
   font-family: inherit;
   letter-spacing: 0.04em;
@@ -1921,8 +1940,10 @@ body.view-mobile .dev-controls {
 }
 
 .dl-tab--active {
-  color: #1a1a1a;
-  border-bottom-color: #1a1a1a;
+  color: #000;
+  border-bottom-color: #000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .dl-content {
@@ -1949,29 +1970,34 @@ body.view-mobile .dev-controls {
 .dl-section-icon {
   display: flex;
   align-items: center;
-  color: #555;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #f6f6f6;
+  border-radius: 5px;
+  color: #333;
   flex-shrink: 0;
 }
 
 .dl-section-title {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #1a1a1a;
+  color: #000;
   flex: 1;
 }
 
 .dl-section-count {
   font-size: 0.7rem;
-  color: #aaa;
+  color: #AEAEAE;
   letter-spacing: 0.02em;
 }
 
 .dl-section-chevron {
   display: flex;
   align-items: center;
-  color: #aaa;
+  color: #AEAEAE;
   margin-left: 6px;
   transition: transform 0.2s;
 }
@@ -1981,31 +2007,36 @@ body.view-mobile .dev-controls {
 }
 
 .dl-group-card {
-  border: 1px solid #e8e8e8;
-  border-radius: 6px;
+  border: 1px solid #E4E4E4;
+  border-radius: 7px;
+  padding: 12px 14px;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .dl-group-name {
-  padding: 10px 14px 9px;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #555;
-  border-bottom: 1px solid #f0f0f0;
-  background: #fafafa;
+  color: #000;
+  padding-bottom: 4px;
 }
 
 .dl-item {
   display: flex;
   align-items: center;
-  padding: 11px 14px;
+  padding: 10px 12px;
   gap: 10px;
+  background: #f9f9f9;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
 }
 
 .dl-item + .dl-item {
-  border-top: 1px solid #f0f0f0;
+  border-top: none;
 }
 
 .dl-item-info {
@@ -2022,7 +2053,7 @@ body.view-mobile .dev-controls {
 
 .dl-item-meta {
   font-size: 0.68rem;
-  color: #aaa;
+  color: #6F6C7B;
   margin-top: 2px;
   letter-spacing: 0.01em;
 }
@@ -2091,6 +2122,64 @@ body.view-mobile .dev-controls {
 }
 
 .dl-item-more-btn:hover { background: #f0f0f0; color: #333; }
+
+/* User-facing context menu (expired items kebab) */
+.dl-item-ctx-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.dl-item-ctx-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 4px 0;
+  min-width: 192px;
+  z-index: 800;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+}
+
+.dl-item-ctx-btn {
+  display: block;
+  width: 100%;
+  padding: 9px 14px;
+  background: none;
+  border: none;
+  color: #1a1a1a;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dl-item-ctx-btn:hover { background: #f5f5f5; }
+
+/* Empty state for expired tab */
+.dl-empty-state {
+  padding: 28px 16px;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.78rem;
+}
+
+.dl-empty-state--tab {
+  padding: 60px 24px;
+  font-size: 0.82rem;
+}
+
+/* Downloaded timestamp */
+.dl-item-downloaded {
+  font-size: 0.6rem;
+  color: #6F6C7B;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  text-align: right;
+}
 
 /* Dev state dropdown */
 .dl-dev-dropdown {
