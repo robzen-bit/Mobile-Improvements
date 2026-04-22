@@ -547,14 +547,74 @@
         });
         prevCard.querySelector('[data-action="request-new"]').addEventListener('click', () => {
           closeAllCtxMenus();
-          // Replace actions area with a processing spinner
-          const actions = prevCard.querySelector('.dl-item-actions');
-          actions.innerHTML = `<div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing\u2026</span></div>`;
-          // After 3s remove the card entirely and update the expired count
+
+          // Remove from expired
+          staticExpiredCount = 0;
+          prevCard.remove();
+          updateGalleryCounts();
+
+          // Inject a Smith Family Portraits card into the active section
+          const activeBody = document.getElementById('gallery-active-body');
+          const smithCard = document.createElement('div');
+          smithCard.className = 'dl-group-card';
+          smithCard.innerHTML = `
+            <div class="dl-group-name">Smith Family Portraits</div>
+            <div class="dl-item">
+              <div class="dl-item-info">
+                <div class="dl-item-name">Full gallery ZIP</div>
+                <div class="dl-item-meta">318 Files \u00b7 2.1 GB \u00b7 High Resolution \u00b7 Expires in 14 days</div>
+              </div>
+              <div class="dl-item-actions">
+                <span class="dl-item-downloaded" hidden></span>
+                <div class="dl-item-processing">
+                  <div class="dl-spinner-sm"></div>
+                  <span class="dl-processing-label">Processing\u2026</span>
+                </div>
+              </div>
+            </div>`;
+          activeBody.appendChild(smithCard);
+
+          // Ensure active section is expanded and gallery tab is showing
+          document.getElementById('gallery-active-body').removeAttribute('hidden');
+          document.getElementById('gallery-active-wrap').classList.remove('dl-section--collapsed');
+          switchToTab('gallery');
+
+          // After 3s transition to ready
           setTimeout(() => {
-            staticExpiredCount = 0;
-            prevCard.remove();
-            updateGalleryCounts();
+            const actionsEl = smithCard.querySelector('.dl-item-actions');
+            actionsEl.innerHTML = `
+              <span class="dl-item-downloaded" hidden></span>
+              <button class="dl-item-download-btn dl-item-download-btn--ready" title="Download">${DL_BTN_SVG}</button>
+              <div class="dl-item-ctx-wrap">
+                <button class="dl-item-more-btn" title="More options">&#8942;</button>
+                <div class="dl-item-ctx-menu" hidden>
+                  <button class="dl-item-ctx-btn" data-action="regenerate">&#8635; Regenerate ZIP</button>
+                </div>
+              </div>`;
+            wireDownloadButtons();
+            // Wire kebab
+            const wrap = actionsEl.querySelector('.dl-item-ctx-wrap');
+            const moreBtn2 = wrap.querySelector('.dl-item-more-btn');
+            const ctxMenu2 = wrap.querySelector('.dl-item-ctx-menu');
+            moreBtn2.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const wasHidden = ctxMenu2.hasAttribute('hidden');
+              closeAllCtxMenus();
+              if (wasHidden) {
+                ctxMenu2.removeAttribute('hidden');
+                setTimeout(() => document.addEventListener('click', closeAllCtxMenus), 0);
+              }
+            });
+            wrap.querySelector('[data-action="regenerate"]').addEventListener('click', () => {
+              closeAllCtxMenus();
+              actionsEl.innerHTML = `<div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing\u2026</span></div>`;
+              setTimeout(() => {
+                actionsEl.innerHTML = `
+                  <span class="dl-item-downloaded" hidden></span>
+                  <button class="dl-item-download-btn dl-item-download-btn--ready" title="Download">${DL_BTN_SVG}</button>`;
+                wireDownloadButtons();
+              }, 5000);
+            });
           }, 3000);
         });
         expiredBody.appendChild(prevCard);
