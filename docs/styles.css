@@ -1912,8 +1912,8 @@ body.view-mobile .dev-controls {
   padding: 10px 0;
   margin-right: 24px;
   font-size: 0.78rem;
-  font-weight: 500;
-  color: #666;
+  font-weight: 600;
+  color: #757575;
   cursor: pointer;
   font-family: inherit;
   letter-spacing: 0.04em;
@@ -1921,8 +1921,10 @@ body.view-mobile .dev-controls {
 }
 
 .dl-tab--active {
-  color: #1a1a1a;
-  border-bottom-color: #1a1a1a;
+  color: #000;
+  border-bottom-color: #000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .dl-content {
@@ -1949,29 +1951,34 @@ body.view-mobile .dev-controls {
 .dl-section-icon {
   display: flex;
   align-items: center;
-  color: #555;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #f6f6f6;
+  border-radius: 5px;
+  color: #333;
   flex-shrink: 0;
 }
 
 .dl-section-title {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #1a1a1a;
+  color: #000;
   flex: 1;
 }
 
 .dl-section-count {
   font-size: 0.7rem;
-  color: #777;
+  color: #AEAEAE;
   letter-spacing: 0.02em;
 }
 
 .dl-section-chevron {
   display: flex;
   align-items: center;
-  color: #777;
+  color: #AEAEAE;
   margin-left: 6px;
   transition: transform 0.2s;
 }
@@ -1981,31 +1988,36 @@ body.view-mobile .dev-controls {
 }
 
 .dl-group-card {
-  border: 1px solid #e8e8e8;
-  border-radius: 6px;
+  border: 1px solid #E4E4E4;
+  border-radius: 7px;
+  padding: 12px 14px;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .dl-group-name {
-  padding: 10px 14px 9px;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #333;
-  border-bottom: 1px solid #f0f0f0;
-  background: #fafafa;
+  color: #000;
+  padding-bottom: 4px;
 }
 
 .dl-item {
   display: flex;
   align-items: center;
-  padding: 11px 14px;
+  padding: 10px 12px;
   gap: 10px;
+  background: #f9f9f9;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
 }
 
 .dl-item + .dl-item {
-  border-top: 1px solid #f0f0f0;
+  border-top: none;
 }
 
 .dl-item-info {
@@ -2022,7 +2034,7 @@ body.view-mobile .dev-controls {
 
 .dl-item-meta {
   font-size: 0.68rem;
-  color: #777;
+  color: #6F6C7B;
   margin-top: 2px;
   letter-spacing: 0.01em;
 }
