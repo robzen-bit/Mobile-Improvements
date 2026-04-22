@@ -32,7 +32,7 @@
           </button>
           <div class="header-divider"></div>
           <!-- Account icon -->
-          <button class="icon-btn" title="Account">
+          <button class="icon-btn" id="account-btn" title="Account">
             <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </button>
         </div>
@@ -101,6 +101,23 @@
     </div><!-- /.modal-card -->
     </div><!-- /#email-modal -->
 
+    <!-- Account email modal — inside frame so it clips to phone bounds in mobile view -->
+    <div id="account-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="account-modal-title">
+      <div class="modal-card">
+        <h2 id="account-modal-title">Enter your email to continue</h2>
+        <p class="modal-subtitle">We'll check if you have an account. If not, we'll create one for you automatically.</p>
+        <div class="form-group">
+          <label for="account-email-input">Email address</label>
+          <input type="email" id="account-email-input" placeholder="you@example.com" autocomplete="email">
+          <span class="form-error" id="account-email-error" hidden></span>
+        </div>
+        <button class="btn-modal-submit" id="account-submit-btn">Continue</button>
+        <div style="margin-top:16px;text-align:right;">
+          <button class="btn btn-secondary" id="account-cancel-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
+        </div>
+      </div>
+    </div><!-- /#account-modal -->
+
   </div><!-- /#mobile-frame -->
 
   <script src="app.js"></script>
@@ -117,6 +134,7 @@
       buildGrid();
       wireLightbox();
       wireModal();
+      wireAccountModal();
 
       // ── Immediate photo download (desktop) ────────────────────────────────
       async function downloadPhoto(index) {
@@ -239,7 +257,7 @@
         if (e.key === 'ArrowRight') navigateLightbox(1);
       }
 
-      // ── Modal wiring ──────────────────────────────────────────────────────
+      // ── Download modal wiring ─────────────────────────────────────────────
       function wireModal() {
         const modal     = document.getElementById('email-modal');
         const input     = document.getElementById('email-input');
@@ -304,6 +322,41 @@
             window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
           }
         }, 1000);
+      }
+
+      // ── Account modal wiring ──────────────────────────────────────────────
+      function wireAccountModal() {
+        const modal   = document.getElementById('account-modal');
+        const input   = document.getElementById('account-email-input');
+        const errorEl = document.getElementById('account-email-error');
+
+        document.getElementById('account-btn').addEventListener('click', () => {
+          input.value = '';
+          errorEl.setAttribute('hidden', '');
+          ZF.Modal.open(modal);
+        });
+
+        document.getElementById('account-cancel-btn').addEventListener('click', () => {
+          ZF.Modal.close(modal);
+        });
+
+        document.getElementById('account-submit-btn').addEventListener('click', handleAccountSubmit);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAccountSubmit(); });
+      }
+
+      function handleAccountSubmit() {
+        const input   = document.getElementById('account-email-input');
+        const errorEl = document.getElementById('account-email-error');
+        const email   = input.value.trim();
+
+        if (!/.+@.+\..+/.test(email)) {
+          errorEl.textContent = 'Please enter a valid email address.';
+          errorEl.removeAttribute('hidden');
+          input.focus();
+          return;
+        }
+
+        ZF.Modal.close(document.getElementById('account-modal'));
       }
 
     })();
