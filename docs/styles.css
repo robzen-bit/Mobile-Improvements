@@ -2080,17 +2080,15 @@ body.view-mobile .dev-controls {
   justify-content: center;
   background: none;
   border: none;
-  color: #bbb;
+  color: #999;
   cursor: pointer;
   border-radius: 4px;
-  font-size: 0.5rem;
-  letter-spacing: 0.05em;
+  font-size: 1rem;
   line-height: 1;
-  transition: background 0.12s;
-  writing-mode: vertical-rl;
+  transition: background 0.12s, color 0.12s;
 }
 
-.dl-item-more-btn:hover { background: #f4f4f4; color: #888; }
+.dl-item-more-btn:hover { background: #f0f0f0; color: #333; }
 
 /* Dev state dropdown */
 .dl-dev-dropdown {
