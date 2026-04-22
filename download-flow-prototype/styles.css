@@ -1436,3 +1436,139 @@ body.view-mobile .dev-controls {
 .icon-btn--active svg {
   stroke: #1a1a1a;
 }
+
+/* =============================================================
+   NO-ACCOUNT OUTCOME MODALS
+   ============================================================= */
+
+/* position: relative needed for the X close button */
+.modal-card {
+  position: relative;
+}
+
+/* Smaller secondary supporting text inside modals */
+.modal-supporting-note {
+  font-size: 0.78rem;
+  color: #999;
+  line-height: 1.65;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Feature bullet list */
+.modal-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.modal-feature-list li {
+  padding: 5px 0 5px 18px;
+  position: relative;
+  font-size: 0.85rem;
+  color: #444;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.modal-feature-list li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: #9a9a9a;
+}
+
+/* X close button (top-right of modal card) */
+.modal-close-x {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #bbb;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  transition: color 0.12s;
+}
+
+.modal-close-x:hover {
+  color: #333;
+}
+
+/* Stack: modal card above email preview panel */
+.demo-flow-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 560px;
+}
+
+/* Demo-only email preview card */
+.demo-email-preview-card {
+  background: #131313;
+  border: 1.5px dashed #f59e0b;
+  border-radius: 3px;
+  padding: 20px 24px 24px;
+  width: 100%;
+}
+
+.demo-email-preview-header {
+  margin-bottom: 14px;
+}
+
+.demo-email-meta {
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.demo-email-meta p {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.74rem;
+  color: #707070;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.demo-email-meta strong {
+  color: #aaa;
+  font-weight: 700;
+}
+
+.demo-email-previewtext {
+  font-style: italic;
+}
+
+.demo-email-body {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  color: #707070;
+  line-height: 1.75;
+}
+
+.demo-email-body p {
+  margin-bottom: 10px;
+}
+
+.demo-email-cta-btn {
+  background: #3a3a3a;
+  color: #d4d4d4;
+  text-align: center;
+  padding: 10px 20px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 14px 0;
+  cursor: default;
+  border: 1px solid #555;
+}
+
+.demo-email-expiry {
+  color: #4a4a4a !important;
+  font-size: 0.7rem !important;
+}
