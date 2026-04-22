@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Galleries — Zenfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body.view-desktop #mobile-frame { max-width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="mobile-frame">
+    <div class="page-container">
+      <header class="page-header">
+        <div class="gallery-identity">
+          <h1>My Galleries</h1>
+        </div>
+        <div class="gallery-header-actions">
+          <div class="account-menu-wrapper">
+            <button class="icon-btn" id="account-btn" title="Account">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </button>
+            <div id="account-dropdown" class="account-dropdown" hidden>
+              <ul class="account-dropdown-menu">
+                <li><button class="account-dropdown-item" id="account-my-galleries-btn">My Galleries</button></li>
+                <li><button class="account-dropdown-item" id="account-favorites-btn">Favorites</button></li>
+                <li><button class="account-dropdown-item" id="account-downloads-btn">Downloads</button></li>
+                <li class="account-dropdown-divider"></li>
+                <li><button class="account-dropdown-item account-dropdown-signout" id="account-signout-btn">Sign Out</button></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="my-galleries-grid">
+        <a href="index.html?loggedIn=true" class="my-gallery-card">
+          <div class="my-gallery-thumb">
+            <img src="https://picsum.photos/seed/42/400/300" alt="Photo Gallery">
+          </div>
+          <div class="my-gallery-info">
+            <div class="my-gallery-name">Photo Gallery</div>
+            <div class="my-gallery-meta">By Zenfolio Prototype &middot; 50 photos</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    ZF.ViewToggle.init();
+    ZF.AccountMenu.init({
+      myGalleriesUrl: 'my-galleries.html',
+      downloadsUrl:   'download-account.html',
+      signOutUrl:     'index.html'
+    });
+  </script>
+</body>
+</html>

@@ -31,10 +31,21 @@
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </button>
           <div class="header-divider"></div>
-          <!-- Account icon -->
-          <button class="icon-btn" title="Account">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </button>
+          <!-- Account icon + dropdown -->
+          <div class="account-menu-wrapper">
+            <button class="icon-btn" id="account-btn" title="Account">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </button>
+            <div id="account-dropdown" class="account-dropdown" hidden>
+              <ul class="account-dropdown-menu">
+                <li><button class="account-dropdown-item" id="account-my-galleries-btn">My Galleries</button></li>
+                <li><button class="account-dropdown-item" id="account-favorites-btn">Favorites</button></li>
+                <li><button class="account-dropdown-item" id="account-downloads-btn">Downloads</button></li>
+                <li class="account-dropdown-divider"></li>
+                <li><button class="account-dropdown-item account-dropdown-signout" id="account-signout-btn">Sign Out</button></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -101,7 +112,127 @@
     </div><!-- /.modal-card -->
     </div><!-- /#email-modal -->
 
+    <!-- Account email modal — inside frame so it clips to phone bounds in mobile view -->
+    <div id="account-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="account-modal-title">
+      <div class="modal-card">
+
+        <!-- Panel 1: email entry -->
+        <div id="account-entry-panel">
+          <h2 id="account-modal-title">Enter your email to continue</h2>
+          <p class="modal-subtitle">We'll check if you have an account. If not, we'll create one for you automatically.</p>
+          <div class="form-group">
+            <label for="account-email-input">Email address</label>
+            <input type="email" id="account-email-input" placeholder="you@example.com" autocomplete="email">
+            <span class="form-error" id="account-email-error" hidden></span>
+          </div>
+          <button class="btn-modal-submit" id="account-submit-btn">Continue</button>
+          <div style="margin-top:16px;text-align:right;">
+            <button class="btn btn-secondary" id="account-cancel-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /#account-modal -->
+
+    <!-- Modal 1: No account — download confirmation (triggers from download flow) -->
+    <div id="download-no-account-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+      <div class="modal-card">
+        <h2>Check your email to get your download</h2>
+        <p class="modal-subtitle">We didn't find an account for <strong id="dna-email"></strong>, so we sent you a link. Click it to access your download — we'll set up your free account along the way so your files are always easy to find.</p>
+        <p class="modal-supporting-note">Your download may still be processing when you arrive — if so, it'll be ready shortly. Don't see the email? Check your spam folder or try a different email address.</p>
+        <button class="btn-modal-submit" id="dna-got-it-btn">Got it</button>
+        <div style="margin-top:16px;text-align:center;">
+          <button class="btn-link" id="dna-different-email-btn">Use a different email</button>
+        </div>
+      </div>
+    </div><!-- /#download-no-account-modal -->
+
+    <!-- Modal 2: No account — account creation offer (triggers from account icon flow) -->
+    <div id="account-no-account-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+      <div class="modal-card">
+        <button class="modal-close-x" id="ana-close-x-btn" aria-label="Close">&times;</button>
+        <h2>No account found for that email</h2>
+        <p class="modal-subtitle">Want to create a free account? Your Zenfolio account gives you one place to access:</p>
+        <ul class="modal-feature-list">
+          <li>Galleries you've been invited to or previously visited</li>
+          <li>Downloads — your zip files, ready when you are</li>
+          <li>Favorites you've saved across any gallery</li>
+          <li>Orders you've placed with photographers</li>
+        </ul>
+        <p class="modal-supporting-note">It's free, and it only takes a moment to set up.</p>
+        <button class="btn-modal-submit" id="ana-create-btn">Create Free Account</button>
+        <div style="margin-top:16px;text-align:center;">
+          <button class="btn-link" id="ana-cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </div><!-- /#account-no-account-modal -->
+
+    <!-- Welcome back modal — user-facing, inside frame -->
+    <div id="welcome-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="welcome-modal-title">
+      <div class="modal-card">
+
+        <!-- Panel 1: choose login method -->
+        <div id="welcome-choose-panel">
+          <h2 id="welcome-modal-title">Welcome back</h2>
+          <p class="modal-subtitle">Signing in as <strong id="welcome-email"></strong></p>
+          <div class="welcome-method-btns">
+            <button class="btn-modal-submit" id="welcome-password-btn">Log in with a password</button>
+            <button class="btn-modal-outline" id="welcome-code-btn">Request an access code</button>
+          </div>
+          <div style="margin-top:16px;text-align:right;">
+            <button class="btn btn-secondary" id="welcome-cancel-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Panel 2: password login -->
+        <div id="welcome-password-panel" hidden>
+          <h2>Enter your password</h2>
+          <p class="modal-subtitle">Signing in as <strong id="welcome-password-email"></strong></p>
+          <div class="form-group">
+            <label for="welcome-password-input">Password</label>
+            <input type="password" id="welcome-password-input" placeholder="Enter your password" autocomplete="current-password">
+          </div>
+          <button class="btn-modal-submit" id="welcome-login-btn">Log in</button>
+          <div style="margin-top:16px;">
+            <button class="btn-link" id="welcome-password-back-btn">&#8592; Back</button>
+          </div>
+        </div>
+
+        <!-- Panel 3: access code -->
+        <div id="welcome-code-panel" hidden>
+          <h2>Enter your access code</h2>
+          <p class="modal-subtitle">We sent a 6-digit code to <strong id="welcome-code-email"></strong></p>
+          <div class="otp-input-group">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+          </div>
+          <button class="btn-modal-submit" id="welcome-verify-btn">Verify</button>
+          <div style="margin-top:16px;">
+            <button class="btn-link" id="welcome-code-back-btn">&#8592; Back</button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /#welcome-modal -->
+
   </div><!-- /#mobile-frame -->
+
+  <!-- System / demo modal — outside #mobile-frame so it floats above the phone frame -->
+  <div id="system-modal" class="system-modal-overlay" hidden aria-modal="true" role="dialog">
+    <div class="system-modal-card">
+      <div class="system-badge">&#9881; SYSTEM</div>
+      <h3 class="system-modal-title">Simulating Account Lookup</h3>
+      <p class="system-modal-body">The system is checking whether an account is associated with this email address. This panel is for demo purposes only and would not be visible to a real user.</p>
+      <div class="system-modal-actions">
+        <button class="system-btn system-btn-found" id="system-has-account-btn">&#10003; Email Has an Account</button>
+        <button class="system-btn system-btn-not-found" id="system-no-account-btn">&#10007; Email Does Not Have an Account</button>
+      </div>
+    </div>
+  </div><!-- /#system-modal -->
 
   <script src="app.js"></script>
   <script>
@@ -110,6 +241,15 @@
       const RETURN_KEY = 'zf_return_status_url';
       let redirectTimer = null;
       let lightboxIndex = 1;
+      let pendingAccountEmail = '';
+      let systemModalContext = '';
+      let isLoggedIn = false;
+
+      const LOTR_NAMES = ['frodo','gandalf','aragorn','legolas','gimli','samwise',
+        'meriadoc','peregrin','boromir','arwen','galadriel','bilbo','eowyn','faramir','treebeard'];
+      function randomLotrEmail() {
+        return `${LOTR_NAMES[Math.floor(Math.random() * LOTR_NAMES.length)]}@MiddleEarth.com`;
+      }
 
       // ── Init ──────────────────────────────────────────────────────────────
       ZF.ViewToggle.init();
@@ -117,6 +257,11 @@
       buildGrid();
       wireLightbox();
       wireModal();
+      wireAccountModal();
+      wireSystemModal();
+      wireWelcomeModal();
+      wireDownloadNoAccountModal();
+      wireAccountNoAccountModal();
 
       // ── Immediate photo download (desktop) ────────────────────────────────
       async function downloadPhoto(index) {
@@ -239,15 +384,12 @@
         if (e.key === 'ArrowRight') navigateLightbox(1);
       }
 
-      // ── Modal wiring ──────────────────────────────────────────────────────
+      // ── Download modal wiring ─────────────────────────────────────────────
       function wireModal() {
         const modal     = document.getElementById('email-modal');
         const input     = document.getElementById('email-input');
         const errorEl   = document.getElementById('email-error');
         const cancelBtn = document.getElementById('email-cancel-btn');
-
-        const LOTR_NAMES = ['frodo','gandalf','aragorn','legolas','gimli','samwise',
-          'meriadoc','peregrin','boromir','arwen','galadriel','bilbo','eowyn','faramir','treebeard'];
 
         function openModal() {
           const existingUrl = sessionStorage.getItem(RETURN_KEY);
@@ -257,8 +399,7 @@
           }
           document.getElementById('email-entry-panel').removeAttribute('hidden');
           document.getElementById('email-sent-panel').setAttribute('hidden', '');
-          const name = LOTR_NAMES[Math.floor(Math.random() * LOTR_NAMES.length)];
-          input.value = `${name}@MiddleEarth.com`;
+          input.value = randomLotrEmail();
           errorEl.setAttribute('hidden', '');
           if (redirectTimer) { clearInterval(redirectTimer); redirectTimer = null; }
           ZF.Modal.open(modal);
@@ -288,22 +429,252 @@
           return;
         }
 
-        document.getElementById('email-entry-panel').setAttribute('hidden', '');
-        document.getElementById('email-sent-panel').removeAttribute('hidden');
-        document.getElementById('email-sent-address').textContent = email;
-        sessionStorage.removeItem('zf_return_status_url');
+        pendingAccountEmail = email;
+        openSystemModal('download');
+      }
 
-        let count = 5;
-        document.getElementById('countdown-display').textContent = count;
-        redirectTimer = setInterval(() => {
-          count--;
-          document.getElementById('countdown-display').textContent = count;
-          if (count <= 0) {
-            clearInterval(redirectTimer);
-            redirectTimer = null;
-            window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
+      // ── Account modal wiring ──────────────────────────────────────────────
+      function wireAccountModal() {
+        const modal   = document.getElementById('account-modal');
+        const input   = document.getElementById('account-email-input');
+        const errorEl = document.getElementById('account-email-error');
+
+        document.getElementById('account-btn').addEventListener('click', (e) => {
+          if (isLoggedIn) {
+            e.stopPropagation();
+            toggleAccountDropdown();
+            return;
           }
-        }, 1000);
+          showAccountPanel('entry');
+          input.value = randomLotrEmail();
+          errorEl.setAttribute('hidden', '');
+          ZF.Modal.open(modal);
+        });
+
+        document.getElementById('account-cancel-btn').addEventListener('click', () => {
+          ZF.Modal.close(modal);
+        });
+
+        document.getElementById('account-submit-btn').addEventListener('click', handleAccountSubmit);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAccountSubmit(); });
+      }
+
+      function showAccountPanel(name) {
+        document.getElementById('account-entry-panel').setAttribute('hidden', '');
+        document.getElementById(`account-${name}-panel`).removeAttribute('hidden');
+      }
+
+      function handleAccountSubmit() {
+        const input   = document.getElementById('account-email-input');
+        const errorEl = document.getElementById('account-email-error');
+        const email   = input.value.trim();
+
+        if (!/.+@.+\..+/.test(email)) {
+          errorEl.textContent = 'Please enter a valid email address.';
+          errorEl.removeAttribute('hidden');
+          input.focus();
+          return;
+        }
+
+        pendingAccountEmail = email;
+        openSystemModal('account');
+      }
+
+      // ── System / demo modal ───────────────────────────────────────────────
+      function wireSystemModal() {
+        document.getElementById('system-has-account-btn').addEventListener('click', () => {
+          closeSystemModal();
+          const triggerModal = document.getElementById(systemModalContext === 'download' ? 'email-modal' : 'account-modal');
+          ZF.Modal.close(triggerModal);
+          openWelcomeModal(pendingAccountEmail);
+        });
+
+        document.getElementById('system-no-account-btn').addEventListener('click', () => {
+          closeSystemModal();
+          if (systemModalContext === 'download') {
+            ZF.Modal.close(document.getElementById('email-modal'));
+            openDownloadNoAccountModal(pendingAccountEmail);
+          } else {
+            ZF.Modal.close(document.getElementById('account-modal'));
+            openAccountNoAccountModal(pendingAccountEmail);
+          }
+        });
+      }
+
+      function openSystemModal(context) {
+        systemModalContext = context;
+        document.getElementById('system-modal').removeAttribute('hidden');
+        setTimeout(() => {
+          document.getElementById('system-has-account-btn').focus();
+        }, 50);
+      }
+
+      function closeSystemModal() {
+        document.getElementById('system-modal').setAttribute('hidden', '');
+      }
+
+      // ── Welcome back modal ────────────────────────────────────────────────
+      function wireWelcomeModal() {
+        const modal = document.getElementById('welcome-modal');
+
+        document.getElementById('welcome-cancel-btn').addEventListener('click', () => {
+          ZF.Modal.close(modal);
+        });
+
+        document.getElementById('welcome-password-btn').addEventListener('click', () => {
+          document.getElementById('welcome-password-email').textContent =
+            document.getElementById('welcome-email').textContent;
+          document.getElementById('welcome-password-input').value = '';
+          showWelcomePanel('password');
+          setTimeout(() => document.getElementById('welcome-password-input').focus(), 50);
+        });
+
+        document.getElementById('welcome-code-btn').addEventListener('click', () => {
+          document.getElementById('welcome-code-email').textContent =
+            document.getElementById('welcome-email').textContent;
+          resetOtpInputs();
+          showWelcomePanel('code');
+          setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 50);
+        });
+
+        document.getElementById('welcome-password-back-btn').addEventListener('click', () => {
+          showWelcomePanel('choose');
+        });
+
+        document.getElementById('welcome-code-back-btn').addEventListener('click', () => {
+          showWelcomePanel('choose');
+        });
+
+        document.getElementById('welcome-login-btn').addEventListener('click', () => {
+          if (!document.getElementById('welcome-password-input').value.trim()) {
+            document.getElementById('welcome-password-input').focus();
+            return;
+          }
+          ZF.Modal.close(modal);
+          handleLoginSuccess();
+        });
+
+        document.getElementById('welcome-verify-btn').addEventListener('click', () => {
+          const inputs = [...document.querySelectorAll('.otp-input')];
+          if (!inputs.every(i => /\d/.test(i.value))) {
+            inputs.find(i => !i.value)?.focus();
+            return;
+          }
+          ZF.Modal.close(modal);
+          handleLoginSuccess();
+        });
+
+        document.querySelectorAll('.otp-input').forEach((input, idx, all) => {
+          input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/g, '').slice(-1);
+            if (input.value && idx < all.length - 1) all[idx + 1].focus();
+          });
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && idx > 0) all[idx - 1].focus();
+          });
+        });
+      }
+
+      function openWelcomeModal(email) {
+        document.getElementById('welcome-email').textContent = email;
+        showWelcomePanel('choose');
+        ZF.Modal.open(document.getElementById('welcome-modal'));
+      }
+
+      function showWelcomePanel(name) {
+        ['choose', 'password', 'code'].forEach(p =>
+          document.getElementById(`welcome-${p}-panel`).setAttribute('hidden', '')
+        );
+        document.getElementById(`welcome-${name}-panel`).removeAttribute('hidden');
+      }
+
+      function resetOtpInputs() {
+        document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+      }
+
+      // ── Download no-account modal ─────────────────────────────────────────
+      function openDownloadNoAccountModal(email) {
+        document.getElementById('dna-email').textContent = email;
+        ZF.Modal.open(document.getElementById('download-no-account-modal'));
+      }
+
+      function wireDownloadNoAccountModal() {
+        document.getElementById('dna-got-it-btn').addEventListener('click', () => {
+          ZF.Modal.close(document.getElementById('download-no-account-modal'));
+          window.location.href = `inbox.html?email=${encodeURIComponent(pendingAccountEmail)}`;
+        });
+
+        document.getElementById('dna-different-email-btn').addEventListener('click', () => {
+          ZF.Modal.close(document.getElementById('download-no-account-modal'));
+          const emailModal = document.getElementById('email-modal');
+          document.getElementById('email-entry-panel').removeAttribute('hidden');
+          document.getElementById('email-sent-panel').setAttribute('hidden', '');
+          document.getElementById('email-input').value = '';
+          document.getElementById('email-error').setAttribute('hidden', '');
+          ZF.Modal.open(emailModal);
+        });
+      }
+
+      // ── Account no-account modal ──────────────────────────────────────────
+      function openAccountNoAccountModal() {
+        ZF.Modal.open(document.getElementById('account-no-account-modal'));
+      }
+
+      function wireAccountNoAccountModal() {
+        const modal = document.getElementById('account-no-account-modal');
+        document.getElementById('ana-close-x-btn').addEventListener('click', () => ZF.Modal.close(modal));
+        document.getElementById('ana-cancel-btn').addEventListener('click', () => ZF.Modal.close(modal));
+        // ana-create-btn is a no-op for now
+      }
+
+      // ── Login state + account dropdown ────────────────────────────────────
+      function handleLoginSuccess() {
+        isLoggedIn = true;
+        document.getElementById('account-btn').classList.add('icon-btn--active');
+      }
+
+      function toggleAccountDropdown() {
+        const dropdown = document.getElementById('account-dropdown');
+        if (dropdown.hasAttribute('hidden')) {
+          dropdown.removeAttribute('hidden');
+          setTimeout(() => document.addEventListener('click', closeDropdownOnOutsideClick), 0);
+        } else {
+          closeAccountDropdown();
+        }
+      }
+
+      function closeAccountDropdown() {
+        document.getElementById('account-dropdown').setAttribute('hidden', '');
+        document.removeEventListener('click', closeDropdownOnOutsideClick);
+      }
+
+      function closeDropdownOnOutsideClick(e) {
+        if (!document.getElementById('account-dropdown').contains(e.target) &&
+            e.target !== document.getElementById('account-btn')) {
+          closeAccountDropdown();
+        }
+      }
+
+      document.getElementById('account-signout-btn').addEventListener('click', () => {
+        isLoggedIn = false;
+        document.getElementById('account-btn').classList.remove('icon-btn--active');
+        closeAccountDropdown();
+      });
+
+      document.getElementById('account-my-galleries-btn').addEventListener('click', () => {
+        closeAccountDropdown();
+        window.location.href = 'my-galleries.html';
+      });
+
+      document.getElementById('account-downloads-btn').addEventListener('click', () => {
+        closeAccountDropdown();
+        window.location.href = 'download-account.html';
+      });
+
+      // Restore logged-in state when returning from account pages
+      if (ZF.URLParams.get('loggedIn') === 'true') {
+        isLoggedIn = true;
+        document.getElementById('account-btn').classList.add('icon-btn--active');
       }
 
     })();

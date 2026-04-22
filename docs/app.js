@@ -127,6 +127,7 @@ const ZF = (() => {
       bar.className = 'dev-toolbar';
       bar.innerHTML = `
         <span class="dev-toolbar-label">&#9881; DEV</span>
+        <span class="dev-toolbar-version">Vers. 1.4</span>
         <div class="dev-toolbar-actions">
           <button id="view-toggle-btn" class="dev-toolbar-btn"></button>
           <span class="dev-toolbar-divider"></span>
@@ -153,5 +154,46 @@ const ZF = (() => {
     return { init, getMode, setMode, onChange };
   })();
 
-  return { URLParams, ScrollMemory, Unsplash, Modal, ViewToggle };
+  // ─── AccountMenu ──────────────────────────────────────────────────────────────
+  // Reusable logged-in account icon + dropdown for pages that are always authenticated.
+  const AccountMenu = (() => {
+    function init({ myGalleriesUrl, downloadsUrl, signOutUrl } = {}) {
+      const btn = document.getElementById('account-btn');
+      const dropdown = document.getElementById('account-dropdown');
+      if (!btn || !dropdown) return;
+
+      btn.classList.add('icon-btn--active');
+
+      function close() {
+        dropdown.setAttribute('hidden', '');
+        document.removeEventListener('click', onOutside);
+      }
+
+      function onOutside(e) {
+        if (!dropdown.contains(e.target) && e.target !== btn) close();
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (dropdown.hasAttribute('hidden')) {
+          dropdown.removeAttribute('hidden');
+          setTimeout(() => document.addEventListener('click', onOutside), 0);
+        } else {
+          close();
+        }
+      });
+
+      const myGalBtn   = document.getElementById('account-my-galleries-btn');
+      const dlBtn      = document.getElementById('account-downloads-btn');
+      const signOutBtn = document.getElementById('account-signout-btn');
+
+      if (myGalBtn && myGalleriesUrl) myGalBtn.addEventListener('click', () => { window.location.href = myGalleriesUrl; });
+      if (dlBtn && downloadsUrl)      dlBtn.addEventListener('click',    () => { window.location.href = downloadsUrl; });
+      if (signOutBtn && signOutUrl)   signOutBtn.addEventListener('click', () => { window.location.href = signOutUrl; });
+    }
+
+    return { init };
+  })();
+
+  return { URLParams, ScrollMemory, Unsplash, Modal, ViewToggle, AccountMenu };
 })();

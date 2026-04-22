@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Downloads — Zenfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body.view-desktop #mobile-frame { max-width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="mobile-frame">
+    <div class="page-container">
+      <header class="page-header">
+        <div class="gallery-identity">
+          <h1>My Downloads</h1>
+        </div>
+        <div class="gallery-header-actions">
+          <div class="account-menu-wrapper">
+            <button class="icon-btn" id="account-btn" title="Account">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </button>
+            <div id="account-dropdown" class="account-dropdown" hidden>
+              <ul class="account-dropdown-menu">
+                <li><button class="account-dropdown-item" id="account-my-galleries-btn">My Galleries</button></li>
+                <li><button class="account-dropdown-item" id="account-favorites-btn">Favorites</button></li>
+                <li><button class="account-dropdown-item" id="account-downloads-btn">Downloads</button></li>
+                <li class="account-dropdown-divider"></li>
+                <li><button class="account-dropdown-item account-dropdown-signout" id="account-signout-btn">Sign Out</button></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="downloads-page">
+        <div class="download-item-card">
+          <div class="download-item-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </div>
+          <div class="download-item-info">
+            <div class="download-item-name">Photo Gallery</div>
+            <div class="download-item-meta">50 photos &middot; ZIP ready</div>
+          </div>
+          <button class="download-item-btn">Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    ZF.ViewToggle.init();
+    ZF.AccountMenu.init({
+      myGalleriesUrl: 'my-galleries.html',
+      downloadsUrl:   'download-account.html',
+      signOutUrl:     'index.html'
+    });
+  </script>
+</body>
+</html>
