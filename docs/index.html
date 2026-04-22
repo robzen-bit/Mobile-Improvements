@@ -625,6 +625,7 @@
       function wireDownloadNoAccountModal() {
         document.getElementById('dna-got-it-btn').addEventListener('click', () => {
           ZF.Modal.close(document.getElementById('download-no-account-modal'));
+          window.location.href = `inbox.html?email=${encodeURIComponent(pendingAccountEmail)}`;
         });
 
         document.getElementById('dna-different-email-btn').addEventListener('click', () => {
