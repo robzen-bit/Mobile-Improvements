@@ -1285,3 +1285,77 @@ body.view-mobile .dev-controls {
   color: #909090;
   border: 1px solid #383838;
 }
+
+/* =============================================================
+   WELCOME BACK MODAL
+   ============================================================= */
+.welcome-method-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-modal-outline {
+  width: 100%;
+  padding: 16px;
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #1a1a1a;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  transition: background 0.15s;
+  margin-top: 0;
+}
+
+.btn-modal-outline:hover {
+  background: #f5f5f5;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Raleway', sans-serif;
+  text-decoration: underline;
+}
+
+.btn-link:hover {
+  color: #1a1a1a;
+}
+
+/* OTP / access code inputs */
+.otp-input-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 16px 0 20px;
+}
+
+.otp-input {
+  width: 44px;
+  height: 54px;
+  border: 1px solid #1a1a1a;
+  border-radius: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  font-family: 'Raleway', sans-serif;
+  outline: none;
+  color: #1a1a1a;
+  caret-color: transparent;
+}
+
+.otp-input:focus {
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
