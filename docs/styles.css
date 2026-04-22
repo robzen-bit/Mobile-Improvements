@@ -2096,7 +2096,7 @@ body.view-mobile .dev-controls {
 .dl-dev-dropdown {
   position: absolute;
   right: 0;
-  bottom: calc(100% + 6px);
+  top: calc(100% + 4px);
   background: #1c1c1c;
   border: 1.5px dashed #c8960c;
   border-radius: 6px;
