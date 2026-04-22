@@ -166,6 +166,7 @@
       let redirectTimer = null;
       let lightboxIndex = 1;
       let pendingAccountEmail = '';
+      let systemModalContext = '';
 
       // ── Init ──────────────────────────────────────────────────────────────
       ZF.ViewToggle.init();
@@ -346,22 +347,8 @@
           return;
         }
 
-        document.getElementById('email-entry-panel').setAttribute('hidden', '');
-        document.getElementById('email-sent-panel').removeAttribute('hidden');
-        document.getElementById('email-sent-address').textContent = email;
-        sessionStorage.removeItem('zf_return_status_url');
-
-        let count = 5;
-        document.getElementById('countdown-display').textContent = count;
-        redirectTimer = setInterval(() => {
-          count--;
-          document.getElementById('countdown-display').textContent = count;
-          if (count <= 0) {
-            clearInterval(redirectTimer);
-            redirectTimer = null;
-            window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
-          }
-        }, 1000);
+        pendingAccountEmail = email;
+        openSystemModal('download');
       }
 
       // ── Account modal wiring ──────────────────────────────────────────────
@@ -418,18 +405,47 @@
       function wireSystemModal() {
         document.getElementById('system-has-account-btn').addEventListener('click', () => {
           closeSystemModal();
-          document.getElementById('account-found-email').textContent = pendingAccountEmail;
-          showAccountPanel('found');
+          if (systemModalContext === 'download') {
+            advanceDownloadFlow();
+          } else {
+            document.getElementById('account-found-email').textContent = pendingAccountEmail;
+            showAccountPanel('found');
+          }
         });
 
         document.getElementById('system-no-account-btn').addEventListener('click', () => {
           closeSystemModal();
-          document.getElementById('account-new-email').textContent = pendingAccountEmail;
-          showAccountPanel('new');
+          if (systemModalContext === 'download') {
+            advanceDownloadFlow();
+          } else {
+            document.getElementById('account-new-email').textContent = pendingAccountEmail;
+            showAccountPanel('new');
+          }
         });
       }
 
-      function openSystemModal() {
+      function advanceDownloadFlow() {
+        const email = pendingAccountEmail;
+        document.getElementById('email-entry-panel').setAttribute('hidden', '');
+        document.getElementById('email-sent-panel').removeAttribute('hidden');
+        document.getElementById('email-sent-address').textContent = email;
+        sessionStorage.removeItem('zf_return_status_url');
+
+        let count = 5;
+        document.getElementById('countdown-display').textContent = count;
+        redirectTimer = setInterval(() => {
+          count--;
+          document.getElementById('countdown-display').textContent = count;
+          if (count <= 0) {
+            clearInterval(redirectTimer);
+            redirectTimer = null;
+            window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
+          }
+        }, 1000);
+      }
+
+      function openSystemModal(context) {
+        systemModalContext = context;
         document.getElementById('system-modal').removeAttribute('hidden');
         setTimeout(() => {
           document.getElementById('system-has-account-btn').focus();
