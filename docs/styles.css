@@ -1868,7 +1868,7 @@ body.view-mobile .dev-controls {
   align-items: center;
   gap: 4px;
   font-size: 0.78rem;
-  color: #888;
+  color: #555;
   text-decoration: none;
   letter-spacing: 0.03em;
   transition: color 0.12s;
@@ -1913,7 +1913,7 @@ body.view-mobile .dev-controls {
   margin-right: 24px;
   font-size: 0.78rem;
   font-weight: 500;
-  color: #999;
+  color: #666;
   cursor: pointer;
   font-family: inherit;
   letter-spacing: 0.04em;
@@ -1964,14 +1964,14 @@ body.view-mobile .dev-controls {
 
 .dl-section-count {
   font-size: 0.7rem;
-  color: #aaa;
+  color: #777;
   letter-spacing: 0.02em;
 }
 
 .dl-section-chevron {
   display: flex;
   align-items: center;
-  color: #aaa;
+  color: #777;
   margin-left: 6px;
   transition: transform 0.2s;
 }
@@ -1992,7 +1992,7 @@ body.view-mobile .dev-controls {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #555;
+  color: #333;
   border-bottom: 1px solid #f0f0f0;
   background: #fafafa;
 }
@@ -2022,7 +2022,7 @@ body.view-mobile .dev-controls {
 
 .dl-item-meta {
   font-size: 0.68rem;
-  color: #aaa;
+  color: #777;
   margin-top: 2px;
   letter-spacing: 0.01em;
 }
