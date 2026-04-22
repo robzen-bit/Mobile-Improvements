@@ -104,21 +104,59 @@
     <!-- Account email modal — inside frame so it clips to phone bounds in mobile view -->
     <div id="account-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="account-modal-title">
       <div class="modal-card">
-        <h2 id="account-modal-title">Enter your email to continue</h2>
-        <p class="modal-subtitle">We'll check if you have an account. If not, we'll create one for you automatically.</p>
-        <div class="form-group">
-          <label for="account-email-input">Email address</label>
-          <input type="email" id="account-email-input" placeholder="you@example.com" autocomplete="email">
-          <span class="form-error" id="account-email-error" hidden></span>
+
+        <!-- Panel 1: email entry -->
+        <div id="account-entry-panel">
+          <h2 id="account-modal-title">Enter your email to continue</h2>
+          <p class="modal-subtitle">We'll check if you have an account. If not, we'll create one for you automatically.</p>
+          <div class="form-group">
+            <label for="account-email-input">Email address</label>
+            <input type="email" id="account-email-input" placeholder="you@example.com" autocomplete="email">
+            <span class="form-error" id="account-email-error" hidden></span>
+          </div>
+          <button class="btn-modal-submit" id="account-submit-btn">Continue</button>
+          <div style="margin-top:16px;text-align:right;">
+            <button class="btn btn-secondary" id="account-cancel-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
+          </div>
         </div>
-        <button class="btn-modal-submit" id="account-submit-btn">Continue</button>
-        <div style="margin-top:16px;text-align:right;">
-          <button class="btn btn-secondary" id="account-cancel-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
+
+        <!-- Panel 2: account found -->
+        <div id="account-found-panel" hidden>
+          <h2>Welcome back</h2>
+          <p class="modal-subtitle" style="margin-top:4px;">We found an account for <strong id="account-found-email"></strong>. Sign in to continue.</p>
+          <button class="btn-modal-submit">Sign In</button>
+          <div style="margin-top:16px;text-align:right;">
+            <button class="btn btn-secondary" id="account-found-close-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
+          </div>
         </div>
+
+        <!-- Panel 3: no account — new account created -->
+        <div id="account-new-panel" hidden>
+          <h2>Account Created</h2>
+          <p class="modal-subtitle" style="margin-top:4px;">We've created a new account for <strong id="account-new-email"></strong>. You're all set.</p>
+          <button class="btn-modal-submit">Continue</button>
+          <div style="margin-top:16px;text-align:right;">
+            <button class="btn btn-secondary" id="account-new-close-btn" style="font-size:0.72rem;padding:8px 16px;">Close</button>
+          </div>
+        </div>
+
       </div>
     </div><!-- /#account-modal -->
 
   </div><!-- /#mobile-frame -->
+
+  <!-- System / demo modal — outside #mobile-frame so it floats above the phone frame -->
+  <div id="system-modal" class="system-modal-overlay" hidden aria-modal="true" role="dialog">
+    <div class="system-modal-card">
+      <div class="system-badge">&#9881; SYSTEM</div>
+      <h3 class="system-modal-title">Simulating Account Lookup</h3>
+      <p class="system-modal-body">The system is checking whether an account is associated with this email address. This panel is for demo purposes only and would not be visible to a real user.</p>
+      <div class="system-modal-actions">
+        <button class="system-btn system-btn-found" id="system-has-account-btn">&#10003; Email Has an Account</button>
+        <button class="system-btn system-btn-not-found" id="system-no-account-btn">&#10007; Email Does Not Have an Account</button>
+      </div>
+    </div>
+  </div><!-- /#system-modal -->
 
   <script src="app.js"></script>
   <script>
@@ -127,6 +165,7 @@
       const RETURN_KEY = 'zf_return_status_url';
       let redirectTimer = null;
       let lightboxIndex = 1;
+      let pendingAccountEmail = '';
 
       // ── Init ──────────────────────────────────────────────────────────────
       ZF.ViewToggle.init();
@@ -135,6 +174,7 @@
       wireLightbox();
       wireModal();
       wireAccountModal();
+      wireSystemModal();
 
       // ── Immediate photo download (desktop) ────────────────────────────────
       async function downloadPhoto(index) {
@@ -331,6 +371,7 @@
         const errorEl = document.getElementById('account-email-error');
 
         document.getElementById('account-btn').addEventListener('click', () => {
+          showAccountPanel('entry');
           input.value = '';
           errorEl.setAttribute('hidden', '');
           ZF.Modal.open(modal);
@@ -339,9 +380,22 @@
         document.getElementById('account-cancel-btn').addEventListener('click', () => {
           ZF.Modal.close(modal);
         });
+        document.getElementById('account-found-close-btn').addEventListener('click', () => {
+          ZF.Modal.close(modal);
+        });
+        document.getElementById('account-new-close-btn').addEventListener('click', () => {
+          ZF.Modal.close(modal);
+        });
 
         document.getElementById('account-submit-btn').addEventListener('click', handleAccountSubmit);
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAccountSubmit(); });
+      }
+
+      function showAccountPanel(name) {
+        document.getElementById('account-entry-panel').setAttribute('hidden', '');
+        document.getElementById('account-found-panel').setAttribute('hidden', '');
+        document.getElementById('account-new-panel').setAttribute('hidden', '');
+        document.getElementById(`account-${name}-panel`).removeAttribute('hidden');
       }
 
       function handleAccountSubmit() {
@@ -356,7 +410,34 @@
           return;
         }
 
-        ZF.Modal.close(document.getElementById('account-modal'));
+        pendingAccountEmail = email;
+        openSystemModal();
+      }
+
+      // ── System / demo modal ───────────────────────────────────────────────
+      function wireSystemModal() {
+        document.getElementById('system-has-account-btn').addEventListener('click', () => {
+          closeSystemModal();
+          document.getElementById('account-found-email').textContent = pendingAccountEmail;
+          showAccountPanel('found');
+        });
+
+        document.getElementById('system-no-account-btn').addEventListener('click', () => {
+          closeSystemModal();
+          document.getElementById('account-new-email').textContent = pendingAccountEmail;
+          showAccountPanel('new');
+        });
+      }
+
+      function openSystemModal() {
+        document.getElementById('system-modal').removeAttribute('hidden');
+        setTimeout(() => {
+          document.getElementById('system-has-account-btn').focus();
+        }, 50);
+      }
+
+      function closeSystemModal() {
+        document.getElementById('system-modal').setAttribute('hidden', '');
       }
 
     })();
