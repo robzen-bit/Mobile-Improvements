@@ -78,7 +78,12 @@
                 <div class="dl-item-state" data-state="ready"><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
                 <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
-                <button class="dl-item-more-btn">&#8942;</button>
+                <div class="dl-item-ctx-wrap">
+                  <button class="dl-item-more-btn">&#8942;</button>
+                  <div class="dl-item-ctx-menu" hidden>
+                    <button class="dl-item-ctx-btn" data-action="regenerate">&#8635; Regenerate ZIP</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -94,7 +99,12 @@
                 <div class="dl-item-state" data-state="ready"><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
                 <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
-                <button class="dl-item-more-btn">&#8942;</button>
+                <div class="dl-item-ctx-wrap">
+                  <button class="dl-item-more-btn">&#8942;</button>
+                  <div class="dl-item-ctx-menu" hidden>
+                    <button class="dl-item-ctx-btn" data-action="regenerate">&#8635; Regenerate ZIP</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -110,7 +120,12 @@
                 <div class="dl-item-state" data-state="ready" hidden><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
                 <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
-                <button class="dl-item-more-btn">&#8942;</button>
+                <div class="dl-item-ctx-wrap">
+                  <button class="dl-item-more-btn">&#8942;</button>
+                  <div class="dl-item-ctx-menu" hidden>
+                    <button class="dl-item-ctx-btn" data-action="regenerate">&#8635; Regenerate ZIP</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -259,7 +274,13 @@
           if (state === 'ready') {
             const btn = target.querySelector('.dl-item-download-btn');
             if (btn) btn.classList.add('dl-item-download-btn--ready');
+            wireDownloadButtons();
           }
+        }
+        if (state === 'processing') {
+          const ts = itemEl.querySelector('.dl-item-downloaded');
+          if (ts) { ts.setAttribute('hidden', ''); ts.textContent = ''; }
+          itemEl._downloadedText = null;
         }
         if (state === 'expired') {
           const idx = galleryItems.indexOf(itemEl);
@@ -430,6 +451,35 @@
         );
       }
 
+      // ── Active item kebab menus (Regenerate ZIP) ──────────────────────────
+      function wireActiveItemMenus() {
+        galleryItems.forEach((itemEl, idx) => {
+          const wrap = itemEl.querySelector('.dl-item-ctx-wrap');
+          if (!wrap || wrap._menuWired) return;
+          wrap._menuWired = true;
+          const moreBtn = wrap.querySelector('.dl-item-more-btn');
+          const ctxMenu = wrap.querySelector('.dl-item-ctx-menu');
+          moreBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const wasHidden = ctxMenu.hasAttribute('hidden');
+            closeAllCtxMenus();
+            if (wasHidden) {
+              ctxMenu.removeAttribute('hidden');
+              setTimeout(() => document.addEventListener('click', closeAllCtxMenus), 0);
+            }
+          });
+          const regenBtn = wrap.querySelector('[data-action="regenerate"]');
+          if (regenBtn) {
+            regenBtn.addEventListener('click', () => {
+              closeAllCtxMenus();
+              clearTimeout(itemEl._autoTimer);
+              startProcessing(itemEl);
+              updateSimBtns(idx, 'processing');
+            });
+          }
+        });
+      }
+
       // ── Download timestamp ────────────────────────────────────────────────
       function formatDownloadDate(d) {
         const M = d.getMonth() + 1;
@@ -461,10 +511,9 @@
 
       // ── Init ──────────────────────────────────────────────────────────────
       updateGalleryCounts();
+      wireActiveItemMenus();
       wireDownloadButtons();
       if (galleryItems[2]) startProcessing(galleryItems[2]);
-      // Re-wire after video ZIP auto-transitions to ready (new button rendered)
-      galleryItems[2] && setTimeout(wireDownloadButtons, 5100);
 
     })();
   </script>

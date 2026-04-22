@@ -46,6 +46,15 @@ body.view-desktop #mobile-frame {
   background: #fff;
 }
 
+body.view-desktop .dl-back-bar,
+body.view-desktop .dl-header,
+body.view-desktop .dl-tabs,
+body.view-desktop .dl-content {
+  max-width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 body.view-mobile {
   background: #c8c8c8;
   display: flex;
