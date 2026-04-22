@@ -131,18 +131,65 @@
           </div>
         </div>
 
-        <!-- Panel 2: no account — new account created -->
-        <div id="account-new-panel" hidden>
-          <h2>Account Created</h2>
-          <p class="modal-subtitle" style="margin-top:4px;">We've created a new account for <strong id="account-new-email"></strong>. You're all set.</p>
-          <button class="btn-modal-submit">Continue</button>
-          <div style="margin-top:16px;text-align:right;">
-            <button class="btn btn-secondary" id="account-new-close-btn" style="font-size:0.72rem;padding:8px 16px;">Close</button>
+      </div>
+    </div><!-- /#account-modal -->
+
+    <!-- Modal 1: No account — download confirmation (triggers from download flow) -->
+    <div id="download-no-account-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+      <div class="demo-flow-stack">
+
+        <div class="modal-card">
+          <h2>Check your email to get your download</h2>
+          <p class="modal-subtitle">We didn't find an account for <strong id="dna-email"></strong>, so we sent you a link. Click it to access your download — we'll set up your free account along the way so your files are always easy to find.</p>
+          <p class="modal-supporting-note">Your download may still be processing when you arrive — if so, it'll be ready shortly. Don't see the email? Check your spam folder or try a different email address.</p>
+          <button class="btn-modal-submit" id="dna-got-it-btn">Got it</button>
+          <div style="margin-top:16px;text-align:center;">
+            <button class="btn-link" id="dna-different-email-btn">Use a different email</button>
+          </div>
+        </div>
+
+        <!-- Demo-only email preview -->
+        <div class="demo-email-preview-card">
+          <div class="demo-email-preview-header">
+            <span class="system-badge">&#9881; DEMO ONLY</span>
+          </div>
+          <div class="demo-email-meta">
+            <p><strong>Subject:</strong> Access your Zenfolio download</p>
+            <p class="demo-email-previewtext"><strong>Preview:</strong> Your files may still be processing — click to check the status and download when ready.</p>
+          </div>
+          <div class="demo-email-body">
+            <p>Hi there,</p>
+            <p>Click the button below to access your download. We'll create your free Zenfolio account using this email address and take you directly to your downloads page.</p>
+            <div class="demo-email-cta-btn">Go to My Download</div>
+            <p>Your zip file may still be processing when you arrive — if so, it'll be ready shortly and you'll be able to save it from the same page.</p>
+            <p>Your account is also where you'll find any galleries you've visited, favorites you've saved, and orders you've placed — all in one place, whenever you need them.</p>
+            <p class="demo-email-expiry">This link expires in 24 hours.</p>
+            <p>— The Zenfolio Team</p>
           </div>
         </div>
 
       </div>
-    </div><!-- /#account-modal -->
+    </div><!-- /#download-no-account-modal -->
+
+    <!-- Modal 2: No account — account creation offer (triggers from account icon flow) -->
+    <div id="account-no-account-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+      <div class="modal-card">
+        <button class="modal-close-x" id="ana-close-x-btn" aria-label="Close">&times;</button>
+        <h2>No account found for that email</h2>
+        <p class="modal-subtitle">Want to create a free account? Your Zenfolio account gives you one place to access:</p>
+        <ul class="modal-feature-list">
+          <li>Galleries you've been invited to or previously visited</li>
+          <li>Downloads — your zip files, ready when you are</li>
+          <li>Favorites you've saved across any gallery</li>
+          <li>Orders you've placed with photographers</li>
+        </ul>
+        <p class="modal-supporting-note">It's free, and it only takes a moment to set up.</p>
+        <button class="btn-modal-submit" id="ana-create-btn">Create Free Account</button>
+        <div style="margin-top:16px;text-align:center;">
+          <button class="btn-link" id="ana-cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </div><!-- /#account-no-account-modal -->
 
     <!-- Welcome back modal — user-facing, inside frame -->
     <div id="welcome-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="welcome-modal-title">
@@ -237,6 +284,8 @@
       wireAccountModal();
       wireSystemModal();
       wireWelcomeModal();
+      wireDownloadNoAccountModal();
+      wireAccountNoAccountModal();
 
       // ── Immediate photo download (desktop) ────────────────────────────────
       async function downloadPhoto(index) {
@@ -429,9 +478,6 @@
         document.getElementById('account-cancel-btn').addEventListener('click', () => {
           ZF.Modal.close(modal);
         });
-        document.getElementById('account-new-close-btn').addEventListener('click', () => {
-          ZF.Modal.close(modal);
-        });
 
         document.getElementById('account-submit-btn').addEventListener('click', handleAccountSubmit);
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAccountSubmit(); });
@@ -439,7 +485,6 @@
 
       function showAccountPanel(name) {
         document.getElementById('account-entry-panel').setAttribute('hidden', '');
-        document.getElementById('account-new-panel').setAttribute('hidden', '');
         document.getElementById(`account-${name}-panel`).removeAttribute('hidden');
       }
 
@@ -471,32 +516,13 @@
         document.getElementById('system-no-account-btn').addEventListener('click', () => {
           closeSystemModal();
           if (systemModalContext === 'download') {
-            advanceDownloadFlow();
+            ZF.Modal.close(document.getElementById('email-modal'));
+            openDownloadNoAccountModal(pendingAccountEmail);
           } else {
-            document.getElementById('account-new-email').textContent = pendingAccountEmail;
-            showAccountPanel('new');
+            ZF.Modal.close(document.getElementById('account-modal'));
+            openAccountNoAccountModal(pendingAccountEmail);
           }
         });
-      }
-
-      function advanceDownloadFlow() {
-        const email = pendingAccountEmail;
-        document.getElementById('email-entry-panel').setAttribute('hidden', '');
-        document.getElementById('email-sent-panel').removeAttribute('hidden');
-        document.getElementById('email-sent-address').textContent = email;
-        sessionStorage.removeItem('zf_return_status_url');
-
-        let count = 5;
-        document.getElementById('countdown-display').textContent = count;
-        redirectTimer = setInterval(() => {
-          count--;
-          document.getElementById('countdown-display').textContent = count;
-          if (count <= 0) {
-            clearInterval(redirectTimer);
-            redirectTimer = null;
-            window.location.href = `download-status.html?email=${encodeURIComponent(email)}`;
-          }
-        }, 1000);
       }
 
       function openSystemModal(context) {
@@ -588,6 +614,40 @@
 
       function resetOtpInputs() {
         document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+      }
+
+      // ── Download no-account modal ─────────────────────────────────────────
+      function openDownloadNoAccountModal(email) {
+        document.getElementById('dna-email').textContent = email;
+        ZF.Modal.open(document.getElementById('download-no-account-modal'));
+      }
+
+      function wireDownloadNoAccountModal() {
+        document.getElementById('dna-got-it-btn').addEventListener('click', () => {
+          ZF.Modal.close(document.getElementById('download-no-account-modal'));
+        });
+
+        document.getElementById('dna-different-email-btn').addEventListener('click', () => {
+          ZF.Modal.close(document.getElementById('download-no-account-modal'));
+          const emailModal = document.getElementById('email-modal');
+          document.getElementById('email-entry-panel').removeAttribute('hidden');
+          document.getElementById('email-sent-panel').setAttribute('hidden', '');
+          document.getElementById('email-input').value = '';
+          document.getElementById('email-error').setAttribute('hidden', '');
+          ZF.Modal.open(emailModal);
+        });
+      }
+
+      // ── Account no-account modal ──────────────────────────────────────────
+      function openAccountNoAccountModal() {
+        ZF.Modal.open(document.getElementById('account-no-account-modal'));
+      }
+
+      function wireAccountNoAccountModal() {
+        const modal = document.getElementById('account-no-account-modal');
+        document.getElementById('ana-close-x-btn').addEventListener('click', () => ZF.Modal.close(modal));
+        document.getElementById('ana-cancel-btn').addEventListener('click', () => ZF.Modal.close(modal));
+        // ana-create-btn is a no-op for now
       }
 
       // ── Login state + account dropdown ────────────────────────────────────
