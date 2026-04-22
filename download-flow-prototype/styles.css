@@ -19,6 +19,7 @@ html {
 body {
   background: #e8e8e8;
   min-height: 100vh;
+  padding-top: 44px; /* space for fixed dev toolbar */
 }
 
 [hidden] {
@@ -50,7 +51,7 @@ body.view-mobile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 0 60px;
+  padding: 40px 0 60px; /* top padding is on body via fixed toolbar rule */
 }
 
 body.view-mobile #mobile-frame {
@@ -83,20 +84,21 @@ body.view-mobile #mobile-frame::before {
 .dev-toolbar {
   width: 100%;
   background: #1a1a1a;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9000;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
   height: 36px;
   flex-shrink: 0;
-  z-index: 1000;
-  position: relative;
 }
 
 body.view-mobile .dev-toolbar {
-  /* In mobile view toolbar sits above the phone frame — still full width */
-  position: sticky;
-  top: 0;
+  /* Already sticky from base rule; no overrides needed */
 }
 
 .dev-toolbar-label {
@@ -2200,6 +2202,70 @@ body.view-mobile .dev-controls {
   padding: 3px 7px;
   border: 1px solid #e8b0b0;
   border-radius: 3px;
+}
+
+/* Simulate State panel (dev toolbar tool, outside mobile frame) */
+.simulate-panel {
+  position: fixed;
+  z-index: 9999;
+  background: #1c1c1c;
+  border: 1.5px dashed #c8960c;
+  border-radius: 6px;
+  padding: 14px 16px 12px;
+  min-width: 380px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+
+.simulate-panel-title {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #c8960c;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(200,150,12,0.3);
+}
+
+.simulate-rows { display: flex; flex-direction: column; gap: 8px; }
+
+.simulate-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.simulate-row-name {
+  font-size: 0.65rem;
+  color: #aaa;
+  letter-spacing: 0.03em;
+  min-width: 110px;
+  white-space: nowrap;
+}
+
+.simulate-row-btns { display: flex; gap: 4px; }
+
+.sim-btn {
+  padding: 4px 9px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #bbb;
+  font-size: 0.65rem;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.sim-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+.sim-btn--active {
+  color: #c8960c;
+  border-color: #c8960c;
+  background: rgba(200,150,12,0.12);
+  font-weight: 700;
 }
 
 /* =============================================================

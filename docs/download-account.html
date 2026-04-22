@@ -77,16 +77,7 @@
                 <div class="dl-item-state" data-state="ready"><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
                 <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
-                <div class="dl-item-more-wrap">
-                  <button class="dl-item-more-btn" title="Dev options">&#8942;</button>
-                  <div class="dl-dev-dropdown" hidden>
-                    <div class="dl-dev-badge">&#9881; DEV &mdash; Simulate State</div>
-                    <button class="dl-dev-state-btn" data-state="processing">Processing</button>
-                    <button class="dl-dev-state-btn dl-dev-state-btn--active" data-state="ready">Ready</button>
-                    <button class="dl-dev-state-btn" data-state="failed">Failed</button>
-                    <button class="dl-dev-state-btn" data-state="expired">Expired</button>
-                  </div>
-                </div>
+                <button class="dl-item-more-btn">&#8942;</button>
               </div>
             </div>
 
@@ -101,16 +92,7 @@
                 <div class="dl-item-state" data-state="ready"><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
                 <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
-                <div class="dl-item-more-wrap">
-                  <button class="dl-item-more-btn" title="Dev options">&#8942;</button>
-                  <div class="dl-dev-dropdown" hidden>
-                    <div class="dl-dev-badge">&#9881; DEV &mdash; Simulate State</div>
-                    <button class="dl-dev-state-btn" data-state="processing">Processing</button>
-                    <button class="dl-dev-state-btn dl-dev-state-btn--active" data-state="ready">Ready</button>
-                    <button class="dl-dev-state-btn" data-state="failed">Failed</button>
-                    <button class="dl-dev-state-btn" data-state="expired">Expired</button>
-                  </div>
-                </div>
+                <button class="dl-item-more-btn">&#8942;</button>
               </div>
             </div>
 
@@ -125,16 +107,7 @@
                 <div class="dl-item-state" data-state="ready" hidden><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
                 <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
-                <div class="dl-item-more-wrap">
-                  <button class="dl-item-more-btn" title="Dev options">&#8942;</button>
-                  <div class="dl-dev-dropdown" hidden>
-                    <div class="dl-dev-badge">&#9881; DEV &mdash; Simulate State</div>
-                    <button class="dl-dev-state-btn dl-dev-state-btn--active" data-state="processing">Processing</button>
-                    <button class="dl-dev-state-btn" data-state="ready">Ready</button>
-                    <button class="dl-dev-state-btn" data-state="failed">Failed</button>
-                    <button class="dl-dev-state-btn" data-state="expired">Expired</button>
-                  </div>
-                </div>
+                <button class="dl-item-more-btn">&#8942;</button>
               </div>
             </div>
 
@@ -266,6 +239,40 @@
 
   </div><!-- /#mobile-frame -->
 
+  <!-- Simulate State panel — dev system tool, outside #mobile-frame -->
+  <div id="simulate-panel" class="simulate-panel" hidden>
+    <div class="simulate-panel-title">&#9881; Simulate State &mdash; Photo Gallery ZIP items</div>
+    <div class="simulate-rows">
+      <div class="simulate-row">
+        <span class="simulate-row-name">Full gallery ZIP</span>
+        <div class="simulate-row-btns" data-item="0">
+          <button class="sim-btn" data-state="processing">Processing</button>
+          <button class="sim-btn sim-btn--active" data-state="ready">Ready</button>
+          <button class="sim-btn" data-state="failed">Failed</button>
+          <button class="sim-btn" data-state="expired">Expired</button>
+        </div>
+      </div>
+      <div class="simulate-row">
+        <span class="simulate-row-name">Limited set ZIP</span>
+        <div class="simulate-row-btns" data-item="1">
+          <button class="sim-btn" data-state="processing">Processing</button>
+          <button class="sim-btn sim-btn--active" data-state="ready">Ready</button>
+          <button class="sim-btn" data-state="failed">Failed</button>
+          <button class="sim-btn" data-state="expired">Expired</button>
+        </div>
+      </div>
+      <div class="simulate-row">
+        <span class="simulate-row-name">Video ZIP</span>
+        <div class="simulate-row-btns" data-item="2">
+          <button class="sim-btn sim-btn--active" data-state="processing">Processing</button>
+          <button class="sim-btn" data-state="ready">Ready</button>
+          <button class="sim-btn" data-state="failed">Failed</button>
+          <button class="sim-btn" data-state="expired">Expired</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
   <script>
     ZF.ViewToggle.init();
@@ -276,6 +283,99 @@
     });
 
     (function () {
+      const galleryItems = [...document.querySelectorAll('#section-gallery-body .dl-item')];
+
+      // ── Per-item state machine ─────────────────────────────────────────────
+      function setItemState(itemEl, state) {
+        itemEl.querySelectorAll('.dl-item-state').forEach(s => s.setAttribute('hidden', ''));
+        const target = itemEl.querySelector(`.dl-item-state[data-state="${state}"]`);
+        if (target) {
+          target.removeAttribute('hidden');
+          if (state === 'ready') {
+            const btn = target.querySelector('.dl-item-download-btn');
+            if (btn) btn.classList.add('dl-item-download-btn--ready');
+          }
+        }
+      }
+
+      function startProcessing(itemEl) {
+        clearTimeout(itemEl._autoTimer);
+        setItemState(itemEl, 'processing');
+        itemEl._autoTimer = setTimeout(() => {
+          setItemState(itemEl, 'ready');
+          updateSimBtns(galleryItems.indexOf(itemEl), 'ready');
+        }, 5000);
+      }
+
+      // ── Retry buttons inside items ─────────────────────────────────────────
+      galleryItems.forEach((itemEl, idx) => {
+        const retry = itemEl.querySelector('.dl-item-retry-btn');
+        if (retry) retry.addEventListener('click', () => {
+          startProcessing(itemEl);
+          updateSimBtns(idx, 'processing');
+        });
+      });
+
+      // ── Inject "Simulate State" button into dev toolbar ────────────────────
+      const toolbarActions = document.querySelector('#dev-toolbar .dev-toolbar-actions');
+      if (toolbarActions) {
+        const divider = document.createElement('span');
+        divider.className = 'dev-toolbar-divider';
+        const simBtn = document.createElement('button');
+        simBtn.id = 'simulate-state-btn';
+        simBtn.className = 'dev-toolbar-btn';
+        simBtn.innerHTML = '&#9654; Simulate State';
+        toolbarActions.insertBefore(divider, toolbarActions.firstChild);
+        toolbarActions.insertBefore(simBtn, toolbarActions.firstChild);
+
+        const panel = document.getElementById('simulate-panel');
+
+        simBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (panel.hasAttribute('hidden')) {
+            const rect = simBtn.getBoundingClientRect();
+            panel.style.top  = (rect.bottom + 6) + 'px';
+            panel.style.left = Math.max(8, rect.left - 340 + rect.width) + 'px';
+            panel.removeAttribute('hidden');
+            setTimeout(() => document.addEventListener('click', closeSimPanel), 0);
+          } else {
+            closeSimPanel();
+          }
+        });
+      }
+
+      function closeSimPanel() {
+        document.getElementById('simulate-panel').setAttribute('hidden', '');
+        document.removeEventListener('click', closeSimPanel);
+      }
+
+      // ── Simulate panel button wiring ───────────────────────────────────────
+      document.querySelectorAll('.simulate-row-btns').forEach(rowBtns => {
+        const idx = parseInt(rowBtns.dataset.item);
+        rowBtns.querySelectorAll('.sim-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const state = btn.dataset.state;
+            updateSimBtns(idx, state);
+            const itemEl = galleryItems[idx];
+            if (!itemEl) return;
+            if (state === 'processing') {
+              startProcessing(itemEl);
+            } else {
+              clearTimeout(itemEl._autoTimer);
+              setItemState(itemEl, state);
+            }
+          });
+        });
+      });
+
+      function updateSimBtns(idx, activeState) {
+        const rowBtns = document.querySelector(`.simulate-row-btns[data-item="${idx}"]`);
+        if (!rowBtns) return;
+        rowBtns.querySelectorAll('.sim-btn').forEach(b =>
+          b.classList.toggle('sim-btn--active', b.dataset.state === activeState)
+        );
+      }
 
       // ── Tabs ───────────────────────────────────────────────────────────────
       document.getElementById('tab-active').addEventListener('click', () => {
@@ -310,72 +410,8 @@
         });
       });
 
-      // ── Per-item state machine (mirrors download-status.html logic) ─────────
-      function setItemState(itemEl, state) {
-        itemEl.querySelectorAll('.dl-item-state').forEach(s => s.setAttribute('hidden', ''));
-        const target = itemEl.querySelector(`.dl-item-state[data-state="${state}"]`);
-        if (target) {
-          target.removeAttribute('hidden');
-          if (state === 'ready') {
-            const btn = target.querySelector('.dl-item-download-btn');
-            if (btn) btn.classList.add('dl-item-download-btn--ready');
-          }
-        }
-        itemEl.querySelectorAll('.dl-dev-state-btn').forEach(b => {
-          b.classList.toggle('dl-dev-state-btn--active', b.dataset.state === state);
-        });
-      }
-
-      function startProcessing(itemEl) {
-        clearTimeout(itemEl._autoTimer);
-        setItemState(itemEl, 'processing');
-        itemEl._autoTimer = setTimeout(() => setItemState(itemEl, 'ready'), 5000);
-      }
-
-      // ── Wire dev dropdowns — Photo Gallery items only ─────────────────────
-      function closeAllDevDropdowns() {
-        document.querySelectorAll('.dl-dev-dropdown').forEach(d => d.setAttribute('hidden', ''));
-        document.removeEventListener('click', closeAllDevDropdowns);
-      }
-
-      document.querySelectorAll('#section-gallery-body .dl-item-more-wrap').forEach(wrap => {
-        const moreBtn  = wrap.querySelector('.dl-item-more-btn');
-        const dropdown = wrap.querySelector('.dl-dev-dropdown');
-        const itemEl   = wrap.closest('.dl-item');
-
-        moreBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const isOpen = !dropdown.hasAttribute('hidden');
-          closeAllDevDropdowns();
-          if (!isOpen) {
-            dropdown.removeAttribute('hidden');
-            setTimeout(() => document.addEventListener('click', closeAllDevDropdowns), 0);
-          }
-        });
-
-        dropdown.querySelectorAll('.dl-dev-state-btn').forEach(stateBtn => {
-          stateBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const state = stateBtn.dataset.state;
-            dropdown.setAttribute('hidden', '');
-            if (state === 'processing') {
-              startProcessing(itemEl);
-            } else {
-              clearTimeout(itemEl._autoTimer);
-              setItemState(itemEl, state);
-            }
-          });
-        });
-
-        const retryBtn = itemEl.querySelector('.dl-item-retry-btn');
-        if (retryBtn) retryBtn.addEventListener('click', () => startProcessing(itemEl));
-      });
-
       // ── Auto-transition Video ZIP on page load ────────────────────────────
-      const videoZipItem = document.querySelector(
-        '#section-gallery-body .dl-item:last-child'
-      );
-      if (videoZipItem) startProcessing(videoZipItem);
+      if (galleryItems[2]) startProcessing(galleryItems[2]);
 
     })();
   </script>
