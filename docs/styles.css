@@ -2092,6 +2092,50 @@ body.view-mobile .dev-controls {
 
 .dl-item-more-btn:hover { background: #f0f0f0; color: #333; }
 
+/* User-facing context menu (expired items kebab) */
+.dl-item-ctx-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.dl-item-ctx-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 4px 0;
+  min-width: 192px;
+  z-index: 800;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+}
+
+.dl-item-ctx-btn {
+  display: block;
+  width: 100%;
+  padding: 9px 14px;
+  background: none;
+  border: none;
+  color: #1a1a1a;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dl-item-ctx-btn:hover { background: #f5f5f5; }
+
+/* Empty state for expired tab */
+.dl-empty-state {
+  padding: 28px 16px;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.78rem;
+}
+
 /* Dev state dropdown */
 .dl-dev-dropdown {
   position: absolute;

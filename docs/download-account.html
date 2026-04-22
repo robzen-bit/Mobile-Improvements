@@ -44,7 +44,7 @@
     <!-- Tabs -->
     <div class="dl-tabs">
       <button class="dl-tab dl-tab--active" id="tab-active">Active (5)</button>
-      <button class="dl-tab" id="tab-expired">Expired (1)</button>
+      <button class="dl-tab" id="tab-expired">Expired (0)</button>
     </div>
 
     <!-- Active content -->
@@ -208,30 +208,22 @@
 
     <!-- Expired content -->
     <div class="dl-content" id="dl-expired-content" hidden>
-      <div class="dl-section">
-        <button class="dl-section-header">
+      <div class="dl-section" id="expired-gallery-section">
+        <button class="dl-section-header" id="expired-gallery-toggle">
           <span class="dl-section-icon">
             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           </span>
           <span class="dl-section-title">Gallery Downloads</span>
-          <span class="dl-section-count">1 gallery</span>
+          <span class="dl-section-count" id="expired-gallery-count">0 galleries</span>
           <span class="dl-section-chevron">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
           </span>
         </button>
-        <div class="dl-section-body">
+        <div class="dl-section-body" id="expired-gallery-body">
           <div class="dl-group-card">
             <div class="dl-group-name">Photo Gallery</div>
-            <div class="dl-item">
-              <div class="dl-item-info">
-                <div class="dl-item-name">Full gallery ZIP</div>
-                <div class="dl-item-meta dl-item-meta--expired">254 Files &middot; 1.2 GB &middot; High Resolution &middot; Expired 30 days ago</div>
-              </div>
-              <div class="dl-item-actions">
-                <span class="dl-item-expired-badge">Expired</span>
-                <button class="dl-item-more-btn" title="More options">&#8942;</button>
-              </div>
-            </div>
+            <div id="expired-gallery-items"></div>
+            <div id="expired-empty" class="dl-empty-state">No expired downloads</div>
           </div>
         </div>
       </div>
@@ -284,6 +276,31 @@
 
     (function () {
       const galleryItems = [...document.querySelectorAll('#section-gallery-body .dl-item')];
+      const ITEM_NAMES = ['Full gallery ZIP', 'Limited set ZIP', 'Video ZIP'];
+      const ITEM_METAS = [
+        '254 Files \u00b7 1.2 GB \u00b7 High Resolution',
+        '254 Files \u00b7 1.2 GB \u00b7 High Resolution',
+        '1 File \u00b7 2.4 GB \u00b7 High Resolution'
+      ];
+      const expiredSet = new Set();
+
+      // ── Tab counts ────────────────────────────────────────────────────────
+      function updateTabCounts() {
+        const activeCount = (galleryItems.length - expiredSet.size) + 1 + 1;
+        document.getElementById('tab-active').textContent  = `Active (${activeCount})`;
+        document.getElementById('tab-expired').textContent = `Expired (${expiredSet.size})`;
+        const countEl = document.getElementById('expired-gallery-count');
+        if (countEl) countEl.textContent = expiredSet.size + (expiredSet.size === 1 ? ' gallery' : ' galleries');
+      }
+
+      // ── Switch tabs ───────────────────────────────────────────────────────
+      function switchToTab(tab) {
+        const isActive = tab === 'active';
+        document.getElementById('tab-active').classList.toggle('dl-tab--active', isActive);
+        document.getElementById('tab-expired').classList.toggle('dl-tab--active', !isActive);
+        document.getElementById('dl-active-content').toggleAttribute('hidden', !isActive);
+        document.getElementById('dl-expired-content').toggleAttribute('hidden', isActive);
+      }
 
       // ── Per-item state machine ─────────────────────────────────────────────
       function setItemState(itemEl, state) {
@@ -296,15 +313,94 @@
             if (btn) btn.classList.add('dl-item-download-btn--ready');
           }
         }
+        if (state === 'expired') {
+          const idx = galleryItems.indexOf(itemEl);
+          if (idx !== -1) setTimeout(() => moveToExpired(idx), 200);
+        }
       }
 
-      function startProcessing(itemEl) {
+      function startProcessing(itemEl, durationMs) {
         clearTimeout(itemEl._autoTimer);
         setItemState(itemEl, 'processing');
         itemEl._autoTimer = setTimeout(() => {
           setItemState(itemEl, 'ready');
           updateSimBtns(galleryItems.indexOf(itemEl), 'ready');
-        }, 5000);
+        }, durationMs || 5000);
+      }
+
+      // ── Expired tab: move / render / restore ──────────────────────────────
+      function moveToExpired(idx) {
+        expiredSet.add(idx);
+        galleryItems[idx].setAttribute('hidden', '');
+        renderExpiredItems();
+        updateTabCounts();
+        switchToTab('expired');
+      }
+
+      function renderExpiredItems() {
+        const container = document.getElementById('expired-gallery-items');
+        const emptyEl   = document.getElementById('expired-empty');
+        container.innerHTML = '';
+        if (expiredSet.size === 0) {
+          emptyEl.removeAttribute('hidden');
+          return;
+        }
+        emptyEl.setAttribute('hidden', '');
+        expiredSet.forEach(idx => container.appendChild(buildExpiredItemEl(idx)));
+      }
+
+      function buildExpiredItemEl(idx) {
+        const div = document.createElement('div');
+        div.className = 'dl-item';
+        div.innerHTML = `
+          <div class="dl-item-info">
+            <div class="dl-item-name">${ITEM_NAMES[idx]}</div>
+            <div class="dl-item-meta dl-item-meta--expired">${ITEM_METAS[idx]} &middot; Expired 30 days ago</div>
+          </div>
+          <div class="dl-item-actions">
+            <span class="dl-item-expired-badge">Expired</span>
+            <div class="dl-item-ctx-wrap">
+              <button class="dl-item-more-btn" title="More options">&#8942;</button>
+              <div class="dl-item-ctx-menu" hidden>
+                <button class="dl-item-ctx-btn" data-action="request-new">&#8635; Request New Download</button>
+              </div>
+            </div>
+          </div>`;
+        const moreBtn = div.querySelector('.dl-item-more-btn');
+        const ctxMenu = div.querySelector('.dl-item-ctx-menu');
+        moreBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const wasHidden = ctxMenu.hasAttribute('hidden');
+          closeAllCtxMenus();
+          if (wasHidden) {
+            ctxMenu.removeAttribute('hidden');
+            setTimeout(() => document.addEventListener('click', closeAllCtxMenus), 0);
+          }
+        });
+        div.querySelector('[data-action="request-new"]').addEventListener('click', () => {
+          requestNewDownload(idx);
+        });
+        return div;
+      }
+
+      function closeAllCtxMenus() {
+        document.querySelectorAll('.dl-item-ctx-menu').forEach(m => m.setAttribute('hidden', ''));
+        document.removeEventListener('click', closeAllCtxMenus);
+      }
+
+      function requestNewDownload(idx) {
+        expiredSet.delete(idx);
+        renderExpiredItems();
+        updateTabCounts();
+        galleryItems[idx].removeAttribute('hidden');
+        switchToTab('active');
+        clearTimeout(galleryItems[idx]._autoTimer);
+        setItemState(galleryItems[idx], 'processing');
+        updateSimBtns(idx, 'processing');
+        galleryItems[idx]._autoTimer = setTimeout(() => {
+          setItemState(galleryItems[idx], 'ready');
+          updateSimBtns(idx, 'ready');
+        }, 3000);
       }
 
       // ── Retry buttons inside items ─────────────────────────────────────────
@@ -378,19 +474,8 @@
       }
 
       // ── Tabs ───────────────────────────────────────────────────────────────
-      document.getElementById('tab-active').addEventListener('click', () => {
-        document.getElementById('tab-active').classList.add('dl-tab--active');
-        document.getElementById('tab-expired').classList.remove('dl-tab--active');
-        document.getElementById('dl-active-content').removeAttribute('hidden');
-        document.getElementById('dl-expired-content').setAttribute('hidden', '');
-      });
-
-      document.getElementById('tab-expired').addEventListener('click', () => {
-        document.getElementById('tab-expired').classList.add('dl-tab--active');
-        document.getElementById('tab-active').classList.remove('dl-tab--active');
-        document.getElementById('dl-expired-content').removeAttribute('hidden');
-        document.getElementById('dl-active-content').setAttribute('hidden', '');
-      });
+      document.getElementById('tab-active').addEventListener('click', () => switchToTab('active'));
+      document.getElementById('tab-expired').addEventListener('click', () => switchToTab('expired'));
 
       // ── Section collapse / expand ──────────────────────────────────────────
       ['gallery', 'favsets', 'ecom'].forEach(key => {
@@ -410,7 +495,25 @@
         });
       });
 
-      // ── Auto-transition Video ZIP on page load ────────────────────────────
+      // ── Expired section collapse ───────────────────────────────────────────
+      const expiredToggle = document.getElementById('expired-gallery-toggle');
+      const expiredBody   = document.getElementById('expired-gallery-body');
+      const expiredSect   = document.getElementById('expired-gallery-section');
+      if (expiredToggle && expiredBody) {
+        expiredToggle.addEventListener('click', () => {
+          const collapsed = expiredBody.hasAttribute('hidden');
+          if (collapsed) {
+            expiredBody.removeAttribute('hidden');
+            expiredSect.classList.remove('dl-section--collapsed');
+          } else {
+            expiredBody.setAttribute('hidden', '');
+            expiredSect.classList.add('dl-section--collapsed');
+          }
+        });
+      }
+
+      // ── Init ───────────────────────────────────────────────────────────────
+      updateTabCounts();
       if (galleryItems[2]) startProcessing(galleryItems[2]);
 
     })();
