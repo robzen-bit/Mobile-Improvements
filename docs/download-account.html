@@ -45,7 +45,7 @@
     <div class="dl-tabs dl-tabs--fill">
       <button class="dl-tab dl-tab--active" id="tab-gallery">Gallery</button>
       <button class="dl-tab" id="tab-favorites">Favorites</button>
-      <button class="dl-tab" id="tab-ecom">E-com</button>
+      <button class="dl-tab" id="tab-ecom">Orders</button>
     </div>
 
     <!-- ═══════════════════════════════════════════
@@ -221,11 +221,14 @@
         '1 File \u00b7 2.4 GB \u00b7 High Resolution'
       ];
       const expiredSet = new Set();
+      const hasAccount = ZF.URLParams.get('hasAccount') === 'true';
+      // Static previous-gallery expired item count (Smith Family Portraits, shown when hasAccount)
+      const staticExpiredCount = hasAccount ? 1 : 0;
 
       // ── Section counts ────────────────────────────────────────────────────
       function updateGalleryCounts() {
         const active  = galleryItems.length - expiredSet.size;
-        const expired = expiredSet.size;
+        const expired = expiredSet.size + staticExpiredCount;
         document.getElementById('gallery-active-count').textContent  = active  + ' download' + (active  !== 1 ? 's' : '');
         document.getElementById('gallery-expired-count').textContent = expired + ' download' + (expired !== 1 ? 's' : '');
       }
@@ -331,9 +334,9 @@
           <div class="dl-item-info">
             <div class="dl-item-name">${ITEM_NAMES[idx]}</div>
             <div class="dl-item-meta dl-item-meta--expired">${ITEM_METAS[idx]} &middot; Expired 30 days ago</div>
+            ${dlText ? `<div class="dl-item-downloaded" style="margin-top:2px">${dlText}</div>` : ''}
           </div>
           <div class="dl-item-actions">
-            <span class="dl-item-downloaded"${dlText ? '' : ' hidden'}>${dlText}</span>
             <span class="dl-item-expired-badge">Expired</span>
             <div class="dl-item-ctx-wrap">
               <button class="dl-item-more-btn" title="More options">&#8942;</button>
@@ -509,11 +512,99 @@
         });
       }
 
+      // ── hasAccount inject helpers ─────────────────────────────────────────
+      function injectPreviousGalleryExpired() {
+        const expiredBody = document.getElementById('gallery-expired-body');
+        const prevCard = document.createElement('div');
+        prevCard.className = 'dl-group-card';
+        prevCard.innerHTML = `
+          <div class="dl-group-name">Smith Family Portraits</div>
+          <div class="dl-item">
+            <div class="dl-item-info">
+              <div class="dl-item-name">Full gallery ZIP</div>
+              <div class="dl-item-meta dl-item-meta--expired">318 Files \u00b7 2.1 GB \u00b7 High Resolution \u00b7 Expired 45 days ago</div>
+              <div class="dl-item-downloaded" style="margin-top:2px">Downloaded: 11/2/25 3:47pm</div>
+            </div>
+            <div class="dl-item-actions">
+              <span class="dl-item-expired-badge">Expired</span>
+              <div class="dl-item-ctx-wrap">
+                <button class="dl-item-more-btn" title="More options">&#8942;</button>
+                <div class="dl-item-ctx-menu" hidden>
+                  <button class="dl-item-ctx-btn" data-action="request-new">&#8635; Request New Download</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        const moreBtn = prevCard.querySelector('.dl-item-more-btn');
+        const ctxMenu = prevCard.querySelector('.dl-item-ctx-menu');
+        moreBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const wasHidden = ctxMenu.hasAttribute('hidden');
+          closeAllCtxMenus();
+          if (wasHidden) {
+            ctxMenu.removeAttribute('hidden');
+            setTimeout(() => document.addEventListener('click', closeAllCtxMenus), 0);
+          }
+        });
+        prevCard.querySelector('[data-action="request-new"]').addEventListener('click', () => {
+          closeAllCtxMenus();
+          const badge = prevCard.querySelector('.dl-item-expired-badge');
+          badge.textContent = 'Requesting\u2026';
+          setTimeout(() => { badge.textContent = 'Expired'; }, 3000);
+        });
+        expiredBody.appendChild(prevCard);
+      }
+
+      const DL_BTN_SVG = `<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+
+      function makeStaticDlItem(name, meta, downloadedText) {
+        return `<div class="dl-item">
+          <div class="dl-item-info">
+            <div class="dl-item-name">${name}</div>
+            <div class="dl-item-meta">${meta}</div>
+            <div class="dl-item-downloaded" style="margin-top:2px">${downloadedText}</div>
+          </div>
+          <div class="dl-item-actions">
+            <button class="dl-item-download-btn dl-item-download-btn--ready" title="Download">${DL_BTN_SVG}</button>
+          </div>
+        </div>`;
+      }
+
+      function injectFavoritesContent() {
+        const content = document.getElementById('dl-favorites-content');
+        content.innerHTML = `<div class="dl-group-card">
+          <div class="dl-group-name">Favorite Sets</div>
+          ${makeStaticDlItem('Beach Sunrise Set', '42 Files \u00b7 380 MB \u00b7 High Resolution \u00b7 Expires in 7 days', 'Downloaded: 3/18/26 9:22am')}
+          ${makeStaticDlItem('Mountain Landscapes Set', '28 Files \u00b7 210 MB \u00b7 High Resolution \u00b7 Expires in 3 days', 'Downloaded: 4/1/26 2:15pm')}
+        </div>`;
+        wireDownloadButtons();
+      }
+
+      function injectOrdersContent() {
+        const content = document.getElementById('dl-ecom-content');
+        content.innerHTML = `<div class="dl-group-card">
+          <div class="dl-group-name">Print Orders</div>
+          ${makeStaticDlItem('Holiday Card Prints (25 cards)', '25 Files \u00b7 PDF \u00b7 Print Ready \u00b7 Expires in 30 days', 'Downloaded: 12/10/25 4:22pm')}
+          ${makeStaticDlItem('8\u00d710 Canvas Print', '1 File \u00b7 TIFF \u00b7 Print Ready \u00b7 Expires in 14 days', 'Downloaded: 2/28/26 9:05am')}
+        </div>`;
+        wireDownloadButtons();
+      }
+
       // ── Init ──────────────────────────────────────────────────────────────
       updateGalleryCounts();
       wireActiveItemMenus();
       wireDownloadButtons();
-      if (galleryItems[2]) startProcessing(galleryItems[2]);
+
+      if (hasAccount) {
+        galleryItems.forEach(item => startProcessing(item));
+        injectPreviousGalleryExpired();
+        injectFavoritesContent();
+        injectOrdersContent();
+        document.getElementById('gallery-expired-body').removeAttribute('hidden');
+        document.getElementById('gallery-expired-wrap').classList.remove('dl-section--collapsed');
+      } else {
+        if (galleryItems[2]) startProcessing(galleryItems[2]);
+      }
 
     })();
   </script>
