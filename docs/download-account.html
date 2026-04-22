@@ -222,7 +222,7 @@
       const expiredSet = new Set();
       const hasAccount = ZF.URLParams.get('hasAccount') === 'true';
       // Static previous-gallery expired item count (Smith Family Portraits, shown when hasAccount)
-      const staticExpiredCount = hasAccount ? 1 : 0;
+      let staticExpiredCount = hasAccount ? 1 : 0;
 
       // ── Section counts ────────────────────────────────────────────────────
       function updateGalleryCounts() {
@@ -547,9 +547,15 @@
         });
         prevCard.querySelector('[data-action="request-new"]').addEventListener('click', () => {
           closeAllCtxMenus();
-          const badge = prevCard.querySelector('.dl-item-expired-badge');
-          badge.textContent = 'Requesting\u2026';
-          setTimeout(() => { badge.textContent = 'Expired'; }, 3000);
+          // Replace actions area with a processing spinner
+          const actions = prevCard.querySelector('.dl-item-actions');
+          actions.innerHTML = `<div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing\u2026</span></div>`;
+          // After 3s remove the card entirely and update the expired count
+          setTimeout(() => {
+            staticExpiredCount = 0;
+            prevCard.remove();
+            updateGalleryCounts();
+          }, 3000);
         });
         expiredBody.appendChild(prevCard);
       }
