@@ -120,17 +120,7 @@
           </div>
         </div>
 
-        <!-- Panel 2: account found -->
-        <div id="account-found-panel" hidden>
-          <h2>Welcome back</h2>
-          <p class="modal-subtitle" style="margin-top:4px;">We found an account for <strong id="account-found-email"></strong>. Sign in to continue.</p>
-          <button class="btn-modal-submit">Sign In</button>
-          <div style="margin-top:16px;text-align:right;">
-            <button class="btn btn-secondary" id="account-found-close-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
-          </div>
-        </div>
-
-        <!-- Panel 3: no account — new account created -->
+        <!-- Panel 2: no account — new account created -->
         <div id="account-new-panel" hidden>
           <h2>Account Created</h2>
           <p class="modal-subtitle" style="margin-top:4px;">We've created a new account for <strong id="account-new-email"></strong>. You're all set.</p>
@@ -142,6 +132,58 @@
 
       </div>
     </div><!-- /#account-modal -->
+
+    <!-- Welcome back modal — user-facing, inside frame -->
+    <div id="welcome-modal" class="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="welcome-modal-title">
+      <div class="modal-card">
+
+        <!-- Panel 1: choose login method -->
+        <div id="welcome-choose-panel">
+          <h2 id="welcome-modal-title">Welcome back</h2>
+          <p class="modal-subtitle">Signing in as <strong id="welcome-email"></strong></p>
+          <div class="welcome-method-btns">
+            <button class="btn-modal-submit" id="welcome-password-btn">Log in with a password</button>
+            <button class="btn-modal-outline" id="welcome-code-btn">Request an access code</button>
+          </div>
+          <div style="margin-top:16px;text-align:right;">
+            <button class="btn btn-secondary" id="welcome-cancel-btn" style="font-size:0.72rem;padding:8px 16px;">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Panel 2: password login -->
+        <div id="welcome-password-panel" hidden>
+          <h2>Enter your password</h2>
+          <p class="modal-subtitle">Signing in as <strong id="welcome-password-email"></strong></p>
+          <div class="form-group">
+            <label for="welcome-password-input">Password</label>
+            <input type="password" id="welcome-password-input" placeholder="Enter your password" autocomplete="current-password">
+          </div>
+          <button class="btn-modal-submit" id="welcome-login-btn">Log in</button>
+          <div style="margin-top:16px;">
+            <button class="btn-link" id="welcome-password-back-btn">&#8592; Back</button>
+          </div>
+        </div>
+
+        <!-- Panel 3: access code -->
+        <div id="welcome-code-panel" hidden>
+          <h2>Enter your access code</h2>
+          <p class="modal-subtitle">We sent a 6-digit code to <strong id="welcome-code-email"></strong></p>
+          <div class="otp-input-group">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+            <input class="otp-input" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]">
+          </div>
+          <button class="btn-modal-submit" id="welcome-verify-btn">Verify</button>
+          <div style="margin-top:16px;">
+            <button class="btn-link" id="welcome-code-back-btn">&#8592; Back</button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /#welcome-modal -->
 
   </div><!-- /#mobile-frame -->
 
@@ -182,6 +224,7 @@
       wireModal();
       wireAccountModal();
       wireSystemModal();
+      wireWelcomeModal();
 
       // ── Immediate photo download (desktop) ────────────────────────────────
       async function downloadPhoto(index) {
@@ -369,9 +412,6 @@
         document.getElementById('account-cancel-btn').addEventListener('click', () => {
           ZF.Modal.close(modal);
         });
-        document.getElementById('account-found-close-btn').addEventListener('click', () => {
-          ZF.Modal.close(modal);
-        });
         document.getElementById('account-new-close-btn').addEventListener('click', () => {
           ZF.Modal.close(modal);
         });
@@ -382,7 +422,6 @@
 
       function showAccountPanel(name) {
         document.getElementById('account-entry-panel').setAttribute('hidden', '');
-        document.getElementById('account-found-panel').setAttribute('hidden', '');
         document.getElementById('account-new-panel').setAttribute('hidden', '');
         document.getElementById(`account-${name}-panel`).removeAttribute('hidden');
       }
@@ -400,19 +439,16 @@
         }
 
         pendingAccountEmail = email;
-        openSystemModal();
+        openSystemModal('account');
       }
 
       // ── System / demo modal ───────────────────────────────────────────────
       function wireSystemModal() {
         document.getElementById('system-has-account-btn').addEventListener('click', () => {
           closeSystemModal();
-          if (systemModalContext === 'download') {
-            advanceDownloadFlow();
-          } else {
-            document.getElementById('account-found-email').textContent = pendingAccountEmail;
-            showAccountPanel('found');
-          }
+          const triggerModal = document.getElementById(systemModalContext === 'download' ? 'email-modal' : 'account-modal');
+          ZF.Modal.close(triggerModal);
+          openWelcomeModal(pendingAccountEmail);
         });
 
         document.getElementById('system-no-account-btn').addEventListener('click', () => {
@@ -456,6 +492,83 @@
 
       function closeSystemModal() {
         document.getElementById('system-modal').setAttribute('hidden', '');
+      }
+
+      // ── Welcome back modal ────────────────────────────────────────────────
+      function wireWelcomeModal() {
+        const modal = document.getElementById('welcome-modal');
+
+        document.getElementById('welcome-cancel-btn').addEventListener('click', () => {
+          ZF.Modal.close(modal);
+        });
+
+        document.getElementById('welcome-password-btn').addEventListener('click', () => {
+          document.getElementById('welcome-password-email').textContent =
+            document.getElementById('welcome-email').textContent;
+          document.getElementById('welcome-password-input').value = '';
+          showWelcomePanel('password');
+          setTimeout(() => document.getElementById('welcome-password-input').focus(), 50);
+        });
+
+        document.getElementById('welcome-code-btn').addEventListener('click', () => {
+          document.getElementById('welcome-code-email').textContent =
+            document.getElementById('welcome-email').textContent;
+          resetOtpInputs();
+          showWelcomePanel('code');
+          setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 50);
+        });
+
+        document.getElementById('welcome-password-back-btn').addEventListener('click', () => {
+          showWelcomePanel('choose');
+        });
+
+        document.getElementById('welcome-code-back-btn').addEventListener('click', () => {
+          showWelcomePanel('choose');
+        });
+
+        document.getElementById('welcome-login-btn').addEventListener('click', () => {
+          if (!document.getElementById('welcome-password-input').value.trim()) {
+            document.getElementById('welcome-password-input').focus();
+            return;
+          }
+          ZF.Modal.close(modal);
+        });
+
+        document.getElementById('welcome-verify-btn').addEventListener('click', () => {
+          const inputs = [...document.querySelectorAll('.otp-input')];
+          if (!inputs.every(i => /\d/.test(i.value))) {
+            inputs.find(i => !i.value)?.focus();
+            return;
+          }
+          ZF.Modal.close(modal);
+        });
+
+        document.querySelectorAll('.otp-input').forEach((input, idx, all) => {
+          input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/g, '').slice(-1);
+            if (input.value && idx < all.length - 1) all[idx + 1].focus();
+          });
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && idx > 0) all[idx - 1].focus();
+          });
+        });
+      }
+
+      function openWelcomeModal(email) {
+        document.getElementById('welcome-email').textContent = email;
+        showWelcomePanel('choose');
+        ZF.Modal.open(document.getElementById('welcome-modal'));
+      }
+
+      function showWelcomePanel(name) {
+        ['choose', 'password', 'code'].forEach(p =>
+          document.getElementById(`welcome-${p}-panel`).setAttribute('hidden', '')
+        );
+        document.getElementById(`welcome-${name}-panel`).removeAttribute('hidden');
+      }
+
+      function resetOtpInputs() {
+        document.querySelectorAll('.otp-input').forEach(i => i.value = '');
       }
 
     })();
