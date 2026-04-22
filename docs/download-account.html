@@ -41,32 +41,32 @@
       </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="dl-tabs">
-      <button class="dl-tab dl-tab--active" id="tab-active">Active (5)</button>
-      <button class="dl-tab" id="tab-expired">Expired (0)</button>
+    <!-- Main tabs: Gallery · Favorites · E-com -->
+    <div class="dl-tabs dl-tabs--fill">
+      <button class="dl-tab dl-tab--active" id="tab-gallery">Gallery</button>
+      <button class="dl-tab" id="tab-favorites">Favorites</button>
+      <button class="dl-tab" id="tab-ecom">E-com</button>
     </div>
 
-    <!-- Active content -->
-    <div class="dl-content" id="dl-active-content">
+    <!-- ═══════════════════════════════════════════
+         GALLERY TAB
+    ════════════════════════════════════════════ -->
+    <div class="dl-content" id="dl-gallery-content">
 
-      <!-- Section: Gallery Downloads -->
-      <div class="dl-section" id="section-gallery-wrap">
-        <button class="dl-section-header" id="section-gallery-toggle">
-          <span class="dl-section-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          </span>
-          <span class="dl-section-title">Gallery Downloads</span>
-          <span class="dl-section-count">1 gallery</span>
+      <!-- Active section -->
+      <div class="dl-section" id="gallery-active-wrap">
+        <button class="dl-section-header" id="gallery-active-toggle">
+          <span class="dl-section-title">Active</span>
+          <span class="dl-section-count" id="gallery-active-count">3 downloads</span>
           <span class="dl-section-chevron">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
           </span>
         </button>
-        <div class="dl-section-body" id="section-gallery-body">
+        <div class="dl-section-body" id="gallery-active-body">
           <div class="dl-group-card">
             <div class="dl-group-name">Photo Gallery</div>
 
-            <!-- Item: Full gallery ZIP — starts ready -->
+            <!-- Full gallery ZIP — starts ready -->
             <div class="dl-item">
               <div class="dl-item-info">
                 <div class="dl-item-name">Full gallery ZIP</div>
@@ -81,7 +81,7 @@
               </div>
             </div>
 
-            <!-- Item: Limited set ZIP — starts ready -->
+            <!-- Limited set ZIP — starts ready -->
             <div class="dl-item">
               <div class="dl-item-info">
                 <div class="dl-item-name">Limited set ZIP</div>
@@ -96,7 +96,7 @@
               </div>
             </div>
 
-            <!-- Item: Video ZIP — starts processing, auto-transitions to ready after 5s -->
+            <!-- Video ZIP — starts processing, auto-transitions to ready -->
             <div class="dl-item">
               <div class="dl-item-info">
                 <div class="dl-item-name">Video ZIP</div>
@@ -115,19 +115,41 @@
         </div>
       </div>
 
-      <!-- Section: Favorite Set Downloads -->
-      <div class="dl-section" id="section-favsets-wrap">
-        <button class="dl-section-header" id="section-favsets-toggle">
-          <span class="dl-section-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </span>
-          <span class="dl-section-title">Favorite Set Downloads</span>
-          <span class="dl-section-count">1 set</span>
+      <!-- Expired section -->
+      <div class="dl-section" id="gallery-expired-wrap">
+        <button class="dl-section-header" id="gallery-expired-toggle">
+          <span class="dl-section-title">Expired</span>
+          <span class="dl-section-count" id="gallery-expired-count">0 downloads</span>
           <span class="dl-section-chevron">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
           </span>
         </button>
-        <div class="dl-section-body" id="section-favsets-body">
+        <div class="dl-section-body" id="gallery-expired-body">
+          <div class="dl-group-card">
+            <div class="dl-group-name">Photo Gallery</div>
+            <div id="expired-gallery-items"></div>
+            <div id="expired-empty" class="dl-empty-state">No expired downloads</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /#dl-gallery-content -->
+
+    <!-- ═══════════════════════════════════════════
+         FAVORITES TAB
+    ════════════════════════════════════════════ -->
+    <div class="dl-content" id="dl-favorites-content" hidden>
+
+      <!-- Active section -->
+      <div class="dl-section" id="favs-active-wrap">
+        <button class="dl-section-header" id="favs-active-toggle">
+          <span class="dl-section-title">Active</span>
+          <span class="dl-section-count">1 download</span>
+          <span class="dl-section-chevron">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+          </span>
+        </button>
+        <div class="dl-section-body" id="favs-active-body">
           <div class="dl-group-card">
             <div class="dl-group-name">Favorite Set Name 1</div>
             <div class="dl-item">
@@ -146,19 +168,37 @@
         </div>
       </div>
 
-      <!-- Section: E-com Download Orders -->
-      <div class="dl-section" id="section-ecom-wrap">
-        <button class="dl-section-header" id="section-ecom-toggle">
-          <span class="dl-section-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          </span>
-          <span class="dl-section-title">E-com Download Orders</span>
-          <span class="dl-section-count">2 orders</span>
+      <!-- Expired section -->
+      <div class="dl-section" id="favs-expired-wrap">
+        <button class="dl-section-header" id="favs-expired-toggle">
+          <span class="dl-section-title">Expired</span>
+          <span class="dl-section-count">0 downloads</span>
           <span class="dl-section-chevron">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
           </span>
         </button>
-        <div class="dl-section-body" id="section-ecom-body">
+        <div class="dl-section-body" id="favs-expired-body">
+          <div class="dl-empty-state">No expired downloads</div>
+        </div>
+      </div>
+
+    </div><!-- /#dl-favorites-content -->
+
+    <!-- ═══════════════════════════════════════════
+         E-COM TAB
+    ════════════════════════════════════════════ -->
+    <div class="dl-content" id="dl-ecom-content" hidden>
+
+      <!-- Active section -->
+      <div class="dl-section" id="ecom-active-wrap">
+        <button class="dl-section-header" id="ecom-active-toggle">
+          <span class="dl-section-title">Active</span>
+          <span class="dl-section-count">3 downloads</span>
+          <span class="dl-section-chevron">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+          </span>
+        </button>
+        <div class="dl-section-body" id="ecom-active-body">
           <div class="dl-group-card">
             <div class="dl-group-name">Order #1001</div>
             <div class="dl-item">
@@ -204,30 +244,21 @@
         </div>
       </div>
 
-    </div><!-- /#dl-active-content -->
-
-    <!-- Expired content -->
-    <div class="dl-content" id="dl-expired-content" hidden>
-      <div class="dl-section" id="expired-gallery-section">
-        <button class="dl-section-header" id="expired-gallery-toggle">
-          <span class="dl-section-icon">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          </span>
-          <span class="dl-section-title">Gallery Downloads</span>
-          <span class="dl-section-count" id="expired-gallery-count">0 galleries</span>
+      <!-- Expired section -->
+      <div class="dl-section" id="ecom-expired-wrap">
+        <button class="dl-section-header" id="ecom-expired-toggle">
+          <span class="dl-section-title">Expired</span>
+          <span class="dl-section-count">0 downloads</span>
           <span class="dl-section-chevron">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
           </span>
         </button>
-        <div class="dl-section-body" id="expired-gallery-body">
-          <div class="dl-group-card">
-            <div class="dl-group-name">Photo Gallery</div>
-            <div id="expired-gallery-items"></div>
-            <div id="expired-empty" class="dl-empty-state">No expired downloads</div>
-          </div>
+        <div class="dl-section-body" id="ecom-expired-body">
+          <div class="dl-empty-state">No expired downloads</div>
         </div>
       </div>
-    </div><!-- /#dl-expired-content -->
+
+    </div><!-- /#dl-ecom-content -->
 
   </div><!-- /#mobile-frame -->
 
@@ -275,7 +306,7 @@
     });
 
     (function () {
-      const galleryItems = [...document.querySelectorAll('#section-gallery-body .dl-item')];
+      const galleryItems = [...document.querySelectorAll('#gallery-active-body .dl-item')];
       const ITEM_NAMES = ['Full gallery ZIP', 'Limited set ZIP', 'Video ZIP'];
       const ITEM_METAS = [
         '254 Files \u00b7 1.2 GB \u00b7 High Resolution',
@@ -284,25 +315,54 @@
       ];
       const expiredSet = new Set();
 
-      // ── Tab counts ────────────────────────────────────────────────────────
-      function updateTabCounts() {
-        const activeCount = (galleryItems.length - expiredSet.size) + 1 + 1;
-        document.getElementById('tab-active').textContent  = `Active (${activeCount})`;
-        document.getElementById('tab-expired').textContent = `Expired (${expiredSet.size})`;
-        const countEl = document.getElementById('expired-gallery-count');
-        if (countEl) countEl.textContent = expiredSet.size + (expiredSet.size === 1 ? ' gallery' : ' galleries');
+      // ── Section counts ────────────────────────────────────────────────────
+      function updateGalleryCounts() {
+        const active  = galleryItems.length - expiredSet.size;
+        const expired = expiredSet.size;
+        document.getElementById('gallery-active-count').textContent  = active  + ' download' + (active  !== 1 ? 's' : '');
+        document.getElementById('gallery-expired-count').textContent = expired + ' download' + (expired !== 1 ? 's' : '');
       }
 
-      // ── Switch tabs ───────────────────────────────────────────────────────
-      function switchToTab(tab) {
-        const isActive = tab === 'active';
-        document.getElementById('tab-active').classList.toggle('dl-tab--active', isActive);
-        document.getElementById('tab-expired').classList.toggle('dl-tab--active', !isActive);
-        document.getElementById('dl-active-content').toggleAttribute('hidden', !isActive);
-        document.getElementById('dl-expired-content').toggleAttribute('hidden', isActive);
+      // ── Main tab switching ────────────────────────────────────────────────
+      const TAB_MAP = {
+        gallery:   { btn: 'tab-gallery',   content: 'dl-gallery-content'   },
+        favorites: { btn: 'tab-favorites', content: 'dl-favorites-content' },
+        ecom:      { btn: 'tab-ecom',      content: 'dl-ecom-content'      }
+      };
+
+      function switchToTab(key) {
+        Object.entries(TAB_MAP).forEach(([k, cfg]) => {
+          const isActive = k === key;
+          document.getElementById(cfg.btn).classList.toggle('dl-tab--active', isActive);
+          document.getElementById(cfg.content).toggleAttribute('hidden', !isActive);
+        });
       }
 
-      // ── Per-item state machine ─────────────────────────────────────────────
+      Object.keys(TAB_MAP).forEach(key => {
+        document.getElementById(TAB_MAP[key].btn).addEventListener('click', () => switchToTab(key));
+      });
+
+      // ── Section collapse ──────────────────────────────────────────────────
+      [
+        ['gallery-active-toggle',  'gallery-active-body',  'gallery-active-wrap'],
+        ['gallery-expired-toggle', 'gallery-expired-body', 'gallery-expired-wrap'],
+        ['favs-active-toggle',     'favs-active-body',     'favs-active-wrap'],
+        ['favs-expired-toggle',    'favs-expired-body',    'favs-expired-wrap'],
+        ['ecom-active-toggle',     'ecom-active-body',     'ecom-active-wrap'],
+        ['ecom-expired-toggle',    'ecom-expired-body',    'ecom-expired-wrap'],
+      ].forEach(([toggleId, bodyId, wrapId]) => {
+        const toggle = document.getElementById(toggleId);
+        const body   = document.getElementById(bodyId);
+        const wrap   = document.getElementById(wrapId);
+        if (!toggle || !body) return;
+        toggle.addEventListener('click', () => {
+          const collapsed = body.hasAttribute('hidden');
+          body.toggleAttribute('hidden', !collapsed);
+          wrap.classList.toggle('dl-section--collapsed', collapsed);
+        });
+      });
+
+      // ── Per-item state machine ────────────────────────────────────────────
       function setItemState(itemEl, state) {
         itemEl.querySelectorAll('.dl-item-state').forEach(s => s.setAttribute('hidden', ''));
         const target = itemEl.querySelector(`.dl-item-state[data-state="${state}"]`);
@@ -328,13 +388,18 @@
         }, durationMs || 5000);
       }
 
-      // ── Expired tab: move / render / restore ──────────────────────────────
+      // ── Expired section within Gallery tab ───────────────────────────────
       function moveToExpired(idx) {
         expiredSet.add(idx);
         galleryItems[idx].setAttribute('hidden', '');
         renderExpiredItems();
-        updateTabCounts();
-        switchToTab('expired');
+        updateGalleryCounts();
+        // Switch to Gallery tab and expand the expired section
+        switchToTab('gallery');
+        const expiredBody = document.getElementById('gallery-expired-body');
+        const expiredWrap = document.getElementById('gallery-expired-wrap');
+        expiredBody.removeAttribute('hidden');
+        expiredWrap.classList.remove('dl-section--collapsed');
       }
 
       function renderExpiredItems() {
@@ -377,9 +442,7 @@
             setTimeout(() => document.addEventListener('click', closeAllCtxMenus), 0);
           }
         });
-        div.querySelector('[data-action="request-new"]').addEventListener('click', () => {
-          requestNewDownload(idx);
-        });
+        div.querySelector('[data-action="request-new"]').addEventListener('click', () => requestNewDownload(idx));
         return div;
       }
 
@@ -391,9 +454,14 @@
       function requestNewDownload(idx) {
         expiredSet.delete(idx);
         renderExpiredItems();
-        updateTabCounts();
+        updateGalleryCounts();
         galleryItems[idx].removeAttribute('hidden');
-        switchToTab('active');
+        // Ensure Gallery tab + active section is visible
+        switchToTab('gallery');
+        const activeBody = document.getElementById('gallery-active-body');
+        const activeWrap = document.getElementById('gallery-active-wrap');
+        activeBody.removeAttribute('hidden');
+        activeWrap.classList.remove('dl-section--collapsed');
         clearTimeout(galleryItems[idx]._autoTimer);
         setItemState(galleryItems[idx], 'processing');
         updateSimBtns(idx, 'processing');
@@ -403,7 +471,7 @@
         }, 3000);
       }
 
-      // ── Retry buttons inside items ─────────────────────────────────────────
+      // ── Retry buttons ─────────────────────────────────────────────────────
       galleryItems.forEach((itemEl, idx) => {
         const retry = itemEl.querySelector('.dl-item-retry-btn');
         if (retry) retry.addEventListener('click', () => {
@@ -412,7 +480,7 @@
         });
       });
 
-      // ── Inject "Simulate State" button into dev toolbar ────────────────────
+      // ── Inject Simulate State button into dev toolbar ─────────────────────
       const toolbarActions = document.querySelector('#dev-toolbar .dev-toolbar-actions');
       if (toolbarActions) {
         const divider = document.createElement('span');
@@ -425,7 +493,6 @@
         toolbarActions.insertBefore(simBtn, toolbarActions.firstChild);
 
         const panel = document.getElementById('simulate-panel');
-
         simBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           if (panel.hasAttribute('hidden')) {
@@ -445,7 +512,7 @@
         document.removeEventListener('click', closeSimPanel);
       }
 
-      // ── Simulate panel button wiring ───────────────────────────────────────
+      // ── Simulate panel wiring ─────────────────────────────────────────────
       document.querySelectorAll('.simulate-row-btns').forEach(rowBtns => {
         const idx = parseInt(rowBtns.dataset.item);
         rowBtns.querySelectorAll('.sim-btn').forEach(btn => {
@@ -473,47 +540,8 @@
         );
       }
 
-      // ── Tabs ───────────────────────────────────────────────────────────────
-      document.getElementById('tab-active').addEventListener('click', () => switchToTab('active'));
-      document.getElementById('tab-expired').addEventListener('click', () => switchToTab('expired'));
-
-      // ── Section collapse / expand ──────────────────────────────────────────
-      ['gallery', 'favsets', 'ecom'].forEach(key => {
-        const toggle = document.getElementById(`section-${key}-toggle`);
-        const body   = document.getElementById(`section-${key}-body`);
-        const wrap   = document.getElementById(`section-${key}-wrap`);
-        if (!toggle || !body) return;
-        toggle.addEventListener('click', () => {
-          const collapsed = body.hasAttribute('hidden');
-          if (collapsed) {
-            body.removeAttribute('hidden');
-            wrap.classList.remove('dl-section--collapsed');
-          } else {
-            body.setAttribute('hidden', '');
-            wrap.classList.add('dl-section--collapsed');
-          }
-        });
-      });
-
-      // ── Expired section collapse ───────────────────────────────────────────
-      const expiredToggle = document.getElementById('expired-gallery-toggle');
-      const expiredBody   = document.getElementById('expired-gallery-body');
-      const expiredSect   = document.getElementById('expired-gallery-section');
-      if (expiredToggle && expiredBody) {
-        expiredToggle.addEventListener('click', () => {
-          const collapsed = expiredBody.hasAttribute('hidden');
-          if (collapsed) {
-            expiredBody.removeAttribute('hidden');
-            expiredSect.classList.remove('dl-section--collapsed');
-          } else {
-            expiredBody.setAttribute('hidden', '');
-            expiredSect.classList.add('dl-section--collapsed');
-          }
-        });
-      }
-
-      // ── Init ───────────────────────────────────────────────────────────────
-      updateTabCounts();
+      // ── Init ──────────────────────────────────────────────────────────────
+      updateGalleryCounts();
       if (galleryItems[2]) startProcessing(galleryItems[2]);
 
     })();

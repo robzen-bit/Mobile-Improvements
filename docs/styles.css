@@ -1905,6 +1905,16 @@ body.view-mobile .dev-controls {
   padding: 0 16px;
 }
 
+.dl-tabs--fill {
+  justify-content: stretch;
+}
+
+.dl-tabs--fill .dl-tab {
+  flex: 1;
+  text-align: center;
+  margin-right: 0;
+}
+
 .dl-tab {
   background: none;
   border: none;
