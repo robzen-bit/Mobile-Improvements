@@ -73,6 +73,7 @@
                 <div class="dl-item-meta">254 Files &middot; 1.2 GB &middot; High Resolution &middot; Expires in 14 days</div>
               </div>
               <div class="dl-item-actions">
+                <span class="dl-item-downloaded" hidden></span>
                 <div class="dl-item-state" data-state="processing" hidden><div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing&hellip;</span></div></div>
                 <div class="dl-item-state" data-state="ready"><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
@@ -88,6 +89,7 @@
                 <div class="dl-item-meta">254 Files &middot; 1.2 GB &middot; High Resolution &middot; Expires in 14 days</div>
               </div>
               <div class="dl-item-actions">
+                <span class="dl-item-downloaded" hidden></span>
                 <div class="dl-item-state" data-state="processing" hidden><div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing&hellip;</span></div></div>
                 <div class="dl-item-state" data-state="ready"><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
@@ -103,6 +105,7 @@
                 <div class="dl-item-meta">1 File &middot; 2.4 GB &middot; High Resolution &middot; Expires in 14 days</div>
               </div>
               <div class="dl-item-actions">
+                <span class="dl-item-downloaded" hidden></span>
                 <div class="dl-item-state" data-state="processing"><div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing&hellip;</span></div></div>
                 <div class="dl-item-state" data-state="ready" hidden><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
                 <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
@@ -139,125 +142,14 @@
          FAVORITES TAB
     ════════════════════════════════════════════ -->
     <div class="dl-content" id="dl-favorites-content" hidden>
-
-      <!-- Active section -->
-      <div class="dl-section" id="favs-active-wrap">
-        <button class="dl-section-header" id="favs-active-toggle">
-          <span class="dl-section-title">Active</span>
-          <span class="dl-section-count">1 download</span>
-          <span class="dl-section-chevron">
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-          </span>
-        </button>
-        <div class="dl-section-body" id="favs-active-body">
-          <div class="dl-group-card">
-            <div class="dl-group-name">Favorite Set Name 1</div>
-            <div class="dl-item">
-              <div class="dl-item-info">
-                <div class="dl-item-name">Photos Zip</div>
-                <div class="dl-item-meta">52 Files &middot; 5.2 GB &middot; High Resolution &middot; Expires in 14 days</div>
-              </div>
-              <div class="dl-item-actions">
-                <button class="dl-item-download-btn" title="Download">
-                  <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button class="dl-item-more-btn" title="More options">&#8942;</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Expired section -->
-      <div class="dl-section" id="favs-expired-wrap">
-        <button class="dl-section-header" id="favs-expired-toggle">
-          <span class="dl-section-title">Expired</span>
-          <span class="dl-section-count">0 downloads</span>
-          <span class="dl-section-chevron">
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-          </span>
-        </button>
-        <div class="dl-section-body" id="favs-expired-body">
-          <div class="dl-empty-state">No expired downloads</div>
-        </div>
-      </div>
-
+      <div class="dl-empty-state dl-empty-state--tab">No favorite set downloads on this account</div>
     </div><!-- /#dl-favorites-content -->
 
     <!-- ═══════════════════════════════════════════
          E-COM TAB
     ════════════════════════════════════════════ -->
     <div class="dl-content" id="dl-ecom-content" hidden>
-
-      <!-- Active section -->
-      <div class="dl-section" id="ecom-active-wrap">
-        <button class="dl-section-header" id="ecom-active-toggle">
-          <span class="dl-section-title">Active</span>
-          <span class="dl-section-count">3 downloads</span>
-          <span class="dl-section-chevron">
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-          </span>
-        </button>
-        <div class="dl-section-body" id="ecom-active-body">
-          <div class="dl-group-card">
-            <div class="dl-group-name">Order #1001</div>
-            <div class="dl-item">
-              <div class="dl-item-info">
-                <div class="dl-item-name">[Gallery Name X] Single Image</div>
-                <div class="dl-item-meta">1 File &middot; 1.2 GB &middot; High Resolution &middot; Expires in 14 days</div>
-              </div>
-              <div class="dl-item-actions">
-                <button class="dl-item-download-btn" title="Download">
-                  <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button class="dl-item-more-btn" title="More options">&#8942;</button>
-              </div>
-            </div>
-          </div>
-          <div class="dl-group-card">
-            <div class="dl-group-name">Order #1002</div>
-            <div class="dl-item">
-              <div class="dl-item-info">
-                <div class="dl-item-name">[Gallery Name 1] Single Image</div>
-                <div class="dl-item-meta">3.2 GB &middot; High Resolution &middot; Expires in 14 days</div>
-              </div>
-              <div class="dl-item-actions">
-                <button class="dl-item-download-btn" title="Download">
-                  <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button class="dl-item-more-btn" title="More options">&#8942;</button>
-              </div>
-            </div>
-            <div class="dl-item">
-              <div class="dl-item-info">
-                <div class="dl-item-name">[Gallery Name 2] Single Image</div>
-                <div class="dl-item-meta">3.2 GB &middot; High Resolution &middot; Expires in 14 days</div>
-              </div>
-              <div class="dl-item-actions">
-                <button class="dl-item-download-btn" title="Download">
-                  <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button class="dl-item-more-btn" title="More options">&#8942;</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Expired section -->
-      <div class="dl-section" id="ecom-expired-wrap">
-        <button class="dl-section-header" id="ecom-expired-toggle">
-          <span class="dl-section-title">Expired</span>
-          <span class="dl-section-count">0 downloads</span>
-          <span class="dl-section-chevron">
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-          </span>
-        </button>
-        <div class="dl-section-body" id="ecom-expired-body">
-          <div class="dl-empty-state">No expired downloads</div>
-        </div>
-      </div>
-
+      <div class="dl-empty-state dl-empty-state--tab">No e-com download orders on this account</div>
     </div><!-- /#dl-ecom-content -->
 
   </div><!-- /#mobile-frame -->
@@ -346,10 +238,6 @@
       [
         ['gallery-active-toggle',  'gallery-active-body',  'gallery-active-wrap'],
         ['gallery-expired-toggle', 'gallery-expired-body', 'gallery-expired-wrap'],
-        ['favs-active-toggle',     'favs-active-body',     'favs-active-wrap'],
-        ['favs-expired-toggle',    'favs-expired-body',    'favs-expired-wrap'],
-        ['ecom-active-toggle',     'ecom-active-body',     'ecom-active-wrap'],
-        ['ecom-expired-toggle',    'ecom-expired-body',    'ecom-expired-wrap'],
       ].forEach(([toggleId, bodyId, wrapId]) => {
         const toggle = document.getElementById(toggleId);
         const body   = document.getElementById(bodyId);
@@ -417,12 +305,14 @@
       function buildExpiredItemEl(idx) {
         const div = document.createElement('div');
         div.className = 'dl-item';
+        const dlText = galleryItems[idx]._downloadedText || '';
         div.innerHTML = `
           <div class="dl-item-info">
             <div class="dl-item-name">${ITEM_NAMES[idx]}</div>
             <div class="dl-item-meta dl-item-meta--expired">${ITEM_METAS[idx]} &middot; Expired 30 days ago</div>
           </div>
           <div class="dl-item-actions">
+            <span class="dl-item-downloaded"${dlText ? '' : ' hidden'}>${dlText}</span>
             <span class="dl-item-expired-badge">Expired</span>
             <div class="dl-item-ctx-wrap">
               <button class="dl-item-more-btn" title="More options">&#8942;</button>
@@ -540,9 +430,41 @@
         );
       }
 
+      // ── Download timestamp ────────────────────────────────────────────────
+      function formatDownloadDate(d) {
+        const M = d.getMonth() + 1;
+        const D = d.getDate();
+        const Y = String(d.getFullYear()).slice(-2);
+        let h = d.getHours();
+        const m = String(d.getMinutes()).padStart(2, '0');
+        const ampm = h >= 12 ? 'pm' : 'am';
+        h = h % 12 || 12;
+        return `Downloaded: ${M}/${D}/${Y} ${h}:${m}${ampm}`;
+      }
+
+      function wireDownloadButtons() {
+        document.querySelectorAll('.dl-item-download-btn').forEach(btn => {
+          if (btn._dlWired) return;
+          btn._dlWired = true;
+          btn.addEventListener('click', () => {
+            const item = btn.closest('.dl-item');
+            if (!item) return;
+            const ts = item.querySelector('.dl-item-downloaded');
+            if (!ts) return;
+            const text = formatDownloadDate(new Date());
+            ts.textContent = text;
+            ts.removeAttribute('hidden');
+            item._downloadedText = text;
+          });
+        });
+      }
+
       // ── Init ──────────────────────────────────────────────────────────────
       updateGalleryCounts();
+      wireDownloadButtons();
       if (galleryItems[2]) startProcessing(galleryItems[2]);
+      // Re-wire after video ZIP auto-transitions to ready (new button rendered)
+      galleryItems[2] && setTimeout(wireDownloadButtons, 5100);
 
     })();
   </script>

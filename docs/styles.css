@@ -2158,6 +2158,20 @@ body.view-mobile .dev-controls {
   font-size: 0.78rem;
 }
 
+.dl-empty-state--tab {
+  padding: 60px 24px;
+  font-size: 0.82rem;
+}
+
+/* Downloaded timestamp */
+.dl-item-downloaded {
+  font-size: 0.6rem;
+  color: #6F6C7B;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  text-align: right;
+}
+
 /* Dev state dropdown */
 .dl-dev-dropdown {
   position: absolute;
