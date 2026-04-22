@@ -66,51 +66,75 @@
           <div class="dl-group-card">
             <div class="dl-group-name">Photo Gallery</div>
 
-            <!-- Item: Full gallery ZIP — ready -->
+            <!-- Item: Full gallery ZIP — starts ready -->
             <div class="dl-item">
               <div class="dl-item-info">
                 <div class="dl-item-name">Full gallery ZIP</div>
                 <div class="dl-item-meta">254 Files &middot; 1.2 GB &middot; High Resolution &middot; Expires in 14 days</div>
               </div>
               <div class="dl-item-actions">
-                <button class="dl-item-download-btn" title="Download">
-                  <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button class="dl-item-more-btn" title="More options">&bull;&bull;&bull;</button>
+                <div class="dl-item-state" data-state="processing" hidden><div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing&hellip;</span></div></div>
+                <div class="dl-item-state" data-state="ready"><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
+                <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
+                <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
+                <div class="dl-item-more-wrap">
+                  <button class="dl-item-more-btn" title="Dev options">&bull;&bull;&bull;</button>
+                  <div class="dl-dev-dropdown" hidden>
+                    <div class="dl-dev-badge">&#9881; DEV &mdash; Simulate State</div>
+                    <button class="dl-dev-state-btn" data-state="processing">Processing</button>
+                    <button class="dl-dev-state-btn dl-dev-state-btn--active" data-state="ready">Ready</button>
+                    <button class="dl-dev-state-btn" data-state="failed">Failed</button>
+                    <button class="dl-dev-state-btn" data-state="expired">Expired</button>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Item: Limited set ZIP — ready -->
+            <!-- Item: Limited set ZIP — starts ready -->
             <div class="dl-item">
               <div class="dl-item-info">
                 <div class="dl-item-name">Limited set ZIP</div>
                 <div class="dl-item-meta">254 Files &middot; 1.2 GB &middot; High Resolution &middot; Expires in 14 days</div>
               </div>
               <div class="dl-item-actions">
-                <button class="dl-item-download-btn" title="Download">
-                  <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button class="dl-item-more-btn" title="More options">&bull;&bull;&bull;</button>
+                <div class="dl-item-state" data-state="processing" hidden><div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing&hellip;</span></div></div>
+                <div class="dl-item-state" data-state="ready"><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
+                <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
+                <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
+                <div class="dl-item-more-wrap">
+                  <button class="dl-item-more-btn" title="Dev options">&bull;&bull;&bull;</button>
+                  <div class="dl-dev-dropdown" hidden>
+                    <div class="dl-dev-badge">&#9881; DEV &mdash; Simulate State</div>
+                    <button class="dl-dev-state-btn" data-state="processing">Processing</button>
+                    <button class="dl-dev-state-btn dl-dev-state-btn--active" data-state="ready">Ready</button>
+                    <button class="dl-dev-state-btn" data-state="failed">Failed</button>
+                    <button class="dl-dev-state-btn" data-state="expired">Expired</button>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Item: Video ZIP — processing → ready after 5s -->
-            <div class="dl-item" id="video-zip-item">
+            <!-- Item: Video ZIP — starts processing, auto-transitions to ready after 5s -->
+            <div class="dl-item">
               <div class="dl-item-info">
                 <div class="dl-item-name">Video ZIP</div>
                 <div class="dl-item-meta">1 File &middot; 2.4 GB &middot; High Resolution &middot; Expires in 14 days</div>
               </div>
               <div class="dl-item-actions">
-                <!-- Processing state -->
-                <div class="dl-item-processing" id="video-zip-processing">
-                  <div class="dl-spinner-sm"></div>
-                  <span class="dl-processing-label">Processing&hellip;</span>
+                <div class="dl-item-state" data-state="processing"><div class="dl-item-processing"><div class="dl-spinner-sm"></div><span class="dl-processing-label">Processing&hellip;</span></div></div>
+                <div class="dl-item-state" data-state="ready" hidden><button class="dl-item-download-btn" title="Download"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div>
+                <div class="dl-item-state" data-state="failed" hidden><span class="dl-item-failed-label">&#9888; Failed</span><button class="dl-item-retry-btn">Retry</button></div>
+                <div class="dl-item-state" data-state="expired" hidden><span class="dl-item-expired-badge">Expired</span></div>
+                <div class="dl-item-more-wrap">
+                  <button class="dl-item-more-btn" title="Dev options">&bull;&bull;&bull;</button>
+                  <div class="dl-dev-dropdown" hidden>
+                    <div class="dl-dev-badge">&#9881; DEV &mdash; Simulate State</div>
+                    <button class="dl-dev-state-btn dl-dev-state-btn--active" data-state="processing">Processing</button>
+                    <button class="dl-dev-state-btn" data-state="ready">Ready</button>
+                    <button class="dl-dev-state-btn" data-state="failed">Failed</button>
+                    <button class="dl-dev-state-btn" data-state="expired">Expired</button>
+                  </div>
                 </div>
-                <!-- Ready state (hidden until processing completes) -->
-                <button class="dl-item-download-btn" id="video-zip-ready" hidden title="Download">
-                  <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-                <button class="dl-item-more-btn" title="More options">&bull;&bull;&bull;</button>
               </div>
             </div>
 
@@ -286,24 +310,72 @@
         });
       });
 
-      // ── Processing → Ready animation (mirrors download-status.html logic) ──
-      const processingEl = document.getElementById('video-zip-processing');
-      const readyBtn     = document.getElementById('video-zip-ready');
-
-      setTimeout(() => {
-        processingEl.setAttribute('hidden', '');
-        readyBtn.removeAttribute('hidden');
-        readyBtn.classList.add('dl-item-download-btn--ready');
-      }, 5000);
-
-      // ── Platform-aware help on ready (responds to view toggle) ────────────
-      function onReady() {
-        // Could render platform help here; reserved for future expansion
+      // ── Per-item state machine (mirrors download-status.html logic) ─────────
+      function setItemState(itemEl, state) {
+        itemEl.querySelectorAll('.dl-item-state').forEach(s => s.setAttribute('hidden', ''));
+        const target = itemEl.querySelector(`.dl-item-state[data-state="${state}"]`);
+        if (target) {
+          target.removeAttribute('hidden');
+          if (state === 'ready') {
+            const btn = target.querySelector('.dl-item-download-btn');
+            if (btn) btn.classList.add('dl-item-download-btn--ready');
+          }
+        }
+        itemEl.querySelectorAll('.dl-dev-state-btn').forEach(b => {
+          b.classList.toggle('dl-dev-state-btn--active', b.dataset.state === state);
+        });
       }
 
-      ZF.ViewToggle.onChange(() => {
-        if (readyBtn && !readyBtn.hasAttribute('hidden')) onReady();
+      function startProcessing(itemEl) {
+        clearTimeout(itemEl._autoTimer);
+        setItemState(itemEl, 'processing');
+        itemEl._autoTimer = setTimeout(() => setItemState(itemEl, 'ready'), 5000);
+      }
+
+      // ── Wire dev dropdowns — Photo Gallery items only ─────────────────────
+      function closeAllDevDropdowns() {
+        document.querySelectorAll('.dl-dev-dropdown').forEach(d => d.setAttribute('hidden', ''));
+        document.removeEventListener('click', closeAllDevDropdowns);
+      }
+
+      document.querySelectorAll('#section-gallery-body .dl-item-more-wrap').forEach(wrap => {
+        const moreBtn  = wrap.querySelector('.dl-item-more-btn');
+        const dropdown = wrap.querySelector('.dl-dev-dropdown');
+        const itemEl   = wrap.closest('.dl-item');
+
+        moreBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = !dropdown.hasAttribute('hidden');
+          closeAllDevDropdowns();
+          if (!isOpen) {
+            dropdown.removeAttribute('hidden');
+            setTimeout(() => document.addEventListener('click', closeAllDevDropdowns), 0);
+          }
+        });
+
+        dropdown.querySelectorAll('.dl-dev-state-btn').forEach(stateBtn => {
+          stateBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const state = stateBtn.dataset.state;
+            dropdown.setAttribute('hidden', '');
+            if (state === 'processing') {
+              startProcessing(itemEl);
+            } else {
+              clearTimeout(itemEl._autoTimer);
+              setItemState(itemEl, state);
+            }
+          });
+        });
+
+        const retryBtn = itemEl.querySelector('.dl-item-retry-btn');
+        if (retryBtn) retryBtn.addEventListener('click', () => startProcessing(itemEl));
       });
+
+      // ── Auto-transition Video ZIP on page load ────────────────────────────
+      const videoZipItem = document.querySelector(
+        '#section-gallery-body .dl-item:last-child'
+      );
+      if (videoZipItem) startProcessing(videoZipItem);
 
     })();
   </script>

@@ -1981,7 +1981,6 @@ body.view-mobile .dev-controls {
 .dl-group-card {
   border: 1px solid #e8e8e8;
   border-radius: 6px;
-  overflow: hidden;
   margin-bottom: 10px;
 }
 
@@ -2068,6 +2067,11 @@ body.view-mobile .dev-controls {
   100% { transform: scale(1);   opacity: 1; }
 }
 
+.dl-item-more-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .dl-item-more-btn {
   width: 28px;
   height: 28px;
@@ -2087,6 +2091,84 @@ body.view-mobile .dev-controls {
 }
 
 .dl-item-more-btn:hover { background: #f4f4f4; color: #888; }
+
+/* Dev state dropdown */
+.dl-dev-dropdown {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  background: #1c1c1c;
+  border: 1.5px dashed #c8960c;
+  border-radius: 6px;
+  padding: 10px 10px 8px;
+  min-width: 172px;
+  z-index: 800;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.28);
+}
+
+.dl-dev-badge {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #c8960c;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(200,150,12,0.25);
+}
+
+.dl-dev-state-btn {
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  background: none;
+  border: none;
+  color: #d0d0d0;
+  font-size: 0.72rem;
+  font-family: inherit;
+  letter-spacing: 0.05em;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.1s;
+}
+
+.dl-dev-state-btn:hover { background: rgba(255,255,255,0.08); }
+
+.dl-dev-state-btn--active {
+  color: #c8960c;
+  font-weight: 700;
+}
+
+/* State wrapper */
+.dl-item-state {
+  display: flex;
+  align-items: center;
+}
+
+/* Failed state */
+.dl-item-failed-label {
+  font-size: 0.7rem;
+  color: #c44;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+.dl-item-retry-btn {
+  font-size: 0.65rem;
+  padding: 3px 7px;
+  background: none;
+  border: 1px solid #c44;
+  color: #c44;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s;
+  white-space: nowrap;
+}
+
+.dl-item-retry-btn:hover { background: rgba(204,68,68,0.08); }
 
 .dl-item-processing {
   display: flex;
