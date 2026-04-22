@@ -143,10 +143,9 @@
           </span>
         </button>
         <div class="dl-section-body" id="gallery-expired-body">
-          <div class="dl-group-card">
+          <div class="dl-group-card" id="gallery-photo-expired-card" hidden>
             <div class="dl-group-name">Photo Gallery</div>
             <div id="expired-gallery-items"></div>
-            <div id="expired-empty" class="dl-empty-state">No expired downloads</div>
           </div>
         </div>
       </div>
@@ -316,13 +315,13 @@
 
       function renderExpiredItems() {
         const container = document.getElementById('expired-gallery-items');
-        const emptyEl   = document.getElementById('expired-empty');
+        const card      = document.getElementById('gallery-photo-expired-card');
         container.innerHTML = '';
         if (expiredSet.size === 0) {
-          emptyEl.removeAttribute('hidden');
+          card.setAttribute('hidden', '');
           return;
         }
-        emptyEl.setAttribute('hidden', '');
+        card.removeAttribute('hidden');
         expiredSet.forEach(idx => container.appendChild(buildExpiredItemEl(idx)));
       }
 
