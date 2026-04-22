@@ -31,10 +31,21 @@
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </button>
           <div class="header-divider"></div>
-          <!-- Account icon -->
-          <button class="icon-btn" id="account-btn" title="Account">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </button>
+          <!-- Account icon + dropdown -->
+          <div class="account-menu-wrapper">
+            <button class="icon-btn" id="account-btn" title="Account">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </button>
+            <div id="account-dropdown" class="account-dropdown" hidden>
+              <ul class="account-dropdown-menu">
+                <li><button class="account-dropdown-item">My Galleries</button></li>
+                <li><button class="account-dropdown-item">Favorites</button></li>
+                <li><button class="account-dropdown-item">Downloads</button></li>
+                <li class="account-dropdown-divider"></li>
+                <li><button class="account-dropdown-item account-dropdown-signout" id="account-signout-btn">Sign Out</button></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -209,6 +220,7 @@
       let lightboxIndex = 1;
       let pendingAccountEmail = '';
       let systemModalContext = '';
+      let isLoggedIn = false;
 
       const LOTR_NAMES = ['frodo','gandalf','aragorn','legolas','gimli','samwise',
         'meriadoc','peregrin','boromir','arwen','galadriel','bilbo','eowyn','faramir','treebeard'];
@@ -402,7 +414,12 @@
         const input   = document.getElementById('account-email-input');
         const errorEl = document.getElementById('account-email-error');
 
-        document.getElementById('account-btn').addEventListener('click', () => {
+        document.getElementById('account-btn').addEventListener('click', (e) => {
+          if (isLoggedIn) {
+            e.stopPropagation();
+            toggleAccountDropdown();
+            return;
+          }
           showAccountPanel('entry');
           input.value = randomLotrEmail();
           errorEl.setAttribute('hidden', '');
@@ -532,6 +549,7 @@
             return;
           }
           ZF.Modal.close(modal);
+          handleLoginSuccess();
         });
 
         document.getElementById('welcome-verify-btn').addEventListener('click', () => {
@@ -541,6 +559,7 @@
             return;
           }
           ZF.Modal.close(modal);
+          handleLoginSuccess();
         });
 
         document.querySelectorAll('.otp-input').forEach((input, idx, all) => {
@@ -570,6 +589,40 @@
       function resetOtpInputs() {
         document.querySelectorAll('.otp-input').forEach(i => i.value = '');
       }
+
+      // ── Login state + account dropdown ────────────────────────────────────
+      function handleLoginSuccess() {
+        isLoggedIn = true;
+        document.getElementById('account-btn').classList.add('icon-btn--active');
+      }
+
+      function toggleAccountDropdown() {
+        const dropdown = document.getElementById('account-dropdown');
+        if (dropdown.hasAttribute('hidden')) {
+          dropdown.removeAttribute('hidden');
+          setTimeout(() => document.addEventListener('click', closeDropdownOnOutsideClick), 0);
+        } else {
+          closeAccountDropdown();
+        }
+      }
+
+      function closeAccountDropdown() {
+        document.getElementById('account-dropdown').setAttribute('hidden', '');
+        document.removeEventListener('click', closeDropdownOnOutsideClick);
+      }
+
+      function closeDropdownOnOutsideClick(e) {
+        if (!document.getElementById('account-dropdown').contains(e.target) &&
+            e.target !== document.getElementById('account-btn')) {
+          closeAccountDropdown();
+        }
+      }
+
+      document.getElementById('account-signout-btn').addEventListener('click', () => {
+        isLoggedIn = false;
+        document.getElementById('account-btn').classList.remove('icon-btn--active');
+        closeAccountDropdown();
+      });
 
     })();
   </script>
