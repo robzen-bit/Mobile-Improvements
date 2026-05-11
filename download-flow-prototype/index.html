@@ -287,14 +287,14 @@
       }
 
       // ── Build photo grid ──────────────────────────────────────────────────
-      const VIDEO_POSITION = 11; // insert video card before photo #11
-      const VIDEO_SRC = 'https://videos.pexels.com/video-files/3571264/3571264-sd_640_360_24fps.mp4';
-      const VIDEO_POSTER = ZF.Unsplash.url('vid1');
-
       function buildGrid() {
+        const VIDEO_POSITION = 3; // insert video card before photo #3
+        const VIDEO_SRC = 'https://videos.pexels.com/video-files/3571264/3571264-sd_640_360_24fps.mp4';
+        const VIDEO_POSTER = ZF.Unsplash.url('vid1');
+
         const grid = document.getElementById('photo-grid');
         for (let i = 1; i <= PHOTO_COUNT; i++) {
-          // Insert video card at position 11
+          // Insert video card at position VIDEO_POSITION
           if (i === VIDEO_POSITION) {
             const vc = document.createElement('article');
             vc.className = 'photo-card video-card';
