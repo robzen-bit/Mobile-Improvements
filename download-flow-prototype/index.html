@@ -66,9 +66,13 @@
       <button class="lightbox-nav lightbox-prev" id="lightbox-prev" title="Previous">&#8249;</button>
       <div class="lightbox-content">
         <img id="lightbox-img" src="" alt="">
+        <video id="lightbox-video" controls playsinline hidden></video>
         <div class="lightbox-footer">
           <span class="lightbox-counter" id="lightbox-counter"></span>
           <button class="btn lightbox-dl-btn" id="lightbox-download">Download</button>
+          <a class="btn lightbox-dl-btn" id="lightbox-video-download" hidden href="individual-download.html?video=1">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:5px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Video
+          </a>
         </div>
       </div>
       <button class="lightbox-nav lightbox-next" id="lightbox-next" title="Next">&#8250;</button>
@@ -283,9 +287,38 @@
       }
 
       // ── Build photo grid ──────────────────────────────────────────────────
+      const VIDEO_POSITION = 11; // insert video card before photo #11
+      const VIDEO_SRC = 'https://videos.pexels.com/video-files/3571264/3571264-sd_640_360_24fps.mp4';
+      const VIDEO_POSTER = ZF.Unsplash.url('vid1');
+
       function buildGrid() {
         const grid = document.getElementById('photo-grid');
         for (let i = 1; i <= PHOTO_COUNT; i++) {
+          // Insert video card at position 11
+          if (i === VIDEO_POSITION) {
+            const vc = document.createElement('article');
+            vc.className = 'photo-card video-card';
+            vc.dataset.videoSrc = VIDEO_SRC;
+            vc.innerHTML = `
+              <img src="${VIDEO_POSTER}" alt="Video" loading="lazy">
+              <div class="video-play-badge">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <div class="photo-overlay">
+                <div class="photo-overlay-icons">
+                  <button class="photo-overlay-icon photo-fav-btn" title="Favorite">
+                    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  </button>
+                  <button class="photo-overlay-icon video-dl-btn" title="Download video">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </button>
+                </div>
+                <span class="photo-name">video_1.mp4</span>
+              </div>
+            `;
+            grid.appendChild(vc);
+          }
+
           const card = document.createElement('article');
           card.className = 'photo-card';
           card.dataset.photo = i;
@@ -307,10 +340,20 @@
         }
 
         grid.addEventListener('click', (e) => {
-          const dlBtn  = e.target.closest('.photo-action-btn[data-photo]');
-          const favBtn = e.target.closest('.photo-fav-btn');
-          const card   = e.target.closest('.photo-card[data-photo]');
-          const isMobile = ZF.ViewToggle.getMode() === 'mobile';
+          const dlBtn     = e.target.closest('.photo-action-btn[data-photo]');
+          const favBtn    = e.target.closest('.photo-fav-btn');
+          const videoBtn  = e.target.closest('.video-dl-btn');
+          const videoCard = e.target.closest('.video-card');
+          const card      = e.target.closest('.photo-card[data-photo]');
+          const isMobile  = ZF.ViewToggle.getMode() === 'mobile';
+
+          // Video card: open lightbox (both mobile and desktop)
+          if (videoBtn || videoCard) {
+            e.stopPropagation();
+            const vc = e.target.closest('.video-card');
+            openVideoLightbox(vc.dataset.videoSrc);
+            return;
+          }
 
           if (dlBtn) {
             e.stopPropagation();
@@ -361,8 +404,39 @@
       }
 
       function closeLightbox() {
+        // Pause + reset video if in video mode
+        const video = document.getElementById('lightbox-video');
+        if (!video.paused) video.pause();
+        video.removeAttribute('src');
+        video.setAttribute('hidden', '');
+        // Restore photo-mode state
+        document.getElementById('lightbox-img').removeAttribute('hidden');
+        document.getElementById('lightbox-download').removeAttribute('hidden');
+        document.getElementById('lightbox-video-download').setAttribute('hidden', '');
+        document.getElementById('lightbox-prev').removeAttribute('hidden');
+        document.getElementById('lightbox-next').removeAttribute('hidden');
+
         document.getElementById('lightbox').setAttribute('hidden', '');
         document.removeEventListener('keydown', lightboxKeyHandler);
+      }
+
+      function openVideoLightbox(src) {
+        // Hide photo elements
+        document.getElementById('lightbox-img').setAttribute('hidden', '');
+        document.getElementById('lightbox-download').setAttribute('hidden', '');
+        document.getElementById('lightbox-counter').textContent = '';
+        document.getElementById('lightbox-prev').setAttribute('hidden', '');
+        document.getElementById('lightbox-next').setAttribute('hidden', '');
+        // Show video elements
+        const video = document.getElementById('lightbox-video');
+        video.src = src;
+        video.removeAttribute('hidden');
+        document.getElementById('lightbox-video-download').removeAttribute('hidden');
+
+        document.getElementById('lightbox').removeAttribute('hidden');
+        document.addEventListener('keydown', lightboxKeyHandler);
+        // Auto-play
+        video.play().catch(() => {});
       }
 
       function navigateLightbox(dir) {

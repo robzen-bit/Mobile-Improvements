@@ -13,7 +13,7 @@
 
     <!-- ── Mobile mode: sticky instruction banner with nav ── -->
     <div id="mobile-banner" class="instruction-banner" hidden>
-      <p class="banner-text">To download, long press on the image below and click Save.</p>
+      <p class="banner-text" id="banner-instruction-text">To download, long press on the image below and click Save.</p>
       <div class="banner-actions">
         <button class="btn-back-gallery" id="back-btn-mobile">&#8592; Back to Gallery</button>
         <div class="nav-right">
@@ -26,7 +26,7 @@
     <!-- ── Desktop mode: Zenfolio-style header ── -->
     <div id="desktop-header" class="page-header" hidden style="margin-bottom:0;">
       <div class="gallery-identity">
-        <h1>Photo Download</h1>
+        <h1 id="desktop-header-title">Photo Download</h1>
         <p class="gallery-byline">Photo Gallery</p>
       </div>
       <div class="gallery-header-actions">
@@ -44,7 +44,17 @@
       </div>
     </div>
 
-    <!-- ── Photo section (always visible) ── -->
+    <!-- ── Video section (video mode only) ── -->
+    <section class="video-dl-section" id="video-section" hidden>
+      <video id="main-video" controls playsinline
+        src="https://videos.pexels.com/video-files/3571264/3571264-sd_640_360_24fps.mp4"
+        poster="https://picsum.photos/seed/vid1/800/450"></video>
+      <a class="video-help-link"
+         href="https://success.zenfolio.com/hc/en-us/articles/50823256837523"
+         target="_blank" rel="noopener noreferrer">How to get videos to your camera roll</a>
+    </section>
+
+    <!-- ── Photo section (photo mode only) ── -->
     <section class="photo-section" id="photo-section">
       <img id="main-photo" alt="Photo" class="main-photo">
 
@@ -97,6 +107,7 @@
   <script>
     (function () {
       const PHOTO_COUNT = 50;
+      const isVideoMode = ZF.URLParams.get('video') === '1';
 
       const rawParam = ZF.URLParams.get('photo');
       const rawIndex = parseInt(rawParam, 10);
@@ -110,10 +121,35 @@
       // ── Init ──────────────────────────────────────────────────────────────
       ZF.ViewToggle.init();
       ZF.ViewToggle.onChange(applyViewMode);
-      setupNavigation();
-      setupLongPress();
-      setupSimulateCheckbox();
-      loadPhoto();
+
+      if (isVideoMode) {
+        // Video mode: show video section, hide photo controls
+        document.getElementById('video-section').removeAttribute('hidden');
+        document.getElementById('photo-section').setAttribute('hidden', '');
+        document.getElementById('desktop-header-title').textContent = 'Video Download';
+        // Hide controls that don't apply to video
+        ['prev-btn-mobile', 'next-btn-mobile', 'prev-btn-desktop',
+         'next-btn-desktop', 'download-photo-btn'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.setAttribute('hidden', '');
+        });
+        document.querySelector('.dev-controls').setAttribute('hidden', '');
+        document.getElementById('ios-context-menu').setAttribute('hidden', '');
+        // Back buttons still work — wire them
+        document.getElementById('back-btn-mobile').addEventListener('click', () => {
+          window.location.href = 'index.html';
+        });
+        document.getElementById('back-btn-desktop').addEventListener('click', () => {
+          window.location.href = 'index.html';
+        });
+      } else {
+        // Photo mode
+        setupNavigation();
+        setupLongPress();
+        setupSimulateCheckbox();
+        loadPhoto();
+      }
+
       applyViewMode(ZF.ViewToggle.getMode());
 
       // ── View mode ─────────────────────────────────────────────────────────
@@ -122,6 +158,20 @@
         const mobileBanner   = document.getElementById('mobile-banner');
         const desktopHeader  = document.getElementById('desktop-header');
         const longpressLabel = document.getElementById('longpress-label');
+
+        if (isVideoMode) {
+          if (mode === 'mobile') {
+            mobileBanner.removeAttribute('hidden');
+            desktopHeader.setAttribute('hidden', '');
+            document.getElementById('banner-instruction-text').textContent =
+              'Tap the video below. When prompted, select Download to save the video to the Files app on iOS or the Downloads folder on Android.';
+          } else {
+            mobileBanner.setAttribute('hidden', '');
+            desktopHeader.removeAttribute('hidden');
+          }
+          longpressLabel.setAttribute('hidden', '');
+          return;
+        }
 
         if (mode === 'mobile') {
           mobileBanner.removeAttribute('hidden');
