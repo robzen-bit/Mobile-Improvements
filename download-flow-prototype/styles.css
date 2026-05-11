@@ -425,6 +425,74 @@ body.view-mobile .photo-overlay {
   display: block;
 }
 
+/* ── Video card play badge ─────────────────────────────────────────────── */
+.video-play-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(0,0,0,0.32);
+  border: 1.5px solid rgba(255,255,255,0.75);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+  transition: background 0.18s, border-color 0.18s;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.video-card:hover .video-play-badge {
+  background: rgba(0,0,0,0.52);
+  border-color: rgba(255,255,255,0.95);
+}
+.video-play-badge svg {
+  width: 14px;
+  height: 14px;
+  fill: #fff;
+  margin-left: 2px; /* optical centering for play triangle */
+}
+
+/* ── Lightbox video element ────────────────────────────────────────────── */
+#lightbox-video {
+  max-width: 100%;
+  max-height: 78vh;
+  display: block;
+  outline: none;
+  border-radius: 4px;
+}
+
+/* ── Video download page ───────────────────────────────────────────────── */
+.video-dl-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 16px 32px;
+}
+.video-dl-section video {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+  display: block;
+  background: #000;
+}
+.video-help-link {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 0.78rem;
+  color: #555;
+  text-decoration: underline;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 10px 18px;
+  text-align: center;
+}
+
 .photo-name {
   color: rgba(255,255,255,0.85);
   font-size: 0.65rem;
