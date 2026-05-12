@@ -3,40 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Download Photo — Zenfolio Prototype</title>
+  <title>Download — Zenfolio Prototype</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Black bg for download page in mobile view */
+    body.view-mobile #mobile-frame { background: #000; }
+  </style>
 </head>
 <body>
   <!-- Toggle button injected by ZF.ViewToggle.init() -->
 
   <div id="mobile-frame">
 
-    <!-- ── Mobile mode: sticky instruction banner with nav ── -->
-    <div id="mobile-banner" class="instruction-banner" hidden>
-      <p class="banner-text" id="banner-instruction-text">To download, long press on the image below and click Save.</p>
-      <div class="banner-actions">
-        <button class="btn-back-gallery" id="back-btn-mobile">&#8592; Back to Gallery</button>
-        <div class="nav-right">
-          <button class="btn btn-secondary" id="prev-btn-mobile" hidden>&#8249; Prev</button>
-          <button class="btn btn-primary" id="next-btn-mobile" hidden>Next &#8250;</button>
-        </div>
-      </div>
+    <!-- ── Mobile top bar: X close (+ hidden video download trigger) ── -->
+    <div class="dlp-mobile-bar" id="dlp-mobile-bar" hidden>
+      <button class="dlp-video-trigger" id="dlp-video-trigger" hidden title="Download">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </button>
+      <button class="dlp-close-x" id="dlp-close-x" title="Back to gallery">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
     </div>
 
-    <!-- ── Desktop mode: Zenfolio-style header ── -->
+    <!-- ── Desktop header ── -->
     <div id="desktop-header" class="page-header" hidden style="margin-bottom:0;">
       <div class="gallery-identity">
         <h1 id="desktop-header-title">Photo Download</h1>
         <p class="gallery-byline">Photo Gallery</p>
       </div>
       <div class="gallery-header-actions">
-        <button class="icon-btn" id="prev-btn-desktop" title="Previous photo" hidden>
+        <button class="icon-btn" id="prev-btn-desktop" title="Previous" hidden>
           <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button class="icon-btn" id="download-photo-btn" title="Download photo">
+        <button class="icon-btn" id="download-photo-btn" title="Download">
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
-        <button class="icon-btn" id="next-btn-desktop" title="Next photo" hidden>
+        <button class="icon-btn" id="next-btn-desktop" title="Next" hidden>
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
         <div class="header-divider"></div>
@@ -44,42 +53,67 @@
       </div>
     </div>
 
-    <!-- ── Video section (video mode only) ── -->
-    <section class="video-dl-section" id="video-section" hidden>
-      <video id="main-video" controls playsinline
-        src="https://videos.pexels.com/video-files/29458307/12681051_2560_1440_30fps.mp4"
-        poster="https://picsum.photos/seed/forest3/800/450"></video>
-      <a class="video-dl-download-btn"
-         href="https://videos.pexels.com/video-files/29458307/12681051_2560_1440_30fps.mp4"
-         download="video_1.mp4">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download Video
-      </a>
-      <a class="video-help-link" href="#" id="video-camera-roll-link">
-        How to move a video from your Files app to your Camera Roll
-      </a>
-    </section>
+    <!-- ── Mobile instruction — photo mode ── -->
+    <div class="dlp-instruction-block" id="dlp-photo-instruction" hidden>
+      <div class="dlp-hand-icon">
+        <svg viewBox="0 0 48 64" width="44" height="58" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 30V10a4 4 0 0 1 8 0v20" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M26 18v-4a4 4 0 0 1 8 0v10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M34 24v-2a4 4 0 0 1 8 0v8" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18 30a4 4 0 0 0-8 0v10c0 11 8 18 18 18s18-7 18-18V30" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p>To download to your camera roll, long press on the photo below and click <strong>Save to Photos</strong>.</p>
+    </div>
 
-    <!-- ── Photo section (photo mode only) ── -->
+    <!-- ── Mobile instruction — video mode ── -->
+    <div class="dlp-instruction-block" id="dlp-video-instruction" hidden>
+      <p>Tap Download to save this video to your device. On iOS, your video will be saved to your Files app. Use the link below to learn how to move it to your camera roll.</p>
+    </div>
+
+    <!-- ── Photo section ── -->
     <section class="photo-section" id="photo-section">
       <img id="main-photo" alt="Photo" class="main-photo">
-
-      <!-- Mobile-only label -->
       <p class="photo-save-label" id="longpress-label" hidden>Long press image to save</p>
-
-      <!-- Error state: first failure -->
       <div id="error-first" class="image-error-box" hidden>
         <p>Image failed to load.</p>
         <button class="btn btn-secondary" id="refresh-btn">Refresh</button>
       </div>
-
-      <!-- Error state: second+ failure -->
       <div id="error-persistent" class="image-error-box" hidden>
         <p>Image failed to load. If this persists, <a href="#">please contact support</a>.</p>
       </div>
     </section>
 
-    <!-- Dev Controls -->
+    <!-- ── Video section ── -->
+    <section class="video-dl-section" id="video-section" hidden>
+      <video id="main-video" controls playsinline
+        src="https://videos.pexels.com/video-files/29458307/12681051_2560_1440_30fps.mp4"
+        poster="https://picsum.photos/seed/forest3/800/450"></video>
+      <a class="video-help-link" href="#" id="video-camera-roll-link">
+        How to move a video from your Files app to your Camera Roll
+      </a>
+    </section>
+
+    <!-- ── Mobile bottom "How to" bar (photo mode only) ── -->
+    <div class="dlp-howto-bar" id="dlp-howto-bar" hidden>
+      How to: Long Press &#8594; Save Image
+    </div>
+
+    <!-- ── Spoofed Safari download dialog (video mode only) ── -->
+    <div class="safari-dl-overlay" id="safari-dl-overlay" hidden>
+      <div class="safari-dl-modal">
+        <button class="safari-dl-x" id="safari-dl-close-btn">&#215;</button>
+        <p class="safari-dl-message" id="safari-dl-message"></p>
+        <div class="safari-dl-btns">
+          <a class="safari-dl-view" id="safari-view-btn" href="#">View</a>
+          <a class="safari-dl-download" id="safari-download-btn"
+             href="https://videos.pexels.com/video-files/29458307/12681051_2560_1440_30fps.mp4"
+             download="video_1.mp4">Download</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dev Controls (hidden in video mode) -->
     <aside class="dev-controls" aria-label="Developer testing controls">
       <span class="dev-controls-label">&#9881; Dev Controls</span>
       <label>
@@ -88,7 +122,7 @@
       </label>
     </aside>
 
-    <!-- iOS-style long-press context menu (mobile only) -->
+    <!-- iOS long-press context menu (photo mode only) -->
     <div id="ios-context-menu" class="ios-context-overlay" hidden>
       <div class="ios-context-sheet">
         <div class="ios-preview-row">
@@ -107,21 +141,20 @@
       <button class="ios-cancel-btn" id="ios-cancel-btn">Cancel</button>
     </div>
 
-  </div>
+  </div><!-- /#mobile-frame -->
 
   <script src="app.js"></script>
   <script>
     (function () {
       const PHOTO_COUNT = 50;
+      const VIDEO_SRC = 'https://videos.pexels.com/video-files/29458307/12681051_2560_1440_30fps.mp4';
       const isVideoMode = ZF.URLParams.get('video') === '1';
 
-      const rawParam = ZF.URLParams.get('photo');
-      const rawIndex = parseInt(rawParam, 10);
-      const photoIndex = isNaN(rawIndex)
-        ? 1
-        : Math.max(1, Math.min(PHOTO_COUNT, rawIndex));
+      const rawParam  = ZF.URLParams.get('photo');
+      const rawIndex  = parseInt(rawParam, 10);
+      const photoIndex = isNaN(rawIndex) ? 1 : Math.max(1, Math.min(PHOTO_COUNT, rawIndex));
 
-      let failCount = 0;
+      let failCount    = 0;
       let simulateFail = false;
 
       // ── Init ──────────────────────────────────────────────────────────────
@@ -129,109 +162,149 @@
       ZF.ViewToggle.onChange(applyViewMode);
 
       if (isVideoMode) {
-        // Video mode: show video section, hide photo controls
-        document.getElementById('video-section').removeAttribute('hidden');
+        initVideoMode();
+      } else {
+        initPhotoMode();
+      }
+
+      applyViewMode(ZF.ViewToggle.getMode());
+
+      // ── Photo mode ────────────────────────────────────────────────────────
+      function initPhotoMode() {
+        document.getElementById('video-section').setAttribute('hidden', '');
+        document.getElementById('photo-section').removeAttribute('hidden');
+
+        document.getElementById('dlp-close-x').addEventListener('click', () => {
+          window.location.href = 'index.html';
+        });
+        document.getElementById('back-btn-desktop').addEventListener('click', () => {
+          window.location.href = 'index.html';
+        });
+
+        setupDesktopNav();
+        setupLongPress();
+        setupSimulateCheckbox();
+        loadPhoto();
+      }
+
+      // ── Video mode ────────────────────────────────────────────────────────
+      function initVideoMode() {
         document.getElementById('photo-section').setAttribute('hidden', '');
+        document.getElementById('video-section').removeAttribute('hidden');
         document.getElementById('desktop-header-title').textContent = 'Video Download';
-        // Hide controls that don't apply to video
-        ['prev-btn-mobile', 'next-btn-mobile', 'prev-btn-desktop',
-         'next-btn-desktop', 'download-photo-btn'].forEach(id => {
+        ['prev-btn-desktop', 'next-btn-desktop', 'download-photo-btn'].forEach(id => {
           const el = document.getElementById(id);
           if (el) el.setAttribute('hidden', '');
         });
         const devControls = document.querySelector('.dev-controls');
         if (devControls) devControls.setAttribute('hidden', '');
         document.getElementById('ios-context-menu').setAttribute('hidden', '');
-        // Back buttons still work — wire them
-        document.getElementById('back-btn-mobile').addEventListener('click', () => {
+
+        document.getElementById('dlp-close-x').addEventListener('click', () => {
           window.location.href = 'index.html';
         });
         document.getElementById('back-btn-desktop').addEventListener('click', () => {
           window.location.href = 'index.html';
         });
-      } else {
-        // Photo mode
-        setupNavigation();
-        setupLongPress();
-        setupSimulateCheckbox();
-        loadPhoto();
+
+        // Set dialog filename + domain
+        document.getElementById('safari-dl-message').textContent =
+          `Do you want to download "12681051_2560_1440_30fps.mp4" on "${window.location.hostname}"?`;
+
+        // View: open video in new tab
+        document.getElementById('safari-view-btn').addEventListener('click', (e) => {
+          e.preventDefault();
+          window.open(VIDEO_SRC, '_blank');
+          hideSafariDialog();
+        });
+
+        // Download: trigger download then close dialog
+        document.getElementById('safari-download-btn').addEventListener('click', () => {
+          hideSafariDialog();
+        });
+
+        // Close X on dialog
+        document.getElementById('safari-dl-close-btn').addEventListener('click', hideSafariDialog);
+
+        // Reveal button at top re-opens dialog
+        document.getElementById('dlp-video-trigger').addEventListener('click', showSafariDialog);
       }
 
-      applyViewMode(ZF.ViewToggle.getMode());
+      function showSafariDialog() {
+        document.getElementById('safari-dl-overlay').removeAttribute('hidden');
+        document.getElementById('dlp-video-trigger').setAttribute('hidden', '');
+      }
+
+      function hideSafariDialog() {
+        document.getElementById('safari-dl-overlay').setAttribute('hidden', '');
+        // Only show the re-open trigger in mobile video mode
+        if (isVideoMode && ZF.ViewToggle.getMode() === 'mobile') {
+          document.getElementById('dlp-video-trigger').removeAttribute('hidden');
+        }
+      }
 
       // ── View mode ─────────────────────────────────────────────────────────
       function applyViewMode(mode) {
         mode = mode || ZF.ViewToggle.getMode();
-        const mobileBanner   = document.getElementById('mobile-banner');
-        const desktopHeader  = document.getElementById('desktop-header');
+        const mobileBar     = document.getElementById('dlp-mobile-bar');
+        const desktopHeader = document.getElementById('desktop-header');
         const longpressLabel = document.getElementById('longpress-label');
 
-        if (isVideoMode) {
-          if (mode === 'mobile') {
-            mobileBanner.removeAttribute('hidden');
-            desktopHeader.setAttribute('hidden', '');
-            document.getElementById('banner-instruction-text').textContent =
-              'Tap Download to save this video to your device. On iOS, your video will be saved to your Files app. Use the link below to learn how to move it to your camera roll.';
-          } else {
-            mobileBanner.setAttribute('hidden', '');
-            desktopHeader.removeAttribute('hidden');
-          }
-          longpressLabel.setAttribute('hidden', '');
-          return;
-        }
-
         if (mode === 'mobile') {
-          mobileBanner.removeAttribute('hidden');
+          mobileBar.removeAttribute('hidden');
           desktopHeader.setAttribute('hidden', '');
-          longpressLabel.removeAttribute('hidden');
+
+          if (isVideoMode) {
+            document.getElementById('dlp-video-instruction').removeAttribute('hidden');
+            document.getElementById('dlp-photo-instruction').setAttribute('hidden', '');
+            document.getElementById('dlp-howto-bar').setAttribute('hidden', '');
+            longpressLabel.setAttribute('hidden', '');
+            showSafariDialog();
+          } else {
+            document.getElementById('dlp-photo-instruction').removeAttribute('hidden');
+            document.getElementById('dlp-video-instruction').setAttribute('hidden', '');
+            document.getElementById('dlp-howto-bar').removeAttribute('hidden');
+            longpressLabel.removeAttribute('hidden');
+          }
         } else {
-          mobileBanner.setAttribute('hidden', '');
+          // Desktop
+          mobileBar.setAttribute('hidden', '');
           desktopHeader.removeAttribute('hidden');
+          document.getElementById('dlp-photo-instruction').setAttribute('hidden', '');
+          document.getElementById('dlp-video-instruction').setAttribute('hidden', '');
+          document.getElementById('dlp-howto-bar').setAttribute('hidden', '');
+          document.getElementById('safari-dl-overlay').setAttribute('hidden', '');
           longpressLabel.setAttribute('hidden', '');
         }
       }
 
-      // ── Navigation ────────────────────────────────────────────────────────
-      function setupNavigation() {
-        // Back buttons (mobile + desktop)
-        document.getElementById('back-btn-mobile').addEventListener('click', goBack);
-        document.getElementById('back-btn-desktop').addEventListener('click', goBack);
+      // ── Desktop nav ───────────────────────────────────────────────────────
+      function setupDesktopNav() {
+        const prevBtn = document.getElementById('prev-btn-desktop');
+        const nextBtn = document.getElementById('next-btn-desktop');
 
-        function goBack() {
-          window.location.href = 'index.html';
+        if (photoIndex <= 1) {
+          prevBtn.setAttribute('hidden', '');
+        } else {
+          prevBtn.removeAttribute('hidden');
+          prevBtn.addEventListener('click', () => {
+            window.location.href = `individual-download.html?photo=${photoIndex - 1}`;
+          });
         }
 
-        // Prev buttons
-        ['prev-btn-mobile', 'prev-btn-desktop'].forEach(id => {
-          const btn = document.getElementById(id);
-          if (photoIndex <= 1) {
-            btn.setAttribute('hidden', '');
-          } else {
-            btn.removeAttribute('hidden');
-            btn.addEventListener('click', () => {
-              window.location.href = `individual-download.html?photo=${photoIndex - 1}`;
-            });
-          }
-        });
+        if (photoIndex >= PHOTO_COUNT) {
+          nextBtn.setAttribute('hidden', '');
+        } else {
+          nextBtn.removeAttribute('hidden');
+          nextBtn.addEventListener('click', () => {
+            window.location.href = `individual-download.html?photo=${photoIndex + 1}`;
+          });
+        }
 
-        // Next buttons
-        ['next-btn-mobile', 'next-btn-desktop'].forEach(id => {
-          const btn = document.getElementById(id);
-          if (photoIndex >= PHOTO_COUNT) {
-            btn.setAttribute('hidden', '');
-          } else {
-            btn.removeAttribute('hidden');
-            btn.addEventListener('click', () => {
-              window.location.href = `individual-download.html?photo=${photoIndex + 1}`;
-            });
-          }
-        });
-
-        // Desktop download button
         document.getElementById('download-photo-btn').addEventListener('click', downloadPhoto);
       }
 
-      // ── Desktop download ──────────────────────────────────────────────────
+      // ── Desktop photo download ────────────────────────────────────────────
       async function downloadPhoto() {
         const url = ZF.Unsplash.url(photoIndex);
         try {
@@ -252,18 +325,15 @@
 
       // ── iOS long-press context menu ───────────────────────────────────────
       function setupLongPress() {
-        const img    = document.getElementById('main-photo');
-        const menu   = document.getElementById('ios-context-menu');
+        const img  = document.getElementById('main-photo');
+        const menu = document.getElementById('ios-context-menu');
         let pressTimer = null;
 
         function startPress() {
           if (ZF.ViewToggle.getMode() !== 'mobile') return;
           pressTimer = setTimeout(showContextMenu, 500);
         }
-        function cancelPress() {
-          clearTimeout(pressTimer);
-          pressTimer = null;
-        }
+        function cancelPress() { clearTimeout(pressTimer); pressTimer = null; }
 
         img.addEventListener('touchstart',  startPress,  { passive: true });
         img.addEventListener('touchend',    cancelPress);
@@ -274,26 +344,23 @@
         img.addEventListener('contextmenu', (e) => e.preventDefault());
 
         document.getElementById('ios-save-btn').addEventListener('click', () => {
-          hideContextMenu();
-          downloadPhoto();
+          hideContextMenu(); downloadPhoto();
         });
         document.getElementById('ios-cancel-btn').addEventListener('click', hideContextMenu);
         menu.addEventListener('click', (e) => { if (e.target === menu) hideContextMenu(); });
       }
 
       function showContextMenu() {
-        const menu = document.getElementById('ios-context-menu');
-        // Sync preview thumbnail and photo number
         document.getElementById('ios-preview-img').src = ZF.Unsplash.url(photoIndex);
         document.getElementById('ios-photo-num').textContent = photoIndex;
-        menu.removeAttribute('hidden');
+        document.getElementById('ios-context-menu').removeAttribute('hidden');
       }
 
       function hideContextMenu() {
         document.getElementById('ios-context-menu').setAttribute('hidden', '');
       }
 
-      // ── Simulate fail checkbox ────────────────────────────────────────────
+      // ── Simulate fail ─────────────────────────────────────────────────────
       function setupSimulateCheckbox() {
         const checkbox = document.getElementById('simulate-fail');
         checkbox.addEventListener('change', () => {
@@ -316,11 +383,7 @@
         document.getElementById('error-first').setAttribute('hidden', '');
         document.getElementById('error-persistent').setAttribute('hidden', '');
         img.onerror = handleImageError;
-        if (simulateFail) {
-          img.src = 'data:image/png,broken';
-        } else {
-          img.src = ZF.Unsplash.url(photoIndex);
-        }
+        img.src = simulateFail ? 'data:image/png,broken' : ZF.Unsplash.url(photoIndex);
       }
 
       function handleImageError() {
@@ -340,10 +403,7 @@
         }
       }
 
-      // ── Refresh button ────────────────────────────────────────────────────
-      document.getElementById('refresh-btn').addEventListener('click', () => {
-        loadPhoto();
-      });
+      document.getElementById('refresh-btn').addEventListener('click', loadPhoto);
 
     })();
   </script>

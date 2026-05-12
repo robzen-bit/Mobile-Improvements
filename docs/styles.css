@@ -965,6 +965,149 @@ body.view-mobile .mobile-download-bar {
 
 .lightbox-nav:hover { color: #fff; }
 
+/* ── Individual download page — mobile layout ────────────────────────── */
+
+/* Top bar: X only (+ optional video download icon) */
+.dlp-mobile-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 12px 10px 16px;
+  background: #000;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.dlp-close-x,
+.dlp-video-trigger {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+.dlp-close-x:hover,
+.dlp-video-trigger:hover { color: #fff; }
+
+/* Instruction block (photo + video) */
+.dlp-instruction-block {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  padding: 24px 28px 20px;
+  line-height: 1.55;
+  font-size: 1.02rem;
+}
+.dlp-hand-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.dlp-instruction-block p strong { font-weight: 700; }
+
+/* Photo + video in mobile view */
+body.view-mobile .photo-section { background: #000; padding: 0; }
+body.view-mobile .main-photo    { width: 100%; display: block; }
+body.view-mobile .photo-save-label {
+  background: #000;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  padding: 10px;
+  font-size: 0.82rem;
+  margin: 0;
+}
+body.view-mobile .video-dl-section {
+  background: #000;
+  padding: 0 0 80px; /* space for bottom bar */
+}
+body.view-mobile .video-dl-section video { border-radius: 0; max-width: 100%; }
+body.view-mobile .video-help-link {
+  display: block;
+  text-align: center;
+  margin: 18px 24px 0;
+  color: rgba(255,255,255,0.55);
+}
+
+/* Bottom "How to: Long Press → Save Image" bar */
+.dlp-howto-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(38,38,38,0.97);
+  color: #fff;
+  text-align: center;
+  padding: 15px 20px 18px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-radius: 14px 14px 0 0;
+  z-index: 100;
+}
+
+/* Spoofed Safari download dialog */
+.safari-dl-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.42);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.safari-dl-overlay[hidden]       { display: none; }
+.safari-dl-overlay:not([hidden]) { display: flex; }
+
+.safari-dl-modal {
+  background: #f2f2f7;
+  border-radius: 14px;
+  padding: 18px 20px 16px;
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+}
+.safari-dl-x {
+  position: absolute;
+  top: 13px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #8e8e93;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-family: -apple-system, sans-serif;
+}
+.safari-dl-message {
+  font-size: 0.94rem;
+  line-height: 1.45;
+  color: #000;
+  padding-right: 22px;
+  margin-bottom: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+}
+.safari-dl-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 22px;
+}
+.safari-dl-view,
+.safari-dl-download {
+  font-size: 1rem;
+  color: #007aff;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+}
+
 /* ── Mobile lightbox overrides ────────────────────────────────────────── */
 body.view-mobile .lightbox-overlay:not([hidden]) {
   flex-direction: column;
