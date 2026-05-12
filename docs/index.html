@@ -60,10 +60,36 @@
 
     </div>
 
-    <!-- Lightbox — desktop only, inside frame -->
+    <!-- Lightbox — photo + video, mobile and desktop, inside frame -->
     <div id="lightbox" class="lightbox-overlay" hidden aria-modal="true" role="dialog">
+
+      <!-- Mobile toolbar (hidden on desktop via CSS) -->
+      <div class="lightbox-mobile-bar" id="lightbox-mobile-bar">
+        <div class="lightbox-mobile-bar-left">
+          <button id="lightbox-mobile-close" title="Close">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="lightbox-mobile-bar-right">
+          <button id="lightbox-mobile-fav" title="Favorite">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button id="lightbox-mobile-download" title="Download">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button id="lightbox-mobile-share" title="Share">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <button id="lightbox-mobile-cart" title="Add to cart">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Desktop controls (hidden on mobile via CSS) -->
       <button class="lightbox-close" id="lightbox-close" title="Close">&times;</button>
       <button class="lightbox-nav lightbox-prev" id="lightbox-prev" title="Previous">&#8249;</button>
+
       <div class="lightbox-content">
         <img id="lightbox-img" src="" alt="">
         <video id="lightbox-video" controls playsinline hidden></video>
@@ -75,6 +101,7 @@
           </a>
         </div>
       </div>
+
       <button class="lightbox-nav lightbox-next" id="lightbox-next" title="Next">&#8250;</button>
     </div>
 
@@ -358,8 +385,7 @@
           if (dlBtn) {
             e.stopPropagation();
             if (isMobile) {
-              ZF.ScrollMemory.save();
-              window.location.href = `individual-download.html?photo=${dlBtn.dataset.photo}`;
+              openLightbox(parseInt(dlBtn.dataset.photo));
             } else {
               downloadPhoto(parseInt(dlBtn.dataset.photo));
             }
@@ -372,24 +398,36 @@
           }
 
           if (card) {
-            if (isMobile) {
-              ZF.ScrollMemory.save();
-              window.location.href = `individual-download.html?photo=${card.dataset.photo}`;
-            } else {
-              openLightbox(parseInt(card.dataset.photo));
-            }
+            openLightbox(parseInt(card.dataset.photo));
           }
         });
       }
 
       // ── Lightbox ──────────────────────────────────────────────────────────
+      let lightboxIsVideo = false;
+
       function wireLightbox() {
         const lightbox = document.getElementById('lightbox');
 
+        // Desktop controls
         document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
         document.getElementById('lightbox-prev').addEventListener('click', () => navigateLightbox(-1));
         document.getElementById('lightbox-next').addEventListener('click', () => navigateLightbox(1));
         document.getElementById('lightbox-download').addEventListener('click', () => downloadPhoto(lightboxIndex));
+
+        // Mobile toolbar
+        document.getElementById('lightbox-mobile-close').addEventListener('click', closeLightbox);
+        document.getElementById('lightbox-mobile-fav').addEventListener('click', () => {}); // placeholder
+        document.getElementById('lightbox-mobile-share').addEventListener('click', () => {}); // placeholder
+        document.getElementById('lightbox-mobile-cart').addEventListener('click', () => {}); // placeholder
+        document.getElementById('lightbox-mobile-download').addEventListener('click', () => {
+          if (lightboxIsVideo) {
+            window.location.href = 'individual-download.html?video=1';
+          } else {
+            ZF.ScrollMemory.save();
+            window.location.href = `individual-download.html?photo=${lightboxIndex}`;
+          }
+        });
 
         lightbox.addEventListener('click', (e) => {
           if (e.target === lightbox) closeLightbox();
@@ -397,6 +435,7 @@
       }
 
       function openLightbox(index) {
+        lightboxIsVideo = false;
         lightboxIndex = index;
         updateLightbox();
         document.getElementById('lightbox').removeAttribute('hidden');
@@ -421,6 +460,7 @@
       }
 
       function openVideoLightbox(src) {
+        lightboxIsVideo = true;
         // Hide photo elements
         document.getElementById('lightbox-img').setAttribute('hidden', '');
         document.getElementById('lightbox-download').setAttribute('hidden', '');

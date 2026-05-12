@@ -49,9 +49,15 @@
       <video id="main-video" controls playsinline
         src="https://videos.pexels.com/video-files/29458307/12681051_2560_1440_30fps.mp4"
         poster="https://picsum.photos/seed/forest3/800/450"></video>
-      <a class="video-help-link"
-         href="https://success.zenfolio.com/hc/en-us/articles/50823256837523"
-         target="_blank" rel="noopener noreferrer">How to get videos to your camera roll</a>
+      <a class="video-dl-download-btn"
+         href="https://videos.pexels.com/video-files/29458307/12681051_2560_1440_30fps.mp4"
+         download="video_1.mp4">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Video
+      </a>
+      <a class="video-help-link" href="#" id="video-camera-roll-link">
+        How to move a video from your Files app to your Camera Roll
+      </a>
     </section>
 
     <!-- ── Photo section (photo mode only) ── -->
@@ -133,7 +139,8 @@
           const el = document.getElementById(id);
           if (el) el.setAttribute('hidden', '');
         });
-        document.querySelector('.dev-controls').setAttribute('hidden', '');
+        const devControls = document.querySelector('.dev-controls');
+        if (devControls) devControls.setAttribute('hidden', '');
         document.getElementById('ios-context-menu').setAttribute('hidden', '');
         // Back buttons still work — wire them
         document.getElementById('back-btn-mobile').addEventListener('click', () => {
@@ -164,7 +171,7 @@
             mobileBanner.removeAttribute('hidden');
             desktopHeader.setAttribute('hidden', '');
             document.getElementById('banner-instruction-text').textContent =
-              'Tap the video below. When prompted, select Download to save the video to the Files app on iOS or the Downloads folder on Android.';
+              'Tap Download to save this video to your device. On iOS, your video will be saved to your Files app. Use the link below to learn how to move it to your camera roll.';
           } else {
             mobileBanner.setAttribute('hidden', '');
             desktopHeader.removeAttribute('hidden');
